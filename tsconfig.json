@@ -5,6 +5,10 @@
     "baseUrl": ".",
     "paths": {
       "components/*": ["src/components/*"],
+      "screens/*": ["src/screens/*"],
+      "types": ["src/types"],
+      "assets/*": ["./assets/*"],
+      "colors": ["constants/colors"]
     }
   }
 }
