@@ -4,10 +4,10 @@
     "slug": "healthy-habits-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/healthy-habits-icon.jpeg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/healthy-habits-icon.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
