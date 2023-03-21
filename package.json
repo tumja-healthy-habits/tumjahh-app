@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "babel-plugin-module-resolver": "^5.0.0",
     "expo": "~48.0.6",
     "expo-status-bar": "~1.4.4",
     "pocketbase": "^0.12.1",
