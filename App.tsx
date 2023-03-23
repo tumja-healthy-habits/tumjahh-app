@@ -1,18 +1,37 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { pb } from "src/pocketbaseService"
 import { StatusBar } from 'expo-status-bar';
-
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import HomeScreen from 'screens/HomeScreen';
+import { useAuthenticatedUser } from 'src/store/AuthenticatedUserContext';
+import { NavigationContainer } from '@react-navigation/native';
+import Colors from 'constants/colors'
 import FeedScreen from 'screens/FeedScreen';
 import FriendsScreen from 'screens/FriendsScreen';
-import { NavigationContainer } from '@react-navigation/native'
-import Ionicons from '@expo/vector-icons/Ionicons'
-import Colors from 'constants/colors';
+import HomeScreen from 'screens/HomeScreen';
+import { UserRecord } from 'types';
+import { Ionicons } from '@expo/vector-icons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { ListResult } from 'pocketbase';
 
-const Tab = createBottomTabNavigator()
+async function fetchFriendsList(id: string): Promise<any[]> {
+  const data: ListResult<UserRecord> = await pb.collection("friends_with").getList(undefined, undefined, {
+    filter: `user1 = ${id}`,
+    expand: "user2",
+  })
+  return data.items
+}
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
-  const [userData, setUserData] = useState<any[]>([]) // default value in the brackets
+  const [userData, setUserData] = useState<UserRecord[]>([]) // default value in the brackets
+  const { currentUser } = useAuthenticatedUser()
+
+  function getUserData(): void {
+    if (currentUser === null) return
+    fetchFriendsList(currentUser.id)
+      .then(userData => setUserData(userData))
+      .catch(() => console.error("An error occured while fetching the user data from pocketbase!"))
+  }
 
   return (
     <>

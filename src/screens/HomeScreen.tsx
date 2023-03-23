@@ -1,19 +1,15 @@
 import LabelledTextInput from "components/LabelledTextInput";
-import { BaseModel, RecordAuthResponse } from "pocketbase";
+import { RecordAuthResponse } from "pocketbase";
 import { pb } from "src/pocketbaseService";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View, Button, Text } from "react-native";
 import { styles } from "src/styles";
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
 
 export default function HomeScreen() {
-    const [currentUser, setCurrentUser] = useState<BaseModel | null>(null)
+    const { currentUser } = useAuthenticatedUser()
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
-
-    useEffect(() => {
-        // whenever the currently authenticated user changes, update the currentUser state variable
-        pb.authStore.onChange((_: string, model: BaseModel | null) => setCurrentUser(model))
-    }, [])
 
     async function signup(): Promise<void> {
         const data: {} = {
@@ -27,7 +23,6 @@ export default function HomeScreen() {
 
     async function login(): Promise<void> {
         const response: RecordAuthResponse = await pb.collection("users").authWithPassword(username, password)
-        setCurrentUser(pb.authStore.model)
     }
 
     async function logout(): Promise<void> {
