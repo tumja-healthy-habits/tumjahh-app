@@ -11,5 +11,5 @@ export interface UserRecord {
     username: string;
     verified: boolean;
     expand: any;
-    email?: string;
+    email: string;
 }
