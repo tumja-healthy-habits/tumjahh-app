@@ -13,15 +13,20 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <>
-      <StatusBar />
+      <StatusBar style="light" />
       <AuthenticatedUserProvider>
         <NavigationContainer>
           <Tab.Navigator initialRouteName='Home' screenOptions={{
             tabBarActiveTintColor: Colors.accent,
+            headerStyle: {
+              backgroundColor: "black",
+            },
+            tabBarActiveBackgroundColor: "black",
+            tabBarInactiveBackgroundColor: "black",
             headerTitleStyle: {
               fontWeight: 'bold',
               color: Colors.accent,
-            }
+            },
           }}>
             <Tab.Screen name="Feed" component={FeedScreen} options={{
               tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,

@@ -1,3 +1,4 @@
+import Colors from "constants/colors";
 import { StyleSheet, Image, ImageSourcePropType, StyleProp, ImageStyle } from "react-native";
 import { pb } from "src/pocketbaseService";
 import { UserRecord } from "types";
@@ -16,8 +17,8 @@ export default function ProfilePicture({ user, style }: ProfilePictureProps) {
 const styles = StyleSheet.create({
     image: {
         borderRadius: 8,
-        borderWidth: 1,
-        borderColor: "black",
+        borderWidth: 3,
+        borderColor: Colors.primary,
         width: "100%",
         height: "100%",
         margin: 10,

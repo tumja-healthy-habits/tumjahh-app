@@ -5,6 +5,7 @@ import { useState } from "react";
 import { View, Button, Text, StyleSheet, Alert } from "react-native";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
 import ProfilePicture from "components/ProfilePicture";
+import Colors from "constants/colors";
 
 export default function HomeScreen() {
     const { currentUser } = useAuthenticatedUser()
@@ -39,17 +40,18 @@ export default function HomeScreen() {
                     <LabelledTextInput label="Username:" placeholder="username" onChangeText={(text: string) => setUsername(text)} />
                     <LabelledTextInput label="Password:" placeholder='password' onChangeText={(text: string) => setPassword(text)} secureTextEntry />
                 </View>
-                <Button title="Sign Up" onPress={signup}></Button>
-                <Button title="Log in" onPress={login}></Button>
+                <Button title="Sign Up" onPress={signup} color={Colors.accent}></Button>
+                <Button title="Log in" onPress={login} color={Colors.accent}></Button>
             </View>
         )
     }
 
+    // user is logged in
     return (
         <View style={styles.container}>
-            <ProfilePicture user={currentUser} style={{ width: 150, height: 150 }} />
+            <ProfilePicture user={currentUser} style={styles.profilePicture} />
             <Text style={styles.signedInText}>Signed in as {currentUser.name}</Text>
-            <Button title="Log out" onPress={logout}></Button>
+            <Button title="Log out" onPress={logout} color={Colors.accent}></Button>
         </View>
     )
 }
@@ -57,8 +59,7 @@ export default function HomeScreen() {
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 100,
-        backgroundColor: '#fff',
+        backgroundColor: 'black',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -67,5 +68,10 @@ export const styles = StyleSheet.create({
     },
     signedInText: {
         marginBottom: 50,
+        color: Colors.accent,
+    },
+    profilePicture: {
+        width: 150,
+        height: 150,
     }
 });

@@ -1,3 +1,4 @@
+import Colors from "constants/colors"
 import { StyleSheet, Text, TextInput, TextInputProps } from "react-native"
 import { View } from "react-native"
 
@@ -20,14 +21,16 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     label: {
-        paddingRight: 15
+        paddingRight: 15,
+        color: Colors.accent,
     },
     textInput: {
-        borderColor: 'black',
+        borderColor: Colors.accent,
         borderWidth: 1,
         minWidth: 50,
         borderRadius: 4,
         textAlign: "center",
         padding: 5,
+        color: "white",
     },
 })

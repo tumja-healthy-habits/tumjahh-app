@@ -1,3 +1,4 @@
+import Colors from "constants/colors";
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import { UserRecord } from "types";
 import ProfilePicture from "./ProfilePicture";
@@ -27,9 +28,10 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     innerContainer: {
-        borderWidth: 1,
-        borderColor: "#ccc",
+        // borderWidth: 1,
+        // borderColor: "#ccc",
         justifyContent: "space-between",
+        alignItems: "center",
     },
     image: {
         width: "100%",
@@ -38,6 +40,7 @@ const styles = StyleSheet.create({
     name: {
         fontWeight: "bold",
         fontSize: 18,
-        textAlign: "center"
+        textAlign: "center",
+        color: Colors.accent,
     }
 })
