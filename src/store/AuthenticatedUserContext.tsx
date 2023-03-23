@@ -1,9 +1,10 @@
 import { BaseModel } from "pocketbase";
 import { pb } from "src/pocketbaseService";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { UserRecord } from "types";
 
 type AuthenticatedUserState = {
-    currentUser: BaseModel | null,
+    currentUser: UserRecord | null,
 }
 
 const AuthenticatedUserContext = createContext<AuthenticatedUserState>({
@@ -11,11 +12,21 @@ const AuthenticatedUserContext = createContext<AuthenticatedUserState>({
 })
 
 export function AuthenticatedUserProvider({ children }: any) {
-    const [currentUser, setCurrentUser] = useState<BaseModel | null>(null)
+    const [currentUser, setCurrentUser] = useState<UserRecord | null>(null)
+
+    // useCallback avoids redefining the same function
+    const handleAuthenticationChange = useCallback(async function (_: string, model: BaseModel | null): Promise<void> {
+        if (model === null) {
+            setCurrentUser(null)
+        } else {
+            const record: UserRecord = await pb.collection("users").getOne(model.id)
+            setCurrentUser(record)
+        }
+    }, [])
 
     useEffect(() => {
         // whenever the currently authenticated user changes, update the currentUser state variable
-        pb.authStore.onChange((_: string, model: BaseModel | null) => setCurrentUser(model))
+        pb.authStore.onChange(handleAuthenticationChange)
     }, [])
 
     return (
