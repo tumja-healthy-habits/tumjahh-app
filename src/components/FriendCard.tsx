@@ -1,18 +1,18 @@
-import { Pressable, View, Text, StyleSheet, Image } from "react-native";
+import { Pressable, View, Text, StyleSheet } from "react-native";
+import { UserRecord } from "types";
+import ProfilePicture from "./ProfilePicture";
 
 type FriendCardProps = {
-    name: string,
-    avatarUrl: string,
+    user: UserRecord,
 }
 
-export default function FriendCard({ name, avatarUrl }: FriendCardProps) {
-    const imageSource = avatarUrl ? { uri: avatarUrl } : require("assets/images/default-avatar.jpeg")
+export default function FriendCard({ user }: FriendCardProps) {
     return (
         <View style={styles.outerContainer}>
             <Pressable>
                 <View style={styles.innerContainer}>
-                    <Image source={imageSource} style={styles.image} />
-                    <Text style={styles.name}>{name}</Text>
+                    <ProfilePicture user={user} style={styles.image} />
+                    <Text style={styles.name}>{user.name}</Text>
                 </View>
             </Pressable>
         </View>
@@ -34,9 +34,6 @@ const styles = StyleSheet.create({
     image: {
         width: "100%",
         height: "85%",
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: "#ccc",
     },
     name: {
         fontWeight: "bold",
