@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { FlatList, ListRenderItemInfo, StyleSheet, View } from 'react-native'
 import { pb } from 'src/pocketbaseService'
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserContext'
-import { UserRecord } from 'types'
+import { FriendsWithRecord, UserRecord } from 'types'
 
 const dummyFriends: UserRecord[] = [
     { "avatar": "img_d9076_b7_c9002_1_MQckAI28Mz.jpeg", "collectionId": "_pb_users_auth_", "collectionName": "users", "created": "2023-03-20 16:12:56.015Z", "emailVisibility": false, "expand": {}, "id": "i3w0162pbgzwc6u", "name": "", "updated": "2023-03-21 16:05:49.687Z", "username": "users16721", "verified": false, "email": "" },
@@ -18,15 +18,16 @@ export default function FriendsScreen() {
 
     useEffect(() => {
         if (currentUser === null) return
-        // const friendIds = pb.collection("friends_with").getList(undefined, undefined, {
-        //     filter: `user1 = ${currentUser.id} || user2 = ${currentUser.id}`
-        // }).then((result: ListResult<any>) => {
-        //     console.log(result)
-        // }).catch(() => console.error("An error occured while fetching the friends data"))
-        pb.collection("users").getFullList<UserRecord>()
-            .then(setFriends) // The promise returns the list of users and applies setFriends to the list
-            .catch(() => console.error("An error occured while fetching the friends data!"))
-        //setFriends(dummyFriends)
+        pb.collection("friends_with").getFullList<FriendsWithRecord>({
+            filter: `user1.id= "${currentUser.id}" || user2.id = "${currentUser.id}"`,
+        }).then((records: FriendsWithRecord[]) => {
+            //extract the id which is not the current user's id
+            return records.map(({ user1, user2 }: FriendsWithRecord) => user1 === currentUser.id ? user2 : user1)
+        }).then((ids: string[]) => {
+            pb.collection("users").getFullList<UserRecord>({
+                filter: ids.map((id: string) => `id="${id}"`).join("||")
+            }).then(setFriends)
+        }).catch((error) => console.error("An error occured while fetching the friends data", error))
     }, [])
 
     function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
@@ -50,6 +51,7 @@ export default function FriendsScreen() {
 
 const styles = StyleSheet.create({
     friendsContainer: {
-        backgroundColor: "white",
+        flex: 1,
+        backgroundColor: "black",
     }
 })
