@@ -1,19 +1,16 @@
 import LabelledTextInput from "components/LabelledTextInput";
-import { BaseModel, RecordAuthResponse } from "pocketbase";
+import { ClientResponseError, RecordAuthResponse } from "pocketbase";
 import { pb } from "src/pocketbaseService";
-import { useEffect, useState } from "react";
-import { View, Button, Text } from "react-native";
-import { styles } from "src/styles";
+import { useState } from "react";
+import { View, Button, Text, StyleSheet, Alert } from "react-native";
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
+import ProfilePicture from "components/ProfilePicture";
+import Colors from "constants/colors";
 
 export default function HomeScreen() {
-    const [currentUser, setCurrentUser] = useState<BaseModel | null>(null)
+    const { currentUser } = useAuthenticatedUser()
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
-
-    useEffect(() => {
-        // whenever the currently authenticated user changes, update the currentUser state variable
-        pb.authStore.onChange((_: string, model: BaseModel | null) => setCurrentUser(model))
-    }, [])
 
     async function signup(): Promise<void> {
         const data: {} = {
@@ -26,26 +23,55 @@ export default function HomeScreen() {
     }
 
     async function login(): Promise<void> {
-        const response: RecordAuthResponse = await pb.collection("users").authWithPassword(username, password)
-        setCurrentUser(pb.authStore.model)
+        pb.collection("users").authWithPassword(username, password)
+            .then((response: RecordAuthResponse) => { })
+            .catch((error: ClientResponseError) => Alert.alert("Wrong username or password. Please try again."))
     }
 
     async function logout(): Promise<void> {
         await pb.authStore.clear()
     }
 
+    if (currentUser === null) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.signedInText}>Not signed in.</Text>
+                <View style={styles.loginBox}>
+                    <LabelledTextInput label="Username:" placeholder="username" onChangeText={(text: string) => setUsername(text)} />
+                    <LabelledTextInput label="Password:" placeholder='password' onChangeText={(text: string) => setPassword(text)} secureTextEntry />
+                </View>
+                <Button title="Sign Up" onPress={signup} color={Colors.accent}></Button>
+                <Button title="Log in" onPress={login} color={Colors.accent}></Button>
+            </View>
+        )
+    }
+
+    // user is logged in
     return (
         <View style={styles.container}>
-            <Text>{currentUser === null ? "Not signed in!" : "Signed in as " + currentUser.id}</Text>
-            <View style={styles.loginBox}>
-                <LabelledTextInput label="Username:" placeholder="username" onChangeText={(text: string) => setUsername(text)} style={styles.textInput} />
-                <LabelledTextInput label="Password:" placeholder='password' onChangeText={(text: string) => setPassword(text)} style={styles.textInput} secureTextEntry />
-            </View>
-            <View>
-                <Button title="Sign Up" onPress={signup}></Button>
-                <Button title="Log in" onPress={login}></Button>
-                <Button title="Log out" onPress={logout}></Button>
-            </View>
+            <ProfilePicture user={currentUser} style={styles.profilePicture} />
+            <Text style={styles.signedInText}>Signed in as {currentUser.name}</Text>
+            <Button title="Log out" onPress={logout} color={Colors.accent}></Button>
         </View>
     )
 }
+
+export const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'black',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    loginBox: {
+        margin: 5,
+    },
+    signedInText: {
+        marginBottom: 50,
+        color: Colors.accent,
+    },
+    profilePicture: {
+        width: 150,
+        height: 150,
+    }
+});
