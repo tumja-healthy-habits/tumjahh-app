@@ -7,11 +7,11 @@ import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
 import ProfilePicture from "components/ProfilePicture";
 import Colors from "constants/colors";
 
-export default function LoginForm(){
+export default function LoginForm() {
     const { currentUser } = useAuthenticatedUser()
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
-    
+
     async function signup(): Promise<void> {
         const data: {} = {
             username: username,
@@ -24,8 +24,11 @@ export default function LoginForm(){
 
     async function login(): Promise<void> {
         pb.collection("users").authWithPassword(username, password)
-            .then((response: RecordAuthResponse) => { })
-            .catch((error: ClientResponseError) => Alert.alert("Wrong username or password. Please try again."))
+            .then((response: RecordAuthResponse) => { console.log(response) })
+            .catch((error: ClientResponseError) => {
+                Alert.alert("Wrong username or password. Please try again.")
+                console.log(error)
+            })
     }
 
     return (

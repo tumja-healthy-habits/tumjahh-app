@@ -5,10 +5,12 @@ import { UserRecord } from "types";
 
 type AuthenticatedUserState = {
     currentUser: UserRecord | null,
+    setCurrentUser: (user: UserRecord) => void,
 }
 
 const AuthenticatedUserContext = createContext<AuthenticatedUserState>({
     currentUser: null,
+    setCurrentUser: () => { },
 })
 
 export function AuthenticatedUserProvider({ children }: any) {
@@ -30,7 +32,7 @@ export function AuthenticatedUserProvider({ children }: any) {
     }, [])
 
     return (
-        <AuthenticatedUserContext.Provider value={{ currentUser }}>
+        <AuthenticatedUserContext.Provider value={{ currentUser, setCurrentUser }}>
             {children}
         </AuthenticatedUserContext.Provider>
     )
