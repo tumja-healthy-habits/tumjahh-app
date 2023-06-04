@@ -54,6 +54,8 @@ export default function FeedScreen() {
             type: "image/jpg"
         })
         formData.append("user_id", currentUser.id)
+        formData.append("width", photo.width.toString())
+        formData.append("height", photo.height.toString())
         pb.collection("photos").create(formData)
             .then(() => Alert.alert("Foto wurde hochgeladen!"))
             .catch((e: any) => console.log(JSON.stringify(e)))
