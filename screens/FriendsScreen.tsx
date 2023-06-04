@@ -1,5 +1,5 @@
 import { useIsFocused } from '@react-navigation/native'
-import { styles } from "../styles"
+import { styles } from "src/styles"
 import FriendCard from 'components/FriendCard'
 import { useEffect, useState } from 'react'
 import { FlatList, ListRenderItemInfo, StyleSheet, View, Text } from 'react-native'
@@ -42,7 +42,7 @@ export default function FriendsScreen() {
     }
 
     return (
-        <View style={[styles.container, {alignItems: 'stretch'}]}>
+        <View style={[styles.container, { alignItems: 'stretch' }]}>
             {friends.length === 0 && <Text style={styles.textfieldText}>You haven't added any friends yet</Text>}
             <FlatList
                 numColumns={2}

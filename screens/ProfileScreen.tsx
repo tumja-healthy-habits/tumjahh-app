@@ -1,12 +1,13 @@
 import LoginForm from 'components/LoginForm';
 import ProfilePicture from 'components/ProfilePicture';
 import React from 'react';
-import { View } from 'react-native';
+import { Button, View } from 'react-native';
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserContext';
 import EditableTextField from 'components/EditableTextField';
 import { pb } from "src/pocketbaseService";
 import { RecordQueryParams } from 'pocketbase';
-import { styles, imageStyles } from "../styles"
+import Colors from "constants/colors";
+import { styles, imageStyles } from "src/styles";
 
 export default function Profile() {
     const { currentUser } = useAuthenticatedUser();
@@ -27,6 +28,7 @@ export default function Profile() {
             <ProfilePicture user={currentUser} style={imageStyles.profilePicture} />
             <EditableTextField placeholder='Username' editableText={currentUser.username} updateFunction={(usernameUpdate: string) => update({ username: usernameUpdate })} textStyle={styles.textfieldText} />
             <EditableTextField placeholder='Email' editableText={currentUser.email} updateFunction={(emailUpdate: string) => update({ email: emailUpdate })} textStyle={styles.textfieldText} />
+            <Button title="Log out" onPress={async () => { await pb.authStore.clear() }} color={Colors.accent}></Button>
         </View>
     );
 }

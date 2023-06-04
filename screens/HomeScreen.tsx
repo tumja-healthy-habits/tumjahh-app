@@ -1,17 +1,30 @@
 import { pb } from "src/pocketbaseService";
-import { styles, imageStyles } from "../styles";
-import { View, Button, Text } from "react-native";
+import { styles } from "src/styles";
+import { View, Text, SectionList } from "react-native";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
-import ProfilePicture from "components/ProfilePicture";
-import Colors from "constants/colors";
 import LoginForm from "components/LoginForm";
+import { ChallengesRecord, HabitsRecord } from "types";
+import { useEffect, useState } from "react";
 
 export default function HomeScreen() {
     const { currentUser } = useAuthenticatedUser()
+    const [habits, setHabits] = useState<HabitsRecord[]>([])
+    const [challenges, setChallenges] = useState<ChallengesRecord[]>([])
 
-    async function logout(): Promise<void> {
-        await pb.authStore.clear()
-    }
+    const data: any = habits.map(habit => ({
+        title: habit.name,
+        data: challenges.filter(({ habit_id }) => habit_id === habit.id),
+    }))
+
+    useEffect(() => {
+        async function fetchData() {
+            const habits: HabitsRecord[] = await pb.collection("habits").getFullList<HabitsRecord>()
+            const challenges: ChallengesRecord[] = await pb.collection("challenges").getFullList<ChallengesRecord>()
+            setHabits(habits)
+            setChallenges(challenges)
+        }
+        fetchData()
+    }, [])
 
     if (currentUser === null) {
         return (
@@ -19,12 +32,15 @@ export default function HomeScreen() {
         )
     }
 
-    // user is logged in
+    // show the list of potential challenges
     return (
         <View style={styles.container}>
-            <ProfilePicture user={currentUser} style={imageStyles.profilePicture} />
-            <Text style={styles.textfieldText}>Signed in as {currentUser.name}</Text>
-            <Button title="Log out" onPress={logout} color={Colors.accent}></Button>
+            {data.length > 0 && <SectionList
+                sections={data}
+                keyExtractor={(item, index) => item + index}
+                renderItem={({ item }) => <Text style={styles.textfieldText}>{item.name}</Text>}
+                renderSectionHeader={({ section }) => <Text style={[styles.textfieldText, styles.textfieldTitle]}>{section.title}</Text>}
+            />}
         </View>
     )
 }

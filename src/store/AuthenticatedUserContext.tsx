@@ -10,7 +10,7 @@ type AuthenticatedUserState = {
 }
 
 // This context contains a Provider component which makes the state available to all its children
-const AuthenticatedUserContext = createContext<AuthenticatedUserState>({
+export const AuthenticatedUserContext = createContext<AuthenticatedUserState>({
     currentUser: null,
     setCurrentUser: () => { },
 })

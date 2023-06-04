@@ -31,6 +31,10 @@ export default function LoginForm() {
             })
     }
 
+    async function devLogin(): Promise<void> {
+        await pb.collection("users").authWithPassword("momolino", "Test123456")
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.textfieldText}>Not signed in.</Text>
@@ -40,6 +44,7 @@ export default function LoginForm() {
             </View>
             <Button title="Sign Up" onPress={signup} color={Colors.accent}></Button>
             <Button title="Log in" onPress={login} color={Colors.accent}></Button>
+            <Button title="Dev Login Cheat Code" onPress={devLogin} color={Colors.accent}></Button>
         </View>
     )
 }

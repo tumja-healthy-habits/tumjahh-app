@@ -6,7 +6,7 @@ import { View, TextInput, StyleSheet, Button, Alert } from "react-native";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
 import { UserRecord } from "types";
-import { styles, imageStyles } from "../styles";
+import { styles, imageStyles } from "src/styles";
 
 export default function ProfileScreenAlt() {
     const { currentUser, setCurrentUser } = useAuthenticatedUser()
@@ -40,6 +40,7 @@ export default function ProfileScreenAlt() {
             <TextInput value={username} onChangeText={setUsername} style={styles.textfieldText} />
             <TextInput value={email} onChangeText={setEmail} style={styles.textfieldText} />
             <Button title="Save changes" onPress={updateUser} disabled={!hasChanged} />
+            <Button title="Log out" onPress={async () => { await pb.authStore.clear() }} color={Colors.accent}></Button>
         </View>
     )
 }
