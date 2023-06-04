@@ -6,6 +6,7 @@ import { View, TextInput, StyleSheet, Button, Alert } from "react-native";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
 import { UserRecord } from "types";
+import { styles, imageStyles } from "../styles";
 
 export default function ProfileScreenAlt() {
     const { currentUser, setCurrentUser } = useAuthenticatedUser()
@@ -34,27 +35,11 @@ export default function ProfileScreenAlt() {
 
     return (
         <View style={styles.container}>
-            <TextInput value={name} onChangeText={setName} style={styles.textField} />
-            <ProfilePicture user={currentUser} style={styles.profilePicture} />
-            <TextInput value={username} onChangeText={setUsername} style={styles.textField} />
-            <TextInput value={email} onChangeText={setEmail} style={styles.textField} />
+            <TextInput value={name} onChangeText={setName} style={styles.textfieldText} />
+            <ProfilePicture user={currentUser} style={imageStyles.profilePicture} />
+            <TextInput value={username} onChangeText={setUsername} style={styles.textfieldText} />
+            <TextInput value={email} onChangeText={setEmail} style={styles.textfieldText} />
             <Button title="Save changes" onPress={updateUser} disabled={!hasChanged} />
         </View>
     )
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'black',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    textField: {
-        color: Colors.primary,
-    },
-    profilePicture: {
-        width: 150,
-        height: 150,
-    },
-});

@@ -1,12 +1,12 @@
 import LoginForm from 'components/LoginForm';
 import ProfilePicture from 'components/ProfilePicture';
 import React from 'react';
-import { Text, View, StyleSheet, Pressable, Button } from 'react-native';
+import { View } from 'react-native';
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserContext';
-import Colors from "constants/colors";
 import EditableTextField from 'components/EditableTextField';
 import { pb } from "src/pocketbaseService";
 import { RecordQueryParams } from 'pocketbase';
+import { styles, imageStyles } from "../styles"
 
 export default function Profile() {
     const { currentUser } = useAuthenticatedUser();
@@ -23,26 +23,10 @@ export default function Profile() {
 
     return (
         <View style={styles.container}>
-            <EditableTextField placeholder='Name' editableText={currentUser.name} updateFunction={(nameUpdate: string) => update({ name: nameUpdate })} style={{ fontSize: 30 }} />
-            <ProfilePicture user={currentUser} style={styles.profilePicture} />
-            <EditableTextField placeholder='Username' editableText={currentUser.username} updateFunction={(usernameUpdate: string) => update({ username: usernameUpdate })} style={{ fontSize: 18 }} />
-            <EditableTextField placeholder='Email' editableText={currentUser.email} updateFunction={(emailUpdate: string) => update({ email: emailUpdate })} style={{ fontSize: 18 }} />
+            <EditableTextField placeholder='Name' editableText={currentUser.name} updateFunction={(nameUpdate: string) => update({ name: nameUpdate })} textStyle={styles.textfieldTitle} />
+            <ProfilePicture user={currentUser} style={imageStyles.profilePicture} />
+            <EditableTextField placeholder='Username' editableText={currentUser.username} updateFunction={(usernameUpdate: string) => update({ username: usernameUpdate })} textStyle={styles.textfieldText} />
+            <EditableTextField placeholder='Email' editableText={currentUser.email} updateFunction={(emailUpdate: string) => update({ email: emailUpdate })} textStyle={styles.textfieldText} />
         </View>
     );
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'black',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    textField: {
-        color: Colors.primary,
-    },
-    profilePicture: {
-        width: 150,
-        height: 150,
-    },
-});
