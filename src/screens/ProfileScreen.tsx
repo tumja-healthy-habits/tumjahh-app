@@ -6,6 +6,7 @@ import { useAuthenticatedUser } from 'src/store/AuthenticatedUserContext';
 import Colors from "constants/colors";
 import EditableTextField from 'components/EditableTextField';
 import { pb } from "src/pocketbaseService";
+import { RecordQueryParams } from 'pocketbase';
 
 export default function Profile() {
     const { currentUser } = useAuthenticatedUser();
@@ -15,27 +16,17 @@ export default function Profile() {
         return <LoginForm />;
     }
 
-    function updateUser(name = '', username = '', email = '') {
-        if(currentUser === null) return;
-        if (name !== '') {
-            pb.collection(currentUser.collectionId).update(currentUser.id, {name: name});
-        }
-        if (username !== '') {
-            pb.collection(currentUser.collectionId).update(currentUser.id, {username: username});
-        }
-        if (email !== '') {
-            pb.collection(currentUser.collectionId).update(currentUser.id, {email: email});
-        }
+    function update(data: RecordQueryParams) {
+        if (currentUser === null) return;
+        pb.collection(currentUser.collectionId).update(currentUser.id, data)
     }
 
     return (
         <View style={styles.container}>
-            <EditableTextField fontSize={30} placeholder='Name' editableText={currentUser.name} updateFunction={(nameUpdate: string) => updateUser(nameUpdate)} />
-            <View>
-                <ProfilePicture user={currentUser} style={styles.profilePicture} />
-            </View>
-            <EditableTextField fontSize={18} placeholder='Username' editableText={currentUser.username} updateFunction={(usernameUpdate: string) => updateUser('', usernameUpdate)} />
-            <EditableTextField fontSize={18} placeholder='Email' editableText={currentUser.email} updateFunction={(emailUpdate: string) => updateUser('', '', emailUpdate)} />
+            <EditableTextField placeholder='Name' editableText={currentUser.name} updateFunction={(nameUpdate: string) => update({ name: nameUpdate })} style={{ fontSize: 30 }} />
+            <ProfilePicture user={currentUser} style={styles.profilePicture} />
+            <EditableTextField placeholder='Username' editableText={currentUser.username} updateFunction={(usernameUpdate: string) => update({ username: usernameUpdate })} style={{ fontSize: 18 }} />
+            <EditableTextField placeholder='Email' editableText={currentUser.email} updateFunction={(emailUpdate: string) => update({ email: emailUpdate })} style={{ fontSize: 18 }} />
         </View>
     );
 }

@@ -1,33 +1,31 @@
 import { useState } from "react"
 import Colors from "constants/colors"
-import { StyleSheet, Text, View, Pressable, TextInput } from "react-native"
+import { StyleSheet, Text, View, Pressable, TextInput, TextInputProps } from "react-native"
 
-type EditableTextFieldProps = {
-    fontSize: number,
-    placeholder: string,
+type EditableTextFieldProps = TextInputProps & {
     editableText: string,
     updateFunction: (update: string) => void,
 }
 
-export default function EditableTextField({ fontSize, placeholder, editableText, updateFunction}: EditableTextFieldProps) {
+export default function EditableTextField({ editableText, updateFunction, style, ...inputProps }: EditableTextFieldProps) {
+
     const [editMode, setEditMode] = useState<boolean>(false);
     const [text, setText] = useState<string>(editableText);
-    const [tempText, setTempText] = useState<string>(editableText);
 
     function toggleEditMode(save: boolean) {
         setEditMode(!editMode);
         if (save) {
-            updateFunction(tempText);
+            updateFunction(text);
         }
     }
 
     return editMode ?
         (<View style={styles.hcontainer}>
-            <TextInput style={textFieldStyle(fontSize).textField} placeholder={placeholder} placeholderTextColor={Colors.primaryDark} onChangeText={(text: string) => setTempText(text)}>{text}</TextInput>
+            <TextInput style={[styles.textField, style]} placeholderTextColor={Colors.primaryDark} onChangeText={(text: string) => setText(text)} {...inputProps}>{text}</TextInput>
             <Pressable style={({ pressed }) => [pressed && styles.opacity]} onPress={() => toggleEditMode(true)}><Text>✔️</Text></Pressable>
         </View>)
         : (<View style={styles.hcontainer}>
-            <Text style={textFieldStyle(fontSize).textField}>{text}</Text>
+            <Text style={[styles.textField, style]}>{text}</Text>
             <Pressable style={({ pressed }) => [pressed && styles.opacity]} onPress={() => toggleEditMode(false)}><Text>✏️</Text></Pressable>
         </View>)
 }
@@ -43,12 +41,5 @@ const styles = StyleSheet.create({
     },
     opacity: {
         opacity: 0.5
-    },
-})
-
-const textFieldStyle = (fontSize: number) => StyleSheet.create({
-    textField: {
-        color: Colors.primary,
-        fontSize: fontSize,
     },
 })
