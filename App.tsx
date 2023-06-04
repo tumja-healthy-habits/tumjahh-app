@@ -5,8 +5,11 @@ import Colors from 'constants/colors'
 import FeedScreen from 'screens/FeedScreen';
 import FriendsScreen from 'screens/FriendsScreen';
 import HomeScreen from 'screens/HomeScreen';
+import ProfileScreen from 'screens/ProfileScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Text, Pressable } from 'react-native';
+import ProfileScreenAlt from 'screens/ProfileScreenAlt';
 
 const Tab = createBottomTabNavigator();
 
@@ -37,6 +40,17 @@ export default function App() {
             <Tab.Screen name="Friends" component={FriendsScreen} options={{
               tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
             }} />
+            <Tab.Screen name="Profile" component={ProfileScreen} options={{
+              tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
+              headerRight: () => (
+                <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]} onPress={() => console.log("settings")}>
+                  <Text style={{ fontSize: 30 }}>⚙️</Text>
+                </Pressable>
+              ),
+            }} />
+            {/* <Tab.Screen name="ProfileAlt" component={ProfileScreenAlt} options={{
+              tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
+            }} /> */}
           </Tab.Navigator>
         </NavigationContainer>
       </AuthenticatedUserProvider>

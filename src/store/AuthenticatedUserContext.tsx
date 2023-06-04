@@ -6,11 +6,13 @@ import { UserRecord } from "types";
 // define the type of state we want to make available to the whole application
 type AuthenticatedUserState = {
     currentUser: UserRecord | null,
+    setCurrentUser: (user: UserRecord) => void,
 }
 
 // This context contains a Provider component which makes the state available to all its children
 const AuthenticatedUserContext = createContext<AuthenticatedUserState>({
     currentUser: null,
+    setCurrentUser: () => { },
 })
 
 // This is our custom Provider component in which we will wrap our application to provide the authenticated user state
@@ -34,8 +36,8 @@ export function AuthenticatedUserProvider({ children }: any) {
         pb.authStore.onChange(handleAuthenticationChange)
     }, [])
 
-    return (//make the state available to all children
-        <AuthenticatedUserContext.Provider value={{ currentUser }}>
+    return (
+        <AuthenticatedUserContext.Provider value={{ currentUser, setCurrentUser }}>
             {children}
         </AuthenticatedUserContext.Provider>
     )
