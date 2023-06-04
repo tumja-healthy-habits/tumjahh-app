@@ -29,10 +29,10 @@ export default function FriendsScreen() {
             filter: `user1.id= "${currentUser.id}" || user2.id = "${currentUser.id}"`,
         }).then((records: FriendsWithRecord[]) => {
             //extract the id which is not the current user's id
-            return records.map(({ user1, user2 }: FriendsWithRecord) => user1 === currentUser.id ? user2 : user1)
-        }).then((ids: string[]) => {
+            const friendIds: string[] = records.map(({ user1, user2 }: FriendsWithRecord) => user1 === currentUser.id ? user2 : user1)
+            const query: string = friendIds.map((id: string) => `id="${id}"`).join("||") // id="..."||id="..."
             pb.collection("users").getFullList<UserRecord>({
-                filter: ids.map((id: string) => `id="${id}"`).join("||")
+                filter: query,
             }).then(setFriends)
         }).catch((error) => console.error("An error occured while fetching the friends data", error))
     }, [isFocused])
