@@ -10,6 +10,7 @@ type ProfilePictureProps = {
 }
 
 export default function ProfilePicture({ user, style }: ProfilePictureProps) {
+    // if the user has an avatar picture, compute its pocketbase uri, otherwise use a default avatar picture
     const imageSource: ImageSourcePropType = user.avatar ? { uri: pb.getFileUrl(user, user.avatar) } : require("assets/images/default-avatar.jpeg")
     return <Image source={imageSource} style={[styles.image, style]} />
 }
