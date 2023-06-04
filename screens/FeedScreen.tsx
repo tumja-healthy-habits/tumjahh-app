@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import Colors from "constants/colors";
 import { Camera, CameraType, CameraCapturedPicture } from "expo-camera"
 import { useRef, useState } from "react";
@@ -14,6 +15,19 @@ export default function FeedScreen() {
     const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null)
     const { currentUser } = useAuthenticatedUser()
     const cameraRef = useRef<Camera>(null)
+    const focused: boolean = useIsFocused()
+
+    if (currentUser === null) {
+        return (
+            <View style={styles.container}>
+                <Text style={{ textAlign: 'center' }}>You need to be logged in to use this feature</Text>
+            </View>
+        )
+    }
+
+    if (!focused) {
+        return <View />
+    }
 
     if (!permission) {
         // Camera permissions are still loading
