@@ -1,10 +1,10 @@
+import { styles } from "../styles";
 import LabelledTextInput from "components/LabelledTextInput";
 import { ClientResponseError, RecordAuthResponse } from "pocketbase";
 import { pb } from "src/pocketbaseService";
 import { useState } from "react";
-import { View, Button, Text, StyleSheet, Alert } from "react-native";
+import { View, Button, Text, Alert } from "react-native";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
-import ProfilePicture from "components/ProfilePicture";
 import Colors from "constants/colors";
 
 export default function LoginForm() {
@@ -33,8 +33,8 @@ export default function LoginForm() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.signedInText}>Not signed in.</Text>
-            <View style={styles.loginBox}>
+            <Text style={styles.textfieldText}>Not signed in.</Text>
+            <View>
                 <LabelledTextInput label="Username:" placeholder="username" onChangeText={(text: string) => setUsername(text)} />
                 <LabelledTextInput label="Password:" placeholder='password' onChangeText={(text: string) => setPassword(text)} secureTextEntry />
             </View>
@@ -43,23 +43,3 @@ export default function LoginForm() {
         </View>
     )
 }
-
-export const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'black',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    loginBox: {
-        margin: 5,
-    },
-    signedInText: {
-        marginBottom: 50,
-        color: Colors.accent,
-    },
-    profilePicture: {
-        width: 150,
-        height: 150,
-    }
-});
