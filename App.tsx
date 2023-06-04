@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, Pressable } from 'react-native';
 import ProfileScreenAlt from 'screens/ProfileScreenAlt';
+import FeedScreenCopy from 'screens/FeedScreenCopy';
 
 const Tab = createBottomTabNavigator();
 
