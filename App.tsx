@@ -7,13 +7,27 @@ import FriendsScreen from 'screens/FriendsScreen';
 import HomeScreen from 'screens/HomeScreen';
 import ProfileScreen from 'screens/ProfileScreen';
 import { Ionicons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, Pressable } from 'react-native';
 import ProfileScreenAlt from 'screens/ProfileScreenAlt';
 import FeedScreenCopy from 'screens/FeedScreenCopy';
 import LoginForm from 'components/LoginForm';
+import SettingsButton from 'components/SettingsButton';
 
 const Tab = createBottomTabNavigator();
+
+const navigatorOptions: BottomTabNavigationOptions = {
+  tabBarActiveTintColor: Colors.accent,
+  headerStyle: {
+    backgroundColor: "black",
+  },
+  tabBarActiveBackgroundColor: "black",
+  tabBarInactiveBackgroundColor: "black",
+  headerTitleStyle: {
+    fontWeight: 'bold',
+    color: Colors.accent,
+  },
+}
 
 export default function App() {
   return (
@@ -24,18 +38,7 @@ export default function App() {
           {({ currentUser }) => (
             currentUser ?
               <NavigationContainer>
-                <Tab.Navigator initialRouteName='Feed' screenOptions={{
-                  tabBarActiveTintColor: Colors.accent,
-                  headerStyle: {
-                    backgroundColor: "black",
-                  },
-                  tabBarActiveBackgroundColor: "black",
-                  tabBarInactiveBackgroundColor: "black",
-                  headerTitleStyle: {
-                    fontWeight: 'bold',
-                    color: Colors.accent,
-                  },
-                }}>
+                <Tab.Navigator initialRouteName='Feed' screenOptions={navigatorOptions}>
                   <Tab.Screen name="Feed" component={FeedScreen} options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
                   }} />
@@ -47,15 +50,8 @@ export default function App() {
                   }} />
                   <Tab.Screen name="Profile" component={ProfileScreen} options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
-                    headerRight: () => (
-                      <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]} onPress={() => console.log("settings")}>
-                        <Text style={{ fontSize: 30 }}>⚙️</Text>
-                      </Pressable>
-                    ),
+                    headerRight: () => <SettingsButton />,
                   }} />
-                  {/* <Tab.Screen name="ProfileAlt" component={ProfileScreenAlt} options={{
-                  tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
-                }} /> */}
                 </Tab.Navigator>
               </NavigationContainer>
               :
