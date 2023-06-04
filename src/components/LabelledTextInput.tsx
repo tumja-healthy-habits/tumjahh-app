@@ -10,7 +10,7 @@ export default function LabelledTextInput(props: LabelledTextInputProps) {
     const { label, ...inputProps } = props
     return <View style={styles.hcontainer}>
         <Text style={styles.label}>{label}</Text>
-        <TextInput {...inputProps} style={styles.textInput} autoComplete="off" autoCapitalize="none" />
+        <TextInput {...inputProps} style={styles.textInput} placeholderTextColor={Colors.primaryDark} autoComplete="off" autoCapitalize="none" />
     </View>
 }
 
