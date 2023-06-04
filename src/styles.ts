@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
         color: Colors.accent,
         fontSize: 18,
         textAlign: "center",
+        margin: 5,
     },
     textfieldTitle: {
         color: Colors.accent,
@@ -32,7 +33,8 @@ export const styles = StyleSheet.create({
         minWidth: 50,
         borderRadius: 4,
         textAlign: "center",
-        padding: 5,
+        padding: 3,
+        margin: 5,
         color: "white",
     },
 });
