@@ -16,14 +16,15 @@ const Tab = createBottomTabNavigator();
 const navigatorOptions: BottomTabNavigationOptions = {
   tabBarActiveTintColor: Colors.accent,
   headerStyle: {
-    backgroundColor: "black",
+    backgroundColor: Colors.background,
   },
-  tabBarActiveBackgroundColor: "black",
-  tabBarInactiveBackgroundColor: "black",
+  tabBarActiveBackgroundColor: Colors.background,
+  tabBarInactiveBackgroundColor: Colors.background,
   headerTitleStyle: {
     fontWeight: 'bold',
     color: Colors.accent,
   },
+
 }
 
 export default function App() {

@@ -1,11 +1,12 @@
 import { pb } from "src/pocketbaseService";
 import { styles } from "src/styles";
-import { View, Text, SectionList, SectionListRenderItem, SectionListRenderItemInfo } from "react-native";
+import { View, Text, SectionList, SectionListRenderItem, SectionListRenderItemInfo, SectionListData, ListRenderItemInfo, Button } from "react-native";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
 import LoginForm from "components/LoginForm";
 import { ChallengesRecord, HabitsRecord } from "types";
 import { useEffect, useState } from "react";
 import Counter from "react-native-counters"
+import Colors from "constants/colors";
 
 
 export default function HomeScreen() {
@@ -19,13 +20,11 @@ export default function HomeScreen() {
     }))
 
     useEffect(() => {
-        async function fetchData() {
-            const habits: HabitsRecord[] = await pb.collection("habits").getFullList<HabitsRecord>()
-            const challenges: ChallengesRecord[] = await pb.collection("challenges").getFullList<ChallengesRecord>()
-            setHabits(habits)
-            setChallenges(challenges)
-        }
-        fetchData()
+        Promise.all([pb.collection("habits").getFullList<HabitsRecord>(), pb.collection("challenges").getFullList<ChallengesRecord>()])
+            .then(([habits, challenges]) => {
+                setHabits(habits)
+                setChallenges(challenges)
+            })
     }, [])
 
     if (currentUser === null) {
@@ -34,11 +33,29 @@ export default function HomeScreen() {
         )
     }
 
+    function renderSectionHeader({ section }: any) {
+        return (
+            <Text style={[styles.textfieldText, styles.textfieldTitle]}>{section.title}</Text>
+        )
+    }
+
     function renderChallenge({ item }: SectionListRenderItemInfo<ChallengesRecord, HabitsRecord>) {
         return (
             <View style={styles.container}>
                 <Text style={styles.textfieldText}>{item.name}</Text>
-                <Counter start={0} onChange={(count: number) => { }} />
+                <Counter
+                    start={0}
+                    onChange={(count: number) => { }}
+                    buttonStyle={{
+                        borderColor: Colors.accent,
+                    }}
+                    countTextStyle={{
+                        color: Colors.accent,
+                    }}
+                    buttonTextStyle={{
+                        color: Colors.accent,
+                    }}
+                />
             </View>
         )
     }
@@ -50,8 +67,9 @@ export default function HomeScreen() {
                 sections={data}
                 keyExtractor={(item, index) => item.id + index}
                 renderItem={renderChallenge}
-                renderSectionHeader={({ section }) => <Text style={[styles.textfieldText, styles.textfieldTitle]}>{section.title}</Text>}
+                renderSectionHeader={renderSectionHeader}
             />}
+            <Button title="Save changes" onPress={() => { }} color={Colors.accent} />
         </View>
     )
 }
