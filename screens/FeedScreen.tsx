@@ -5,6 +5,8 @@ import { useRef, useState } from "react";
 import { Button, StyleSheet, Text, View, Image, Alert, TouchableOpacity } from "react-native";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
+import { Ionicons } from '@expo/vector-icons';
+import IconButton from "src/components/IconButton"
 
 const IMAGE_QUALITY: number = 0.9 // from 0 lowest to 1 highest quality
 
@@ -12,7 +14,7 @@ export default function FeedScreen() {
 
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
-    const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null)
+    const [photo, setPhoto] = useState<CameraCapturedPicture>()
     const { currentUser } = useAuthenticatedUser()
     const cameraRef = useRef<Camera>(null)
     const focused: boolean = useIsFocused()
@@ -50,13 +52,9 @@ export default function FeedScreen() {
 
     async function takePhoto() {
         if (cameraRef.current === null) return
-        const photo: CameraCapturedPicture | undefined = await cameraRef.current.takePictureAsync({
+        cameraRef.current.takePictureAsync({
             quality: IMAGE_QUALITY
-        })
-        if (photo) {
-            console.log("This is the photo:", photo)
-            setPhoto(photo)
-        }
+        }).then(setPhoto)
     }
 
     async function sendPhoto() {
@@ -75,23 +73,25 @@ export default function FeedScreen() {
             .catch((e: any) => console.log(JSON.stringify(e)))
     }
 
+    if (photo) return (
+        <View style={styles.container}>
+            <Image source={{ uri: photo.uri }} style={styles.image} />
+            <Button color={Colors.accent} title="Send photo" onPress={sendPhoto} />
+            <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(undefined)} />
+        </View>
+    )
+
     return (
         <View style={styles.container}>
-            {photo ? <>
-                <Image source={{ uri: photo.uri }} style={styles.image} />
-                <Button color={Colors.accent} title="Send photo" onPress={sendPhoto} />
-                <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(null)} />
-            </>
-                :
-                <Camera style={styles.camera} type={type} ref={cameraRef}>
+            <Camera style={styles.camera} type={type} ref={cameraRef}>
+                <View style={styles.upwardsContainer}>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
-                            <Text style={styles.text}>Flip Camera</Text>
-                        </TouchableOpacity>
-                        <Button onPress={takePhoto} title="Take Photo" />
+                        <View style={styles.button} />
+                        <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
+                        <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
                     </View>
-                </Camera>
-            }
+                </View>
+            </Camera>
         </View>
     );
 }
@@ -100,20 +100,24 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
+        backgroundColor: Colors.background,
     },
     camera: {
         flex: 1,
     },
-    buttonContainer: {
+    upwardsContainer: {
         flex: 1,
+        flexDirection: "column-reverse",
+    },
+    buttonContainer: {
         flexDirection: 'row',
-        backgroundColor: 'transparent',
-        margin: 64,
+        justifyContent: "space-between",
+        marginBottom: 60,
     },
     button: {
         flex: 1,
-        alignSelf: 'flex-end',
         alignItems: 'center',
+        justifyContent: 'center',
     },
     text: {
         fontSize: 24,
