@@ -1,10 +1,12 @@
 import { pb } from "src/pocketbaseService";
 import { styles } from "src/styles";
-import { View, Text, SectionList } from "react-native";
+import { View, Text, SectionList, SectionListRenderItem, SectionListRenderItemInfo } from "react-native";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
 import LoginForm from "components/LoginForm";
 import { ChallengesRecord, HabitsRecord } from "types";
 import { useEffect, useState } from "react";
+import Counter from "react-native-counters"
+
 
 export default function HomeScreen() {
     const { currentUser } = useAuthenticatedUser()
@@ -32,13 +34,22 @@ export default function HomeScreen() {
         )
     }
 
+    function renderChallenge({ item }: SectionListRenderItemInfo<ChallengesRecord, HabitsRecord>) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.textfieldText}>{item.name}</Text>
+                <Counter start={0} onChange={(count: number) => { }} />
+            </View>
+        )
+    }
+
     // show the list of potential challenges
     return (
         <View style={styles.container}>
             {data.length > 0 && <SectionList
                 sections={data}
-                keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => <Text style={styles.textfieldText}>{item.name}</Text>}
+                keyExtractor={(item, index) => item.id + index}
+                renderItem={renderChallenge}
                 renderSectionHeader={({ section }) => <Text style={[styles.textfieldText, styles.textfieldTitle]}>{section.title}</Text>}
             />}
         </View>
