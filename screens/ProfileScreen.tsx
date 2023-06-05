@@ -8,11 +8,10 @@ import { pb } from "src/pocketbaseService";
 import { RecordQueryParams } from 'pocketbase';
 import Colors from "constants/colors";
 import { styles, imageStyles } from "src/styles";
+import { logout } from 'src/authentification';
 
 export default function Profile() {
     const { currentUser } = useAuthenticatedUser();
-    // const dummyUser = { "avatar": "", "collectionId": "_pb_users_auth_", "collectionName": "users", "created": "2023-03-20 16:12:56.015Z", "emailVisibility": false, "expand": {}, "id": "i3w0162pbgzwc6u", "name": "Test", "updated": "2023-03-21 16:05:49.687Z", "username": "users16721", "verified": false, "email": "test@tum.de" };
-    // currentUser = dummyUser;
     if (currentUser === null) {
         return <LoginForm />;
     }
@@ -28,7 +27,7 @@ export default function Profile() {
             <ProfilePicture user={currentUser} style={imageStyles.profilePicture} />
             <EditableTextField placeholder='Username' editableText={currentUser.username} updateFunction={(usernameUpdate: string) => update({ username: usernameUpdate })} textStyle={styles.textfieldText} />
             <EditableTextField placeholder='Email' editableText={currentUser.email} updateFunction={(emailUpdate: string) => update({ email: emailUpdate })} textStyle={styles.textfieldText} />
-            <Button title="Log out" onPress={async () => { await pb.authStore.clear() }} color={Colors.accent}></Button>
+            <Button title="Log out" onPress={logout} color={Colors.accent}></Button>
         </View>
     );
 }

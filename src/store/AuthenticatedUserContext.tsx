@@ -2,6 +2,8 @@ import { BaseModel } from "pocketbase";
 import { pb } from "src/pocketbaseService";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { UserRecord } from "types";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { VAR_PASSWORD, VAR_USERNAME } from "src/authentification";
 
 // define the type of state we want to make available to the whole application
 type AuthenticatedUserState = {
@@ -34,6 +36,13 @@ export function AuthenticatedUserProvider({ children }: any) {
     useEffect(() => {
         // whenever the currently authenticated user changes, update the currentUser state variable
         pb.authStore.onChange(handleAuthenticationChange)
+        Promise.all([AsyncStorage.getItem(VAR_USERNAME), AsyncStorage.getItem(VAR_PASSWORD)])
+            .then(([username, password]) => {
+                if (username && password) {
+                    pb.collection("users").authWithPassword(username, password)
+                }
+            }
+            )
     }, [])
 
     return (
