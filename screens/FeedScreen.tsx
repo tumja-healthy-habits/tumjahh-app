@@ -73,24 +73,25 @@ export default function FeedScreen() {
             .catch((e: any) => console.log(JSON.stringify(e)))
     }
 
+    if (photo) return (
+        <View style={styles.container}>
+            <Image source={{ uri: photo.uri }} style={styles.image} />
+            <Button color={Colors.accent} title="Send photo" onPress={sendPhoto} />
+            <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(undefined)} />
+        </View>
+    )
+
     return (
         <View style={styles.container}>
-            {photo ? <>
-                <Image source={{ uri: photo.uri }} style={styles.image} />
-                <Button color={Colors.accent} title="Send photo" onPress={sendPhoto} />
-                <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(undefined)} />
-            </>
-                :
-                <Camera style={styles.camera} type={type} ref={cameraRef}>
-                    <View style={styles.upwardsContainer}>
-                        <View style={styles.buttonContainer}>
-                            <View style={styles.button} />
-                            <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
-                            <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
-                        </View>
+            <Camera style={styles.camera} type={type} ref={cameraRef}>
+                <View style={styles.upwardsContainer}>
+                    <View style={styles.buttonContainer}>
+                        <View style={styles.button} />
+                        <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
+                        <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
                     </View>
-                </Camera>
-            }
+                </View>
+            </Camera>
         </View>
     );
 }
@@ -99,6 +100,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
+        backgroundColor: Colors.background,
     },
     camera: {
         flex: 1,
