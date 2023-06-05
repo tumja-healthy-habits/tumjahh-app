@@ -8,9 +8,6 @@ import HomeScreen from 'screens/HomeScreen';
 import ProfileScreen from 'screens/ProfileScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, Pressable } from 'react-native';
-import ProfileScreenAlt from 'screens/ProfileScreenAlt';
-import FeedScreenCopy from 'screens/FeedScreenCopy';
 import LoginForm from 'components/LoginForm';
 import SettingsButton from 'components/SettingsButton';
 

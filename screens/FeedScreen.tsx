@@ -12,7 +12,7 @@ export default function FeedScreen() {
 
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
-    const [photo, setPhoto] = useState<CameraCapturedPicture | null>(null)
+    const [photo, setPhoto] = useState<CameraCapturedPicture>()
     const { currentUser } = useAuthenticatedUser()
     const cameraRef = useRef<Camera>(null)
     const focused: boolean = useIsFocused()
@@ -50,13 +50,9 @@ export default function FeedScreen() {
 
     async function takePhoto() {
         if (cameraRef.current === null) return
-        const photo: CameraCapturedPicture | undefined = await cameraRef.current.takePictureAsync({
+        cameraRef.current.takePictureAsync({
             quality: IMAGE_QUALITY
-        })
-        if (photo) {
-            console.log("This is the photo:", photo)
-            setPhoto(photo)
-        }
+        }).then(setPhoto)
     }
 
     async function sendPhoto() {
@@ -80,7 +76,7 @@ export default function FeedScreen() {
             {photo ? <>
                 <Image source={{ uri: photo.uri }} style={styles.image} />
                 <Button color={Colors.accent} title="Send photo" onPress={sendPhoto} />
-                <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(null)} />
+                <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(undefined)} />
             </>
                 :
                 <Camera style={styles.camera} type={type} ref={cameraRef}>
