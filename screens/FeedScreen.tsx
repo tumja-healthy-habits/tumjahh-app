@@ -5,6 +5,8 @@ import { useRef, useState } from "react";
 import { Button, StyleSheet, Text, View, Image, Alert, TouchableOpacity } from "react-native";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
+import { Ionicons } from '@expo/vector-icons';
+import IconButton from "src/components/IconButton"
 
 const IMAGE_QUALITY: number = 0.9 // from 0 lowest to 1 highest quality
 
@@ -80,11 +82,12 @@ export default function FeedScreen() {
             </>
                 :
                 <Camera style={styles.camera} type={type} ref={cameraRef}>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
-                            <Text style={styles.text}>Flip Camera</Text>
-                        </TouchableOpacity>
-                        <Button onPress={takePhoto} title="Take Photo" />
+                    <View style={styles.upwardsContainer}>
+                        <View style={styles.buttonContainer}>
+                            <View style={styles.button} />
+                            <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
+                            <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
+                        </View>
                     </View>
                 </Camera>
             }
@@ -100,16 +103,19 @@ const styles = StyleSheet.create({
     camera: {
         flex: 1,
     },
-    buttonContainer: {
+    upwardsContainer: {
         flex: 1,
+        flexDirection: "column-reverse",
+    },
+    buttonContainer: {
         flexDirection: 'row',
-        backgroundColor: 'transparent',
-        margin: 64,
+        justifyContent: "space-between",
+        marginBottom: 60,
     },
     button: {
         flex: 1,
-        alignSelf: 'flex-end',
         alignItems: 'center',
+        justifyContent: 'center',
     },
     text: {
         fontSize: 24,
