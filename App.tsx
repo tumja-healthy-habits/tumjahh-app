@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginForm from 'components/LoginForm';
 import SettingsButton from 'components/SettingsButton';
+import ProfileScreenAlt from 'screens/ProfileScreenAlt';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,7 +47,7 @@ export default function App() {
                   <Tab.Screen name="Friends" component={FriendsScreen} options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
                   }} />
-                  <Tab.Screen name="Profile" component={ProfileScreen} options={{
+                  <Tab.Screen name="Profile" component={ProfileScreenAlt} options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                     headerRight: () => <SettingsButton />,
                   }} />

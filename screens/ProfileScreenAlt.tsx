@@ -7,6 +7,8 @@ import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
 import { UserRecord } from "types";
 import { styles, imageStyles } from "src/styles";
+import { VAR_USERNAME, logout } from "src/authentification";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ProfileScreenAlt() {
     const { currentUser, setCurrentUser } = useAuthenticatedUser()
@@ -23,14 +25,20 @@ export default function ProfileScreenAlt() {
 
     async function updateUser() {
         if (currentUser === null) return
-        const newRecord: UserRecord = await pb.collection("users").update<UserRecord>(currentUser.id, {
+        pb.collection("users").update<UserRecord>(currentUser.id, {
             name,
             username,
             email,
+        }).then((newRecord: UserRecord) => {
+            Alert.alert("Successfully updated")
+            setCurrentUser(newRecord)
+            // update the username in the local storage
+            if (newRecord.username !== currentUser.username) {
+                AsyncStorage.setItem(VAR_USERNAME, newRecord.username)
+            }
+        }).catch(() => {
+            Alert.alert("Something went wrong while trying to update.\n Please try again")
         })
-        const hasUpdated: boolean = currentUser.name !== newRecord.name || currentUser.username !== newRecord.username || currentUser.email !== newRecord.email
-        Alert.alert(hasUpdated ? "Successfully updated" : "Something went wrong. Please try again")
-        setCurrentUser(newRecord)
     }
 
     return (
@@ -40,7 +48,7 @@ export default function ProfileScreenAlt() {
             <TextInput value={username} onChangeText={setUsername} style={styles.textfieldText} />
             <TextInput value={email} onChangeText={setEmail} style={styles.textfieldText} />
             <Button title="Save changes" onPress={updateUser} disabled={!hasChanged} />
-            <Button title="Log out" onPress={async () => { await pb.authStore.clear() }} color={Colors.accent}></Button>
+            <Button title="Log out" onPress={logout} color={Colors.accent}></Button>
         </View>
     )
 }
