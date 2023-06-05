@@ -31,3 +31,8 @@ export interface ChallengesRecord extends Record {
     explanation: string;
     habit_id: string;
 }
+
+export interface LocalStorageChallengeEntry {
+    record: ChallengesRecord;
+    repetitionsGoal: number;
+}
