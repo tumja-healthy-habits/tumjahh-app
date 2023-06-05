@@ -2,7 +2,7 @@ import Colors from "constants/colors";
 import LoginForm from "components/LoginForm";
 import ProfilePicture from "components/ProfilePicture";
 import { useState } from "react";
-import { View, TextInput, StyleSheet, Button, Alert } from "react-native";
+import { View, TextInput, Button, Alert } from "react-native";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
 import { UserRecord } from "types";
