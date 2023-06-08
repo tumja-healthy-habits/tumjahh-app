@@ -11,16 +11,17 @@ import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-nav
 import LoginForm from 'components/LoginForm';
 import SettingsButton from 'components/SettingsButton';
 import ProfileScreenAlt from 'screens/ProfileScreenAlt';
+import { SafeAreaView } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
 const navigatorOptions: BottomTabNavigationOptions = {
   tabBarActiveTintColor: Colors.accent,
   headerStyle: {
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.white,
   },
-  tabBarActiveBackgroundColor: Colors.background,
-  tabBarInactiveBackgroundColor: Colors.background,
+  tabBarActiveBackgroundColor: "white",
+  tabBarInactiveBackgroundColor: "white",
   headerTitleStyle: {
     fontWeight: 'bold',
     color: Colors.accent,
@@ -29,8 +30,8 @@ const navigatorOptions: BottomTabNavigationOptions = {
 
 export default function App() {
   return (
-    <>
-      <StatusBar style="light" />
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar style="dark" />
       <AuthenticatedUserProvider>
         <AuthenticatedUserContext.Consumer>
           {({ currentUser }) => (
@@ -56,6 +57,6 @@ export default function App() {
               <LoginForm />)}
         </AuthenticatedUserContext.Consumer>
       </AuthenticatedUserProvider>
-    </>
+    </SafeAreaView>
   );
 }
