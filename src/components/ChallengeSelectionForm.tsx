@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react"
-import { Button, SectionList, SectionListRenderItemInfo, View, Text, ActivityIndicator } from "react-native"
+import { Button, SectionList, SectionListRenderItemInfo, View, Text, ActivityIndicator, FlatList } from "react-native"
 import Colors from "constants/colors"
 import { pb } from "src/pocketbaseService"
 import { styles } from "src/styles"
 import { HabitsRecord, ChallengesRecord, LocalStorageChallengeEntry } from "types"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import ContentBox from "./ContentBox"
+import ActionButton from "./ActionButton"
 
 export const VAR_CHALLENGES: string = "BeHealthyChallenges"
 
@@ -21,7 +23,7 @@ export default function ChallengeSelectionForm({ onSubmit }: CSFProps) {
 
     const data: any = habits.map(habit => ({
         title: habit.name,
-        data: challenges.filter(({ habit_id }) => habit_id === habit.id),
+        challenges: challenges.filter(({ habit_id }) => habit_id === habit.id),
     }))
 
     useEffect(() => {
@@ -40,7 +42,6 @@ export default function ChallengeSelectionForm({ onSubmit }: CSFProps) {
         AsyncStorage.getItem(VAR_CHALLENGES).then((jsonString: string | null) => {
             if (jsonString === null) return;
             const challenges: LocalStorageChallengeEntry[] = JSON.parse(jsonString)
-            console.log("challenges loaded: ", challenges)
             if (challenges) {
                 setSelectedChallenges(challenges)
             }
@@ -53,7 +54,7 @@ export default function ChallengeSelectionForm({ onSubmit }: CSFProps) {
         )
     }
 
-    function renderChallenge({ item }: SectionListRenderItemInfo<ChallengesRecord, HabitsRecord>) {
+    function renderChallengeOld({ item }: SectionListRenderItemInfo<ChallengesRecord, HabitsRecord>) {
         return (
             <View style={[styles.container, { alignItems: "flex-start" }]}>
                 <BouncyCheckbox
@@ -86,6 +87,50 @@ export default function ChallengeSelectionForm({ onSubmit }: CSFProps) {
         )
     }
 
+    function renderChallenge({ item }: any) {
+        return (
+            <BouncyCheckbox
+                size={25}
+                text={item.name}
+                isChecked={selectedChallenges.some((challenge: LocalStorageChallengeEntry) => challenge.record.id === item.id)}
+                onPress={(isChecked: boolean) => {
+                    const newSelectedChallenge: LocalStorageChallengeEntry = {
+                        record: item,
+                        repetitionsGoal: 0,
+                    }
+                    setSelectedChallenges((oldChallenges: LocalStorageChallengeEntry[]) =>
+                        isChecked ? [...oldChallenges, newSelectedChallenge] : oldChallenges.filter(({ record }) => record.id !== item.id)
+                    )
+                }}
+                textStyle={{
+                    textDecorationLine: "none",
+                }}
+                textContainerStyle={{
+                    marginVertical: 10,
+                    marginStart: 30,
+                }}
+                iconStyle={{
+                    marginStart: 25,
+                }}
+                fillColor={Colors.pastelViolet}
+                unfillColor={Colors.pastelViolet}
+            />
+        )
+    }
+
+    function renderHabit({ item }: any) {
+        return (
+            <ContentBox style={{ alignItems: "flex-start" }}>
+                <Text style={[styles.textfieldText, styles.textfieldTitle, { marginVertical: 10, alignSelf: "center" }]}>{item.title}</Text>
+                <FlatList
+                    data={item.challenges}
+                    keyExtractor={(item, index) => item.id + index}
+                    renderItem={renderChallenge}
+                />
+            </ContentBox>
+        )
+    }
+
     async function handleConfirm(): Promise<void> {
         // store the selection in local storage and execute the onSubmit prop (for example for closing a Modal that contains this form)
         return AsyncStorage.setItem(VAR_CHALLENGES, JSON.stringify(selectedChallenges)).then(() => {
@@ -98,6 +143,17 @@ export default function ChallengeSelectionForm({ onSubmit }: CSFProps) {
     if (data.length === 0) return (
         <View style={styles.container}>
             <ActivityIndicator color={Colors.accent} size="large" />
+        </View>
+    )
+
+    return (
+        <View style={[styles.container, { paddingBottom: 30 }]}>
+            <FlatList
+                data={data}
+                keyExtractor={(item, index) => item.title + index}
+                renderItem={renderHabit}
+            />
+            <ActionButton title="Confirm selection" onPress={handleConfirm} />
         </View>
     )
 

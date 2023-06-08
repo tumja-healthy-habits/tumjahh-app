@@ -1,15 +1,24 @@
 import { styles } from "src/styles";
-import { View, Text, ListRenderItemInfo, Button, Modal, FlatList } from "react-native";
+import { View, ListRenderItemInfo, Button, Modal, FlatList, SafeAreaView } from "react-native";
 import { LocalStorageChallengeEntry } from "types";
 import { useEffect, useState } from "react";
-import Counter from "react-native-counters"
 import Colors from "constants/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ChallengeSelectionForm, { VAR_CHALLENGES } from "src/components/ChallengeSelectionForm";
+import ActionButton from "components/ActionButton";
+import ChallengeCard from "components/ChallengeCard";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ChallengeScreen() {
     const [challenges, setChallenges] = useState<LocalStorageChallengeEntry[]>([])
     const [showModal, setShowModal] = useState<boolean>(false)
+    const { setOptions } = useNavigation()
+
+    useEffect(() => {
+        setOptions({
+            headerRight: () => <Button title="Edit" onPress={() => setShowModal(true)} color={Colors.anotherPeachColor} />,
+        })
+    }, [])
 
     // get the selected challenges from local storage
     useEffect(() => {
@@ -20,66 +29,39 @@ export default function ChallengeScreen() {
         })
     }, [])
 
-    function renderChallenge({ item }: ListRenderItemInfo<LocalStorageChallengeEntry>) {
-        const { record, repetitionsGoal } = item
-
-        function updateChallenges(count: number): void {
-            setChallenges((oldChallenges: LocalStorageChallengeEntry[]) =>
-                oldChallenges.map((oldChallenge: LocalStorageChallengeEntry) =>
-                    oldChallenge.record.id === record.id ? {
-                        ...oldChallenge,
-                        repetitionsGoal: count,
-                    } : oldChallenge
-                )
-            )
-        }
-
-        return (
-            <View style={[styles.container, { marginVertical: 7 }]}>
-                <Text style={[styles.textfieldText, repetitionsGoal === 0 && { opacity: 0.5 }]}>{record.name}</Text>
-                <Counter
-                    start={repetitionsGoal}
-                    onChange={updateChallenges}
-                    buttonStyle={{
-                        borderColor: Colors.accent,
-                    }}
-                    countTextStyle={{
-                        color: Colors.accent,
-                    }}
-                    buttonTextStyle={{
-                        color: Colors.accent,
-                    }}
-                />
-            </View>
-        )
-    }
-
+    // save the challenges with their repetition counts to local storage
     async function handleSaveChanges(): Promise<void> {
         const jsonString: string = JSON.stringify(challenges)
         return AsyncStorage.setItem(VAR_CHALLENGES, jsonString)
     }
 
+    function renderChallenge({ item }: ListRenderItemInfo<LocalStorageChallengeEntry>) {
+        return <ChallengeCard challengeEntry={item} setChallenges={setChallenges} />
+    }
+
+    // TODO: purple on click
     // show the list of potential challenges
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { paddingTop: 10 }]}>
             {challenges.length === 0 ? <Button title="Select some challenges here :)" onPress={() => setShowModal(true)} color={Colors.accent} /> : <>
                 <FlatList
                     data={challenges}
                     keyExtractor={({ record }, index) => record.id + index}
                     renderItem={renderChallenge}
                 />
-                <Button title="Add or remove challenges" onPress={() => setShowModal(true)} color={Colors.accent} />
-                <Button title="Save changes" onPress={handleSaveChanges} color={Colors.accent} />
+                <ActionButton title="Save changes" onPress={handleSaveChanges} />
             </>}
             <Modal
                 animationType="slide"
                 visible={showModal}
                 onRequestClose={() => setShowModal(false)}
             >
-                <ChallengeSelectionForm onSubmit={(records: LocalStorageChallengeEntry[]) => {
-                    setShowModal(false)
-                    setChallenges(records)
-                }} />
+                <SafeAreaView style={{ flex: 1 }}>
+                    <ChallengeSelectionForm onSubmit={(records: LocalStorageChallengeEntry[]) => {
+                        setShowModal(false)
+                        setChallenges(records)
+                    }} />
+                </SafeAreaView>
             </Modal>
         </View>
     )
