@@ -5,6 +5,7 @@ import Colors from 'constants/colors'
 import FeedScreen from 'screens/FeedScreen';
 import ChallengeScreen from 'screens/ChallengeScreen';
 import ProfileScreen from 'screens/ProfileScreen';
+import FriendsScreen from 'screens/FriendsScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginForm from 'components/LoginForm';
@@ -42,9 +43,9 @@ export default function App() {
                   <Tab.Screen name="Feed" component={FeedScreen} options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
                   }} />
-                  {/* <Tab.Screen name="Friends" component={FriendsScreen} options={{
+                  <Tab.Screen name="Friends" component={FriendsScreen} options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
-                  }} /> */}
+                  }} />
                   <Tab.Screen name="Profile" component={ProfileScreenAlt} options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                     headerRight: () => <SettingsButton />,

@@ -1,22 +1,18 @@
 import { useIsFocused } from "@react-navigation/native";
 import Colors from "constants/colors";
-import { Camera, CameraType, CameraCapturedPicture } from "expo-camera"
-import { useRef, useState } from "react";
-import { Button, StyleSheet, Text, View, Image, Alert, TouchableOpacity } from "react-native";
+import { Camera, CameraCapturedPicture } from "expo-camera"
+import { useState } from "react";
+import { Button, StyleSheet, Text, View, Image, Alert } from "react-native";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
-import { Ionicons } from '@expo/vector-icons';
-import IconButton from "src/components/IconButton"
-
-const IMAGE_QUALITY: number = 0.9 // from 0 lowest to 1 highest quality
+import ZoomableCamera from "components/ZoomableCamera";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function FeedScreen() {
 
-    const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [photo, setPhoto] = useState<CameraCapturedPicture>()
     const { currentUser } = useAuthenticatedUser()
-    const cameraRef = useRef<Camera>(null)
     const focused: boolean = useIsFocused()
 
     if (currentUser === null) {
@@ -46,17 +42,6 @@ export default function FeedScreen() {
         );
     }
 
-    function toggleCameraType() {
-        setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
-    }
-
-    async function takePhoto() {
-        if (cameraRef.current === null) return
-        cameraRef.current.takePictureAsync({
-            quality: IMAGE_QUALITY
-        }).then(setPhoto)
-    }
-
     async function sendPhoto() {
         if (!photo || !currentUser) return
         const formData: FormData = new FormData()
@@ -82,17 +67,9 @@ export default function FeedScreen() {
     )
 
     return (
-        <View style={styles.container}>
-            <Camera style={styles.camera} type={type} ref={cameraRef}>
-                <View style={styles.upwardsContainer}>
-                    <View style={styles.buttonContainer}>
-                        <View style={styles.button} />
-                        <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
-                        <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
-                    </View>
-                </View>
-            </Camera>
-        </View>
+        <GestureHandlerRootView style={styles.container}>
+            <ZoomableCamera onTakePhoto={setPhoto} />
+        </GestureHandlerRootView>
     );
 }
 
@@ -101,28 +78,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         backgroundColor: Colors.background,
-    },
-    camera: {
-        flex: 1,
-    },
-    upwardsContainer: {
-        flex: 1,
-        flexDirection: "column-reverse",
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: "space-between",
-        marginBottom: 60,
-    },
-    button: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white',
     },
     image: {
         flex: 1,
