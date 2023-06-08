@@ -22,7 +22,7 @@ export default function Profile() {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: Colors.backgroundProfile }]}>
             <EditableTextField placeholder='Name' editableText={currentUser.name} updateFunction={(nameUpdate: string) => update({ name: nameUpdate })} textStyle={styles.textfieldTitle} />
             <ProfilePicture user={currentUser} style={imageStyles.profilePicture} />
             <EditableTextField placeholder='Username' editableText={currentUser.username} updateFunction={(usernameUpdate: string) => update({ username: usernameUpdate })} textStyle={styles.textfieldText} />

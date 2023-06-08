@@ -9,6 +9,7 @@ import { UserRecord } from "types";
 import { styles, imageStyles } from "src/styles";
 import { VAR_USERNAME, logout } from "src/authentification";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ActionButton from "components/ActionButton";
 
 export default function ProfileScreenAlt() {
     const { currentUser, setCurrentUser } = useAuthenticatedUser()
@@ -42,13 +43,13 @@ export default function ProfileScreenAlt() {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: Colors.backgroundProfile }]}>
             <TextInput value={name} onChangeText={setName} style={styles.textfieldText} />
-            <ProfilePicture user={currentUser} style={imageStyles.profilePicture} />
+            <ProfilePicture user={currentUser} style={[imageStyles.profilePicture, { borderColor: "transparent" }]} />
             <TextInput value={username} onChangeText={setUsername} style={styles.textfieldText} />
             <TextInput value={email} onChangeText={setEmail} style={styles.textfieldText} />
             <Button title="Save changes" onPress={updateUser} disabled={!hasChanged} />
-            <Button title="Log out" onPress={logout} color={Colors.accent}></Button>
+            <ActionButton title="Log out" onPress={logout} />
         </View>
     )
 }
