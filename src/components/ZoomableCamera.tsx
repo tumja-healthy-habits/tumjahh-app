@@ -1,7 +1,7 @@
 import { Camera, CameraCapturedPicture, CameraType } from "expo-camera"
 import { useEffect, useRef, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Gesture, GestureDetector, GestureStateChangeEvent, GestureUpdateEvent, PinchGesture, PinchGestureHandlerEventPayload } from "react-native-gesture-handler";
+import { Gesture, GestureDetector, GestureHandlerRootView, GestureStateChangeEvent, GestureUpdateEvent, PinchGesture, PinchGestureHandlerEventPayload } from "react-native-gesture-handler";
 import IconButton from "./IconButton";
 import Colors from "constants/colors";
 
@@ -42,17 +42,19 @@ export default function ZoomableCamera({ onTakePhoto }: ZoomableCameraProps) {
     })
 
     return (
-        <GestureDetector gesture={pinchGesture}>
-            <Camera style={styles.camera} type={type} ref={cameraRef} zoom={ZOOM_SPEED * (scale - 1)}>
-                <View style={styles.upwardsContainer}>
-                    <View style={styles.buttonContainer}>
-                        <View style={styles.button} />
-                        <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
-                        <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
+        <GestureHandlerRootView style={styles.container}>
+            <GestureDetector gesture={pinchGesture}>
+                <Camera style={styles.camera} type={type} ref={cameraRef} zoom={ZOOM_SPEED * (scale - 1)}>
+                    <View style={styles.upwardsContainer}>
+                        <View style={styles.buttonContainer}>
+                            <View style={styles.button} />
+                            <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
+                            <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
+                        </View>
                     </View>
-                </View>
-            </Camera>
-        </GestureDetector>
+                </Camera>
+            </GestureDetector>
+        </GestureHandlerRootView>
     )
 }
 
