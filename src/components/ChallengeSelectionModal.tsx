@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Button, SectionList, SectionListRenderItemInfo, View, Text, ActivityIndicator, FlatList } from "react-native"
+import { Text, ActivityIndicator, FlatList, Modal, SafeAreaView, View } from "react-native"
 import Colors from "constants/colors"
 import { pb } from "src/pocketbaseService"
 import { styles } from "src/styles"
@@ -11,11 +11,13 @@ import ActionButton from "./ActionButton"
 
 export const VAR_CHALLENGES: string = "BeHealthyChallenges"
 
-type CSFProps = {
-    onSubmit?: (challenges: LocalStorageChallengeEntry[]) => void
+type ChallengeSelectionModalProps = {
+    visible?: boolean,
+    onSubmit?: (challenges: LocalStorageChallengeEntry[]) => void,
+    onClose?: () => void,
 }
 
-export default function ChallengeSelectionForm({ onSubmit }: CSFProps) {
+export default function ChallengeSelectionModal({ visible, onSubmit, onClose }: ChallengeSelectionModalProps) {
 
     const [habits, setHabits] = useState<HabitsRecord[]>([])
     const [challenges, setChallenges] = useState<ChallengesRecord[]>([])
@@ -47,45 +49,6 @@ export default function ChallengeSelectionForm({ onSubmit }: CSFProps) {
             }
         })
     }, [])
-
-    function renderSectionHeader({ section }: any) {
-        return (
-            <Text style={[styles.textfieldText, styles.textfieldTitle, { marginTop: 20 }]}>{section.title}</Text>
-        )
-    }
-
-    function renderChallengeOld({ item }: SectionListRenderItemInfo<ChallengesRecord, HabitsRecord>) {
-        return (
-            <View style={[styles.container, { alignItems: "flex-start" }]}>
-                <BouncyCheckbox
-                    size={25}
-                    text={item.name}
-                    isChecked={selectedChallenges.some((challenge: LocalStorageChallengeEntry) => challenge.record.id === item.id)}
-                    onPress={(isChecked: boolean) => {
-                        const newSelectedChallenge: LocalStorageChallengeEntry = {
-                            record: item,
-                            repetitionsGoal: 0,
-                        }
-                        setSelectedChallenges((oldChallenges: LocalStorageChallengeEntry[]) =>
-                            isChecked ? [...oldChallenges, newSelectedChallenge] : oldChallenges.filter(({ record }) => record.id !== item.id)
-                        )
-                    }}
-                    textStyle={{
-                        textDecorationLine: "none",
-                    }}
-                    textContainerStyle={{
-                        marginVertical: 10,
-                        marginStart: 30,
-                    }}
-                    iconStyle={{
-                        marginStart: 30,
-                    }}
-                    fillColor={Colors.accent}
-                    unfillColor={Colors.accent}
-                />
-            </View>
-        )
-    }
 
     function renderChallenge({ item }: any) {
         return (
@@ -140,33 +103,39 @@ export default function ChallengeSelectionForm({ onSubmit }: CSFProps) {
         })
     }
 
-    if (data.length === 0) return (
-        <View style={styles.container}>
-            <ActivityIndicator color={Colors.accent} size="large" />
-        </View>
-    )
+    // rendered at the end of the list
+    const ListFooter = () => <ActionButton title="Confirm selection" onPress={handleConfirm} />
+
+    // rendered between the challenge cards
+    const ItemSeparator = () => <View style={{ padding: 10 }} />
+
+    // rendered when the data passed to the list is empty
+    const ListEmpty = () => <ActivityIndicator color={Colors.accent} size="large" />
+
+    // always rendered on top of the list
+    const ListHeader = () => <View style={{ padding: 20, backgroundColor: Colors.pastelOrange }}>
+        <Text style={styles.textfieldTitle}>Pick your challenges</Text>
+    </View>
 
     return (
-        <View style={[styles.container, { paddingBottom: 30 }]}>
-            <FlatList
-                data={data}
-                keyExtractor={(item, index) => item.title + index}
-                renderItem={renderHabit}
-            />
-            <ActionButton title="Confirm selection" onPress={handleConfirm} />
-        </View>
-    )
-
-    return (
-        <View style={[styles.container, { paddingBottom: 30 }]}>
-            <SectionList
-                sections={data}
-                keyExtractor={(item, index) => item.id + index}
-                renderItem={renderChallenge}
-                renderSectionHeader={renderSectionHeader}
-            />
-            <Button title="Confirm selection" onPress={handleConfirm} color={Colors.accent} />
-        </View>
+        <Modal
+            animationType="slide"
+            visible={visible}
+            onRequestClose={onClose}
+        >
+            <SafeAreaView style={[styles.container, { flex: 1 }]}>
+                <FlatList
+                    data={data}
+                    keyExtractor={(item, index) => item.title + index}
+                    renderItem={renderHabit}
+                    ListFooterComponent={ListFooter}
+                    ItemSeparatorComponent={ItemSeparator}
+                    ListEmptyComponent={ListEmpty}
+                    ListHeaderComponent={ListHeader}
+                    stickyHeaderIndices={[0]}
+                />
+            </SafeAreaView>
+        </Modal>
     )
 }
 
