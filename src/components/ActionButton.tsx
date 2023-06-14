@@ -1,15 +1,34 @@
 import Colors from "constants/colors";
 import { Text, ButtonProps, Pressable, StyleSheet } from "react-native";
 
-export default function ActionButton({ onPress, title, color }: ButtonProps) {
+type ActionButtonProps = ButtonProps & {
+    pressedColor?: string,
+    textColor?: string,
+    textPressedColor?: string,
+    children?: React.ReactNode,
+    title?: string,
+}
+
+const DEFAULT_COLOR: string = Colors.black
+const DEFAULT_PRESSED_COLOR: string = Colors.pastelViolet
+const DEFAULT_TEXT_COLOR: string = Colors.white
+const DEFAULT_TEXT_PRESSED_COLOR: string = Colors.black
+
+export default function ActionButton({ onPress, title, color, pressedColor, textColor, textPressedColor, children }: ActionButtonProps) {
+    function renderContent(pressed: boolean) {
+        if (children) return children
+        const color: string = pressed ? (textPressedColor || DEFAULT_TEXT_PRESSED_COLOR) : (textColor || DEFAULT_TEXT_COLOR)
+        return <Text style={[styles.buttonText, { color: color }]}>{title}</Text>
+    }
+
     return (
         <Pressable
             style={({ pressed }) => [styles.container, {
-                backgroundColor: pressed ? Colors.pastelViolet : (color || "black"),
+                backgroundColor: pressed ? (pressedColor || DEFAULT_PRESSED_COLOR) : (color || DEFAULT_COLOR),
             }]}
             onPress={onPress}
         >
-            {({ pressed }) => <Text style={[styles.buttonText, { color: pressed ? "black" : Colors.white }]}>{title}</Text>}
+            {({ pressed }) => renderContent(pressed)}
         </Pressable>
     )
 }
