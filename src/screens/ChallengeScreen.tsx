@@ -4,10 +4,11 @@ import { LocalStorageChallengeEntry } from "types";
 import { useEffect, useState } from "react";
 import Colors from "constants/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ChallengeSelectionForm, { VAR_CHALLENGES } from "src/components/ChallengeSelectionForm";
+import { VAR_CHALLENGES } from "components/ChallengeSelectionModal";
 import ActionButton from "components/ActionButton";
 import ChallengeCard from "components/ChallengeCard";
 import { useNavigation } from "@react-navigation/native";
+import ChallengeSelectionModal from "components/ChallengeSelectionModal";
 
 export default function ChallengeScreen() {
     const [challenges, setChallenges] = useState<LocalStorageChallengeEntry[]>([])
@@ -39,30 +40,24 @@ export default function ChallengeScreen() {
         return <ChallengeCard challengeEntry={item} setChallenges={setChallenges} />
     }
 
-    // TODO: purple on click
-    // show the list of potential challenges
     return (
         <View style={[styles.container, { paddingTop: 10 }]}>
-            {challenges.length === 0 ? <Button title="Select some challenges here :)" onPress={() => setShowModal(true)} color={Colors.accent} /> : <>
-                <FlatList
-                    data={challenges}
-                    keyExtractor={({ record }, index) => record.id + index}
-                    renderItem={renderChallenge}
-                />
-                <ActionButton title="Save changes" onPress={handleSaveChanges} />
-            </>}
-            <Modal
-                animationType="slide"
+            {challenges.length === 0 ? <Button title="Select some challenges here :)" onPress={() => setShowModal(true)} color={Colors.accent} />
+                : <>
+                    <FlatList
+                        data={challenges}
+                        keyExtractor={({ record }, index) => record.id + index}
+                        renderItem={renderChallenge}
+                    />
+                    <ActionButton title="Save changes" onPress={handleSaveChanges} />
+                </>}
+            <ChallengeSelectionModal
                 visible={showModal}
-                onRequestClose={() => setShowModal(false)}
-            >
-                <SafeAreaView style={{ flex: 1 }}>
-                    <ChallengeSelectionForm onSubmit={(records: LocalStorageChallengeEntry[]) => {
-                        setShowModal(false)
-                        setChallenges(records)
-                    }} />
-                </SafeAreaView>
-            </Modal>
+                onClose={() => setShowModal(false)}
+                onSubmit={(records: LocalStorageChallengeEntry[]) => {
+                    setShowModal(false)
+                    setChallenges(records)
+                }} />
         </View>
     )
 }

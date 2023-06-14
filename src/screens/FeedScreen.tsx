@@ -6,7 +6,6 @@ import { Button, StyleSheet, Text, View, Image, Alert } from "react-native";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
 import ZoomableCamera from "components/ZoomableCamera";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function FeedScreen() {
 
@@ -67,9 +66,9 @@ export default function FeedScreen() {
     )
 
     return (
-        <GestureHandlerRootView style={styles.container}>
+        <View style={styles.container}>
             <ZoomableCamera onTakePhoto={setPhoto} />
-        </GestureHandlerRootView>
+        </View>
     );
 }
 

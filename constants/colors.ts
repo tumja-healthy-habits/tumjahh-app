@@ -12,6 +12,7 @@
 let Colors = {
     accentOld: '#e91e63',
     accent: '#336483',
+    black: '#000000',
     primary: '#3f51b5',
     primaryDark: '#003049',
     primaryLight: '#c5cae9',
