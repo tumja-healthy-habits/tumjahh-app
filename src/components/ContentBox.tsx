@@ -6,7 +6,6 @@ type ContentBoxProps = {
 }
 
 export default function ContentBox({ children, style }: ContentBoxProps) {
-
     return (
         <View style={[styles.container, style]}>
             {children}
