@@ -10,9 +10,13 @@ import { styles, imageStyles } from "src/styles";
 import { VAR_USERNAME, logout } from "src/authentification";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ActionButton from "components/ActionButton";
+import UserQRCode from "components/UserQRCode";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { ProfileParamList } from "./ProfileNavigator";
 
 export default function ProfileScreenAlt() {
     const { currentUser, setCurrentUser } = useAuthenticatedUser()
+    const navigation = useNavigation<NavigationProp<ProfileParamList, 'Profile'>>()
 
     if (currentUser === null) {
         return <LoginForm />
@@ -50,6 +54,7 @@ export default function ProfileScreenAlt() {
             <TextInput value={email} onChangeText={setEmail} style={styles.textfieldText} />
             <Button title="Save changes" onPress={updateUser} disabled={!hasChanged} />
             <ActionButton title="Log out" onPress={logout} />
+            <ActionButton title="Add friends" onPress={() => navigation.navigate('SearchFriend')} />
         </View>
     )
 }
