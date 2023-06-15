@@ -31,8 +31,14 @@ let Colors = {
     anotherPeachColor: "#ffb5a7",
 }
 
+export function opacity(color: string, opacity: number): string {
+    if (opacity < 0 || opacity > 1) return "ERROR"
+    const alphaInt: number = Math.round(opacity * 255)
+    return color + alphaInt.toString(16).padStart(2, '0')
+}
+
 Colors.background = Colors.pastelOrange
 Colors.accent = "#000000"
-Colors.white = "white"
+Colors.white = "#FFFFFF"
 
 export default Colors
