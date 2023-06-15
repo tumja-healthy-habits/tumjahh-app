@@ -2,14 +2,15 @@
   "expo": {
     "name": "healthy-habits-app",
     "slug": "healthy-habits-app",
+    "scheme": "behealthy",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/healthy-habits-icon.jpeg",
+    "icon": "./assets/images/behealthy-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/healthy-habits-icon.jpeg",
+      "image": "./assets/images/behealthy-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#"
     },
     "assetBundlePatterns": [
       "**/*"
