@@ -5,7 +5,9 @@ import AddFriendScreen from "./AddFriendScreen";
 
 export type ProfileParamList = {
     ProfilePage: undefined;
-    SearchFriend: undefined,
+    SearchFriend: {
+        friendId?: string,
+    },
     AddFriend: {
         userId: string,
     }

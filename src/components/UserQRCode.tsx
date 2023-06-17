@@ -27,7 +27,7 @@ export default function UserQRCode() {
                 logo={require("assets/images/behealthy-icon.png")}
                 logoSize={50}
                 backgroundColor="transparent"
-                color={Colors.white}
+                color={Colors.anotherPeachColor}
                 logoBorderRadius={200}
             />
             <Text style={styles.nameText}>{currentUser.name}</Text>
@@ -42,10 +42,10 @@ const styles = StyleSheet.create({
         paddingBottom: 30,
         marginHorizontal: 50,
         borderRadius: 40,
-        backgroundColor: opacity(Colors.black, 0.3),
+        backgroundColor: opacity(Colors.black, 0.8),
     },
     nameText: {
-        color: Colors.white,
+        color: Colors.anotherPeachColor,
         fontSize: 35,
         marginTop: 20,
         fontWeight: "bold",
@@ -61,6 +61,6 @@ const styles = StyleSheet.create({
         height: PROFILE_IMAGE_WIDTH_AND_HEIGHT,
         borderRadius: PROFILE_IMAGE_WIDTH_AND_HEIGHT / 2,
         borderWidth: 2,
-        borderColor: Colors.white,
+        borderColor: Colors.anotherPeachColor,
     }
 })

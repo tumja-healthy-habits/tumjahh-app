@@ -10,6 +10,8 @@ import { Ionicons } from '@expo/vector-icons';
 import FeedScreen from "screens/FeedScreen";
 import { createURL } from "expo-linking";
 import ProfileNavigator from "screens/ProfileNavigator";
+import InfiniteGridTest from "screens/InfiniteGridTest";
+import InfiniteGridTestCopy from "screens/InfiniteGridTest copy";
 
 export type AppParamList = {
     Home: undefined,
@@ -17,6 +19,7 @@ export type AppParamList = {
     Friends: undefined,
     Challenges: undefined,
     Feed: undefined,
+    Test: undefined,
 }
 
 const Tab = createBottomTabNavigator<AppParamList>();
@@ -41,13 +44,13 @@ const linking: LinkingOptions<AppParamList> = {
         screens: {
             Profile: {
                 screens: {
-                    AddFriend: {
-                        path: 'addfriend/:userId',
+                    SearchFriend: {
+                        path: 'addfriend/:friendId',
                         parse: {
-                            userId: (userId: string) => `${userId}`,
+                            friendId: (friendId: string) => `${friendId}`,
                         },
                         stringify: {
-                            userId: (userId: string) => `${userId}`,
+                            friendId: (friendId: string) => `${friendId}`,
                         },
                     }
                 }
@@ -76,6 +79,9 @@ export default function LoggedInApp() {
                 <Tab.Screen name="Profile" component={ProfileNavigator} options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                     headerRight: () => <SettingsButton />,
+                }} />
+                <Tab.Screen name="Test" component={InfiniteGridTestCopy} options={{
+                    tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                 }} />
             </Tab.Navigator>
         </NavigationContainer>
