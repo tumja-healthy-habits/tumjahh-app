@@ -36,3 +36,13 @@ export interface LocalStorageChallengeEntry {
     record: ChallengesRecord;
     repetitionsGoal: number;
 }
+
+export type MosaiqueData = {
+    [key: number]: {
+        [key: number]: string
+    }
+}
+
+export type ChallengeData = {
+    [key: string]: LocalStorageChallengeEntry | null
+}
