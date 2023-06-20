@@ -1,13 +1,16 @@
 import { RouteProp, useIsFocused, useNavigation, useRoute } from "@react-navigation/native"
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import ZoomableCamera from "components/ZoomableCamera"
 import { CameraCapturedPicture } from "expo-camera"
+import { BaseModel } from "pocketbase"
 import { useEffect, useState } from "react"
-import { View, Button, Image, Alert } from "react-native"
+import { Button, Image, View } from "react-native"
 import { Colors } from "react-native/Libraries/NewAppScreen"
 import { pb } from "src/pocketbaseService"
-import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext"
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
+import { useDailyChallenges } from "src/store/DailyChallengesProvider"
+import { PhotosRecord } from "types"
 import { HomeStackNavigatorParamList } from "./HomeScreen"
-import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
 export default function TakePhotoScreen() {
     const [photo, setPhoto] = useState<CameraCapturedPicture>()
@@ -15,6 +18,7 @@ export default function TakePhotoScreen() {
     const { params } = useRoute<RouteProp<HomeStackNavigatorParamList, "Take Photo">>()
     const navigation = useNavigation<NativeStackNavigationProp<HomeStackNavigatorParamList, "Challenges">>()
     const isFocused: boolean = useIsFocused()
+    const { completeChallenge } = useDailyChallenges()
 
     useEffect(() => {
         navigation.setOptions({
@@ -24,24 +28,54 @@ export default function TakePhotoScreen() {
 
     if (params === undefined || !isFocused) return <View />
 
-    async function sendPhoto() {
-        if (!photo || !currentUser) return
+    async function sendPhoto(): Promise<PhotosRecord> {
+        // We're assuming that currentUser and photo are both not undefined (that's what the exclamation marks do)
         const formData: FormData = new FormData()
         formData.append('photo', {
-            uri: photo.uri,
-            name: photo.uri,
+            uri: photo!.uri,
+            name: photo!.uri,
             type: "image/jpg"
         } as any)
-        formData.append("user_id", currentUser.id)
-        formData.append("width", photo.width.toString())
-        formData.append("height", photo.height.toString())
+        formData.append("user_id", currentUser!.id)
+        formData.append("width", photo!.width.toString())
+        formData.append("height", photo!.height.toString())
         formData.append("challenge_name", params.challengeName)
-        pb.collection("photos").create(formData)
-            .then(() => {
-                navigation.goBack()
-                Alert.alert("Foto wurde hochgeladen!")
-            })
-            .catch((e: any) => console.log(JSON.stringify(e)))
+        return pb.collection("photos").create<PhotosRecord>(formData)
+    }
+
+    function handleUsePhoto(): void {
+        // This is for when pocketbase is running again:
+        // sendPhoto().then((photoRecord: PhotosRecord) => {
+        //     completeChallenge(params.challengeName, photoRecord)
+        //     if (navigation.canGoBack()) {
+        //         navigation.goBack()
+        //     }
+        // })
+        //     .catch((e: any) => console.log(JSON.stringify(e)))
+        //     .finally(() => setPhoto(undefined))
+
+        // This is for when pocketbase is down:
+        completeChallenge(params.challengeName, {
+            id: "fake-id",
+            photo: "https://picsum.photos/200",
+            user_id: "fake-user-id",
+            width: 0,
+            height: 0,
+            challenge_name: params.challengeName,
+            collectionId: "fake-collection-id",
+            created: "fake-created-date",
+            updated: "fake-updated-date",
+            collectionName: "fake-collection-name",
+            expand: {},
+            load: () => { },
+            loadExpand: () => { },
+            isNew: true,
+            clone: () => { return {} as BaseModel },
+            export: () => ({}),
+        } as unknown as PhotosRecord)
+        if (navigation.canGoBack()) {
+            navigation.goBack()
+        }
     }
 
     return photo ? (
@@ -53,6 +87,7 @@ export default function TakePhotoScreen() {
             <Image source={{ uri: photo.uri }} style={{ flex: 1, resizeMode: "contain" }} />
             <Button color={Colors.accent} title="Send photo" onPress={sendPhoto} />
             <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(undefined)} />
+            <Button color={Colors.accent} title="Use photo" onPress={handleUsePhoto} />
         </View>
     ) : (
         <View style={{
