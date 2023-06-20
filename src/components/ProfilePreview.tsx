@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { View, Text, Image, StyleSheet, ImageSourcePropType } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { pb } from "src/pocketbaseService";
-import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { UserRecord } from "types";
 import ActionButton from "./ActionButton";
 

@@ -4,7 +4,7 @@ import FriendCard from 'components/FriendCard'
 import { useEffect, useState } from 'react'
 import { FlatList, ListRenderItemInfo, StyleSheet, View, Text } from 'react-native'
 import { pb } from 'src/pocketbaseService'
-import { useAuthenticatedUser } from 'src/store/AuthenticatedUserContext'
+import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider'
 import { FriendsWithRecord, UserRecord } from 'types'
 
 export default function FriendsScreen() {

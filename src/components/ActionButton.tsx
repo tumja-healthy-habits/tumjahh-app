@@ -1,5 +1,5 @@
 import Colors from "constants/colors";
-import { Text, ButtonProps, Pressable, StyleSheet } from "react-native";
+import { ButtonProps, Pressable, StyleSheet, Text } from "react-native";
 
 type ActionButtonProps = ButtonProps & {
     pressedColor?: string,

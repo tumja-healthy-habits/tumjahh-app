@@ -2,7 +2,7 @@ import LoginForm from 'components/LoginForm';
 import ProfilePicture from 'components/ProfilePicture';
 import React from 'react';
 import { Button, View } from 'react-native';
-import { useAuthenticatedUser } from 'src/store/AuthenticatedUserContext';
+import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider';
 import EditableTextField from 'components/EditableTextField';
 import { pb } from "src/pocketbaseService";
 import { RecordQueryParams } from 'pocketbase';

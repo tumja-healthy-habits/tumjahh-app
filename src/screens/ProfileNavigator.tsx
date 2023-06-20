@@ -1,14 +1,14 @@
 import { createStackNavigator } from "@react-navigation/stack";
+import AddFriendScreen from "./AddFriendScreen";
 import ProfileScreenAlt from "./ProfileScreenAlt";
 import SearchFriendScreen from "./SearchFriendScreen";
-import AddFriendScreen from "./AddFriendScreen";
 
 export type ProfileParamList = {
-    ProfilePage: undefined;
-    SearchFriend: {
+    "ProfilePage": undefined;
+    "SearchFriend": {
         friendId?: string,
     },
-    AddFriend: {
+    "AddFriend": {
         userId: string,
     }
 }

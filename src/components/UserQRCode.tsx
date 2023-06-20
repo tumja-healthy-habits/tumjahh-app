@@ -3,7 +3,7 @@ import { createURL } from "expo-linking"
 import { View, Text, StyleSheet, Image } from "react-native"
 import QRCode from "react-native-qrcode-svg"
 import { pb } from "src/pocketbaseService"
-import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext"
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
 
 const PROFILE_IMAGE_WIDTH_AND_HEIGHT: number = 120
 
@@ -15,6 +15,8 @@ export default function UserQRCode() {
     const friendUrl: string = createURL(`addfriend/${currentUser.id}`)
     const profilePicUri: string = pb.getFileUrl(currentUser, currentUser.avatar)
 
+    console.error(profilePicUri)
+
     return (
         // alternatively put the BeHealthy logo in the center of the QR code
         <View style={styles.container}>
@@ -25,9 +27,9 @@ export default function UserQRCode() {
                 value={friendUrl}
                 size={220}
                 logo={require("assets/images/behealthy-icon.png")}
-                logoSize={50}
+                logoSize={70}
                 backgroundColor="transparent"
-                color={Colors.anotherPeachColor}
+                color={Colors.white}
                 logoBorderRadius={200}
             />
             <Text style={styles.nameText}>{currentUser.name}</Text>
@@ -42,10 +44,10 @@ const styles = StyleSheet.create({
         paddingBottom: 30,
         marginHorizontal: 50,
         borderRadius: 40,
-        backgroundColor: opacity(Colors.black, 0.8),
+        backgroundColor: opacity(Colors.black, 0.7),
     },
     nameText: {
-        color: Colors.anotherPeachColor,
+        color: Colors.white,
         fontSize: 35,
         marginTop: 20,
         fontWeight: "bold",
@@ -61,6 +63,6 @@ const styles = StyleSheet.create({
         height: PROFILE_IMAGE_WIDTH_AND_HEIGHT,
         borderRadius: PROFILE_IMAGE_WIDTH_AND_HEIGHT / 2,
         borderWidth: 2,
-        borderColor: Colors.anotherPeachColor,
+        borderColor: Colors.white,
     }
 })

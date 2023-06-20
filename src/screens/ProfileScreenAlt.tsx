@@ -1,22 +1,21 @@
-import Colors from "constants/colors";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import ActionButton from "components/ActionButton";
 import LoginForm from "components/LoginForm";
 import ProfilePicture from "components/ProfilePicture";
+import Colors from "constants/colors";
 import { useState } from "react";
-import { View, TextInput, Button, Alert } from "react-native";
-import { pb } from "src/pocketbaseService";
-import { useAuthenticatedUser } from "src/store/AuthenticatedUserContext";
-import { UserRecord } from "types";
-import { styles, imageStyles } from "src/styles";
+import { Alert, Button, TextInput, View } from "react-native";
 import { VAR_USERNAME, logout } from "src/authentification";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import ActionButton from "components/ActionButton";
-import UserQRCode from "components/UserQRCode";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { pb } from "src/pocketbaseService";
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
+import { imageStyles, styles } from "src/styles";
+import { UserRecord } from "types";
 import { ProfileParamList } from "./ProfileNavigator";
 
 export default function ProfileScreenAlt() {
     const { currentUser, setCurrentUser } = useAuthenticatedUser()
-    const navigation = useNavigation<NavigationProp<ProfileParamList, 'Profile'>>()
+    const { navigate } = useNavigation<NavigationProp<ProfileParamList, "ProfilePage">>()
 
     if (currentUser === null) {
         return <LoginForm />
@@ -54,7 +53,7 @@ export default function ProfileScreenAlt() {
             <TextInput value={email} onChangeText={setEmail} style={styles.textfieldText} />
             <Button title="Save changes" onPress={updateUser} disabled={!hasChanged} />
             <ActionButton title="Log out" onPress={logout} />
-            <ActionButton title="Add friends" onPress={() => navigation.navigate('SearchFriend')} />
+            <ActionButton title="Add friends" onPress={() => navigate("SearchFriend", { friendId: undefined })} />
         </View>
     )
 }
