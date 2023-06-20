@@ -1,20 +1,51 @@
-import { useState } from "react";
-import { Text } from "react-native";
-import { Gesture, GestureDetector, GestureHandlerRootView, PinchGesture } from "react-native-gesture-handler";
+import ActionButton from "components/ActionButton";
+import MosaiqueGrid from "components/MosaiqueGrid";
+import NavigatableView from "components/NavigatableView";
+import { useMemo } from "react";
+import { ActivityIndicator, View } from "react-native";
+import { Extrapolate, interpolate } from "react-native-reanimated";
+import { useMosaiqueData } from "src/store/MosaiqueDataProvider";
 
-// This component will be used to render an infinite canvas to which images can be added in a grid layout
+const MIN_ZOOM: number = 0.2
+const MAX_ZOOM: number = 3
+
 export default function MosaiqueScreen() {
-    const [scale, setScale] = useState<number>(1)
+    const { numRings, deleteMosaique } = useMosaiqueData()
 
-    const pinchGesture: PinchGesture = Gesture.Pinch().onUpdate(({ scale }) => {
-        setScale(scale)
-    })
+    const zoom: number = useMemo(() => {
+        return interpolate(numRings, [0, 3], [MAX_ZOOM / 4, MIN_ZOOM], Extrapolate.CLAMP)
+    }, [numRings])
 
-    return (
-        <GestureHandlerRootView>
-            <GestureDetector gesture={pinchGesture}>
-                <Text>{scale}</Text>
-            </GestureDetector>
-        </GestureHandlerRootView>
-    )
+    return <View style={{}}>
+        {numRings !== undefined ? <NavigatableView minZoom={MIN_ZOOM} maxZoom={MAX_ZOOM} initialZoom={zoom}>
+            <MosaiqueGrid />
+            <ActionButton title="Reset" onPress={deleteMosaique} />
+        </NavigatableView> : <ActivityIndicator />}
+    </View>
 }
+
+// function Grid({ scale }: { scale: SharedValue<number> }) {
+//     const [gridSize, setGridSize] = useState<number>(5)
+//     useAnimatedReaction(() => {
+//         return Math.ceil(INITIAL_GRID_SIZE / scale.value) !== gridSize
+//     }, () => {
+//         runOnJS(setGridSize)(Math.ceil(INITIAL_GRID_SIZE / scale.value))
+//     })
+
+//     return (
+//         <View style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}>
+//             {
+//                 Array.from({ length: gridSize }).map((_: any, rowIndex: number) => (
+//                     <View style={{ flexDirection: 'row' }} key={rowIndex}>
+//                         {Array.from({ length: gridSize }).map((_, columnIndex) => (
+//                             <GridTile
+//                                 key={columnIndex}
+//                                 index={rowIndex * gridSize + columnIndex}
+//                             />
+//                         ))}
+//                     </View>
+//                 ))
+//             }
+//         </View>
+//     )
+// }
