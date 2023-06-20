@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { AuthenticatedUserContext, AuthenticatedUserProvider } from 'src/store/AuthenticatedUserContext';
+import { AuthenticatedUserContext, AuthenticatedUserProvider } from 'src/store/AuthenticatedUserProvider';
 import { View } from 'react-native';
 import LoggedInApp from 'components/LoggedInApp';
 import LoginForm from 'components/LoginForm';
