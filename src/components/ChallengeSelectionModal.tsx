@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react"
-import { Text, ActivityIndicator, FlatList, Modal, SafeAreaView, View } from "react-native"
 import Colors from "constants/colors"
-import { pb } from "src/pocketbaseService"
-import { styles } from "src/styles"
-import { HabitsRecord, ChallengesRecord, LocalStorageChallengeEntry } from "types"
+import React, { useEffect, useState } from "react"
+import { ActivityIndicator, FlatList, ListRenderItemInfo, Modal, SafeAreaView, Text, View } from "react-native"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
-import AsyncStorage from "@react-native-async-storage/async-storage"
-import ContentBox from "./ContentBox"
+import { pb } from "src/pocketbaseService"
+import { DailyChallenge, useDailyChallenges } from "src/store/DailyChallengesProvider"
+import { styles } from "src/styles"
+import { ChallengesRecord, HabitsRecord } from "types"
 import ActionButton from "./ActionButton"
+import ContentBox from "./ContentBox"
 
 export const VAR_CHALLENGES: string = "BeHealthyChallenges"
 
 type ChallengeSelectionModalProps = {
     visible?: boolean,
-    onSubmit?: (challenges: LocalStorageChallengeEntry[]) => void,
     onClose?: () => void,
 }
 
-export default function ChallengeSelectionModal({ visible, onSubmit, onClose }: ChallengeSelectionModalProps) {
+export default function ChallengeSelectionModal({ visible, onClose }: ChallengeSelectionModalProps) {
+
+    const { challenges: dailyChallenges, addChallenge, removeChallenge } = useDailyChallenges()
 
     const [habits, setHabits] = useState<HabitsRecord[]>([])
     const [challenges, setChallenges] = useState<ChallengesRecord[]>([])
-    const [selectedChallenges, setSelectedChallenges] = useState<LocalStorageChallengeEntry[]>([])
 
     const data: any = habits.map(habit => ({
         title: habit.name,
@@ -35,35 +35,24 @@ export default function ChallengeSelectionModal({ visible, onSubmit, onClose }: 
                 setChallenges(challenges)
             })
             .catch(() => {
+                // only for testing without pocketbase
                 setHabits(dummyHabits)
                 setChallenges(dummyChallenges)
             })
     }, [])
 
-    useEffect(() => {
-        AsyncStorage.getItem(VAR_CHALLENGES).then((jsonString: string | null) => {
-            if (jsonString === null) return;
-            const challenges: LocalStorageChallengeEntry[] = JSON.parse(jsonString)
-            if (challenges) {
-                setSelectedChallenges(challenges)
-            }
-        })
-    }, [])
-
-    function renderChallenge({ item }: any) {
+    function renderChallenge({ item }: ListRenderItemInfo<ChallengesRecord>) {
         return (
             <BouncyCheckbox
                 size={25}
                 text={item.name}
-                isChecked={selectedChallenges.some((challenge: LocalStorageChallengeEntry) => challenge.record.id === item.id)}
+                isChecked={dailyChallenges.some(({ challengeEntry }: DailyChallenge) => challengeEntry.record.id === item.id)}
                 onPress={(isChecked: boolean) => {
-                    const newSelectedChallenge: LocalStorageChallengeEntry = {
-                        record: item,
-                        repetitionsGoal: 0,
+                    if (isChecked) {
+                        addChallenge(item)
+                    } else {
+                        removeChallenge(item.name)
                     }
-                    setSelectedChallenges((oldChallenges: LocalStorageChallengeEntry[]) =>
-                        isChecked ? [...oldChallenges, newSelectedChallenge] : oldChallenges.filter(({ record }) => record.id !== item.id)
-                    )
                 }}
                 textStyle={{
                     textDecorationLine: "none",
@@ -81,7 +70,7 @@ export default function ChallengeSelectionModal({ visible, onSubmit, onClose }: 
         )
     }
 
-    function renderHabit({ item }: any) {
+    function renderHabit({ item }: ListRenderItemInfo<HabitsRecord>) {
         return (
             <ContentBox style={{ alignItems: "flex-start" }}>
                 <Text style={[styles.textfieldText, styles.textfieldTitle, { marginVertical: 10, alignSelf: "center" }]}>{item.title}</Text>
@@ -94,13 +83,16 @@ export default function ChallengeSelectionModal({ visible, onSubmit, onClose }: 
         )
     }
 
-    async function handleConfirm(): Promise<void> {
+    function handleConfirm(): void {
         // store the selection in local storage and execute the onSubmit prop (for example for closing a Modal that contains this form)
-        return AsyncStorage.setItem(VAR_CHALLENGES, JSON.stringify(selectedChallenges)).then(() => {
-            if (onSubmit) {
-                onSubmit(selectedChallenges)
-            }
-        })
+        // return AsyncStorage.setItem(VAR_CHALLENGES, JSON.stringify(selectedChallenges)).then(() => {
+        //     if (onSubmit) {
+        //         onSubmit(selectedChallenges)
+        //     }
+        // })
+        if (onClose) {
+            onClose()
+        }
     }
 
     // rendered at the end of the list
