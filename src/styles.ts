@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native";
 import Colors from 'constants/colors';
+import { StyleSheet } from "react-native";
 
 // styles
 export const styles = StyleSheet.create({
@@ -23,6 +23,7 @@ export const styles = StyleSheet.create({
         color: Colors.accent,
         fontSize: 30,
         textAlign: "center",
+        margin: 5,
     },
     pressedOpacity: {
         opacity: 0.5
