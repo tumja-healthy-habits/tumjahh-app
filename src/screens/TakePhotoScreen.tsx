@@ -1,10 +1,12 @@
-import { RouteProp, useIsFocused, useNavigation, useRoute } from "@react-navigation/native"
+import { NavigationProp, RouteProp, useIsFocused, useNavigation, useRoute } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import { AppParamList } from "components/LoggedInApp"
 import ZoomableCamera from "components/ZoomableCamera"
 import { CameraCapturedPicture } from "expo-camera"
 import { BaseModel } from "pocketbase"
 import { useEffect, useState } from "react"
 import { Button, Image, View } from "react-native"
+import Animated from "react-native-reanimated"
 import { Colors } from "react-native/Libraries/NewAppScreen"
 import { pb } from "src/pocketbaseService"
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
@@ -17,6 +19,7 @@ export default function TakePhotoScreen() {
     const { currentUser } = useAuthenticatedUser()
     const { params } = useRoute<RouteProp<HomeStackNavigatorParamList, "Take Photo">>()
     const navigation = useNavigation<NativeStackNavigationProp<HomeStackNavigatorParamList, "Challenges">>()
+    const appNavigation = useNavigation<NavigationProp<AppParamList>>()
     const isFocused: boolean = useIsFocused()
     const { completeChallenge } = useDailyChallenges()
 
@@ -73,6 +76,14 @@ export default function TakePhotoScreen() {
             clone: () => { return {} as BaseModel },
             export: () => ({}),
         } as unknown as PhotosRecord)
+        if (photo !== undefined) {
+            appNavigation.navigate("Mosaique", {
+                imageUri: photo?.uri,
+            })
+        }
+    }
+
+    function handleSkipPhoto(): void {
         if (navigation.canGoBack()) {
             navigation.goBack()
         }
@@ -84,8 +95,11 @@ export default function TakePhotoScreen() {
             justifyContent: 'center',
             backgroundColor: Colors.pastelViolet,
         }}>
-            <Image source={{ uri: photo.uri }} style={{ flex: 1, resizeMode: "contain" }} />
-            <Button color={Colors.accent} title="Send photo" onPress={sendPhoto} />
+            <Animated.View style={{ flex: 1, }}>
+                <Image source={{ uri: photo.uri }} style={{ flex: 1, resizeMode: "contain" }} />
+            </Animated.View>
+            <Button disabled color={Colors.accent} title="Send photo" onPress={sendPhoto} />
+            <Button color={Colors.accent} title="Maybe later" onPress={handleSkipPhoto} />
             <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(undefined)} />
             <Button color={Colors.accent} title="Use photo" onPress={handleUsePhoto} />
         </View>
