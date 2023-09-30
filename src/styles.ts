@@ -1,11 +1,11 @@
-import { StyleSheet } from "react-native";
 import Colors from 'constants/colors';
+import { StyleSheet } from "react-native";
 
 // styles
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: Colors.background,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -23,6 +23,7 @@ export const styles = StyleSheet.create({
         color: Colors.accent,
         fontSize: 30,
         textAlign: "center",
+        margin: 5,
     },
     pressedOpacity: {
         opacity: 0.5
@@ -55,7 +56,7 @@ export const imageStyles = StyleSheet.create({
     image: {
         borderRadius: 8,
         borderWidth: 3,
-        borderColor: Colors.primary,
+        borderColor: Colors.accent,
         width: "100%",
         height: "100%",
         margin: 10,

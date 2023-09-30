@@ -20,3 +20,29 @@ export interface PhotosRecord extends Record {
     photo: string;
     user_id: string;
 }
+
+export interface HabitsRecord extends Record {
+    name: string;
+}
+
+export interface ChallengesRecord extends Record {
+    name: string;
+    description: string;
+    explanation: string;
+    habit_id: string;
+}
+
+export interface LocalStorageChallengeEntry {
+    record: ChallengesRecord;
+    repetitionsGoal: number;
+}
+
+export type MosaiqueData = {
+    [key: number]: {
+        [key: number]: string
+    }
+}
+
+export type ChallengeData = {
+    [key: string]: LocalStorageChallengeEntry | null
+}
