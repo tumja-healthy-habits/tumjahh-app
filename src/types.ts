@@ -16,7 +16,7 @@ export interface FriendsWithRecord extends Record {
     user2: string;
 }
 
-export interface PhotosRecord extends Record {
+export interface PhotoRecord extends Record {
     photo: string;
     user_id: string;
 }

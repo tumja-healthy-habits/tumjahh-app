@@ -6,6 +6,7 @@ import { createURL } from "expo-linking";
 import React from "react";
 import { PaperProvider } from 'react-native-paper';
 import ChallengeScreen from "screens/ChallengeScreen";
+import FriendsScreen from 'screens/FriendsScreen';
 import HomeScreen from "screens/HomeScreen";
 import MosaiqueScreen from "screens/MosaiqueScreen";
 import ProfileNavigator from "screens/ProfileNavigator";
@@ -78,9 +79,9 @@ export default function LoggedInApp() {
                                 tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
                                 headerShown: false,
                             }} />
-                            {/* <Tab.Screen name="Friends" component={FriendsScreen} options={{
+                            {<Tab.Screen name="Friends" component={FriendsScreen} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
-                              }} /> */}
+                              }} /> }
                             <Tab.Screen name="Profile" component={ProfileNavigator} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                                 headerRight: () => <SettingsButton />,

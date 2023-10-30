@@ -5,10 +5,11 @@ import { useEffect, useState } from 'react'
 import { FlatList, ListRenderItemInfo, StyleSheet, View, Text } from 'react-native'
 import { pb } from 'src/pocketbaseService'
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider'
-import { FriendsWithRecord, UserRecord } from 'types'
+import { FriendsWithRecord, PhotoRecord, UserRecord } from 'types'
 
 export default function FriendsScreen() {
     const [friends, setFriends] = useState<UserRecord[]>([])
+    // const [photos, setPhotos]= useState<PhotoRecord[]>([])
     const { currentUser } = useAuthenticatedUser()
 
     const isFocused: boolean = useIsFocused()
@@ -24,29 +25,36 @@ export default function FriendsScreen() {
         }).then((records: FriendsWithRecord[]) => {
             //extract the id which is not the current user's id
             const friendIds: string[] = records.map(({ user1, user2 }: FriendsWithRecord) => user1 === currentUser.id ? user2 : user1)
-            const query: string = friendIds.map((id: string) => `id="${id}"`).join("||") // id="..."||id="..."
+            let query: string = friendIds.map((id: string) => `id="${id}"`).join("||") // id="..."||id="..."
+            //if there are no friends query has to be changed to something that is always false
+            //otherwise whole collection gets selected 
+            query === "" ? query=`id=""` : query
             pb.collection("users").getFullList<UserRecord>({
                 filter: query,
-            }).then(setFriends)
+            }).then(setFriends)    
         }).catch((error) => console.error("An error occured while fetching the friends data", error))
+        
+        // let query: string = friends.map((friend: UserRecord) => `user_id="${friend.id}"`).join("||")
+        // query === "" ? query=`user_id=""` : query
+        // pb.collection("photos").getFullList<PhotoRecord>({filter: query}).then(setPhotos)
     }, [isFocused])
 
     function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
         return <FriendCard user={item} />
     }
-
+    console.log(friends)
     return (
         <View style={[styles.container, { alignItems: 'stretch' }]}>
             {friends.length === 0 && <Text style={styles.textfieldText}>You haven't added any friends yet</Text>}
             <FlatList
-                numColumns={2}
                 data={friends}
                 keyExtractor={(user: UserRecord) => user.id}
                 renderItem={renderFriend}
-                columnWrapperStyle={{
-                    justifyContent: "space-between",
-                    alignItems: "center"
-                }} />
+                // columnWrapperStyle={{
+                //     justifyContent: "space-between",
+                //     alignItems: "center"
+                // }} 
+                />
         </View>
     )
 }
