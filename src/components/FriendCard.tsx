@@ -5,8 +5,6 @@ import { pb } from "src/pocketbaseService";
 import UserBar from "src/components/UserBar"
 import { useEffect, useState } from 'react'
 
-import ProfilePicture from "./ProfilePicture";
-import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
 
 
 type FriendCardProps = {
@@ -15,45 +13,18 @@ type FriendCardProps = {
 
 export default function FriendCard({ user }: FriendCardProps) {
     const [photos, setPhotos] = useState<PhotoRecord[]>([])
-    const [imgSize, setImgSize] = useState<{width: Int32, height: Int32}>({width: 0, height: 0})
 
     function handleTapFriend(): void {
         // TODO: In the future we can perform some action when the user taps on a friend card
     }
-    // return (
-    //     <View style={[imageStyles.outerContainer, {flex: 1}]}>
-    //         <Pressable onPress={handleTapFriend}>
-    //             <View style={imageStyles.innerContainer}>
-    //                 <ProfilePicture user={user} style={imageStyles.image} />
-    //                 <Text style={styles.textfieldText}>{user.name}</Text>
-    //             </View>
-    //         </Pressable>
-    //     </View>
-    // )
-    const profilePictureSource: ImageSourcePropType = user.avatar ? { uri: pb.getFileUrl(user, user.avatar) } : require("assets/images/default-avatar.jpeg")
-
     useEffect(() => {
         pb.collection("photos")
-        .getFullList<PhotoRecord>({filter: `user_id="${user.id}"`})
+        .getFullList<PhotoRecord>({filter: `user_id="${user.id}"`, sort:'updated'})
         .then(setPhotos)
     })
     if (photos.length === 0) {
         return null
     }
-    // const photoURLs: string[] = photos.map((record: PhotoRecord) =>  pb.getFileUrl(record, record.photo))
-    // console.log(photoURLs)
-    
-    // const ListImage = ({ item }: PhotoRecord) => {
-    //     return (
-    //       <View>
-    //         <Image
-    //           source={{uri: pb.getFileUrl(item, item.photo)}}
-    //           style={{width:200, height:50}}
-    //           resizeMode="cover"
-    //         />
-    //       </View>
-    //     );
-    //   };
     
     function renderPhoto({ item }: ListRenderItemInfo<PhotoRecord>) {
         const imgURL = pb.getFileUrl(item, item.photo)
@@ -61,7 +32,7 @@ export default function FriendCard({ user }: FriendCardProps) {
         return (
             <Image
             source={{uri: imgURL}}
-            style={{width: undefined, height:'100%', aspectRatio: item.width/item.height}}
+            style={{width: undefined, height:'100%', aspectRatio: item.width/item.height, marginRight:5}}
             resizeMode="contain"
             />
         );
@@ -73,7 +44,7 @@ export default function FriendCard({ user }: FriendCardProps) {
           <UserBar user={user}/>
 
           {/* Collage of User's Images */}
-            <View style={{ width: '100%', height: 300, borderWidth: 1, justifyContent: 'center'}}>
+            <View style={{ width: '100%', height: 200, justifyContent: 'center'}}>
                 <FlatList
                     data={photos}
                     horizontal

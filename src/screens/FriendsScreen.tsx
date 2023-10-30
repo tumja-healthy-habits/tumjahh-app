@@ -33,15 +33,13 @@ export default function FriendsScreen() {
                 filter: query,
             }).then(setFriends)    
         }).catch((error) => console.error("An error occured while fetching the friends data", error))
-        
-        // let query: string = friends.map((friend: UserRecord) => `user_id="${friend.id}"`).join("||")
-        // query === "" ? query=`user_id=""` : query
-        // pb.collection("photos").getFullList<PhotoRecord>({filter: query}).then(setPhotos)
+        console.log(friends)
     }, [isFocused])
 
     function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
         return <FriendCard user={item} />
     }
+    console.log("Friends:")
     console.log(friends)
     return (
         <View style={[styles.container, { alignItems: 'stretch' }]}>
@@ -50,10 +48,6 @@ export default function FriendsScreen() {
                 data={friends}
                 keyExtractor={(user: UserRecord) => user.id}
                 renderItem={renderFriend}
-                // columnWrapperStyle={{
-                //     justifyContent: "space-between",
-                //     alignItems: "center"
-                // }} 
                 />
         </View>
     )
