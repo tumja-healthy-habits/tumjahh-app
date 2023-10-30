@@ -6,15 +6,16 @@ import UserBar from "src/components/UserBar"
 import { useEffect, useState } from 'react'
 
 import ProfilePicture from "./ProfilePicture";
+import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
 
 
 type FriendCardProps = {
     user: UserRecord,
 }
-const { width } = Dimensions.get('window');
 
 export default function FriendCard({ user }: FriendCardProps) {
     const [photos, setPhotos] = useState<PhotoRecord[]>([])
+    const [imgSize, setImgSize] = useState<{width: Int32, height: Int32}>({width: 0, height: 0})
 
     function handleTapFriend(): void {
         // TODO: In the future we can perform some action when the user taps on a friend card
@@ -55,12 +56,12 @@ export default function FriendCard({ user }: FriendCardProps) {
     //   };
     
     function renderPhoto({ item }: ListRenderItemInfo<PhotoRecord>) {
+        const imgURL = pb.getFileUrl(item, item.photo)
+        //Image.getSize(imgURL, (width, height) => {setImgSize({width:width, height:height})});
         return (
             <Image
-            source={{uri: pb.getFileUrl(item, item.photo)}}
-            style={{width: undefined,
-                height: '100%',
-                aspectRatio: 1}}
+            source={{uri: imgURL}}
+            style={{width: undefined, height:'100%', aspectRatio: item.width/item.height}}
             resizeMode="contain"
             />
         );
