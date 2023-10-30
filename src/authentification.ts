@@ -12,15 +12,28 @@ export async function login(username: string, password: string): Promise<UserRec
         .then(({ record }) => record)
 }
 
+
 // returns the newly created user record
-export async function signup(username: string, password: string): Promise<UserRecord> {
-    const data: any = {
-        username: username,
-        password: password,
-        passwordConfirm: password,
+export async function signup(username: string, password: string): Promise<UserRecord> { 
+    try{
+        const data: any = {
+            username: username,
+            name: username,
+            password: password,
+            passwordConfirm: password,
+        }
+        await pb.collection("users").create<UserRecord>(data)
+        return login(username, password)
     }
-    await pb.collection("users").create<UserRecord>(data)
-    return login(username, password)
+    catch(error) {
+        console.log(error.response)
+        if ("username" in error.response.data) {
+            if (error.response.data.username.code == "validation_invalid_username") {
+                console.log(error.response.data.username)
+                throw new Error(error.response.data.username.code)
+            }
+        }
+    }
 }
 
 export async function logout(): Promise<void> {
