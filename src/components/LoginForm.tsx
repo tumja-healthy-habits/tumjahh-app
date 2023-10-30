@@ -14,8 +14,15 @@ export default function LoginForm() {
     const [password, setPassword] = useState<string>("")
 
     async function handleSignup(): Promise<void> {
-        const newRecord: UserRecord = await signup(username, password)
-        // Potentially do something with the record
+        try {
+            const newRecord: UserRecord = await signup(username, password)
+        }
+        catch(error) {
+            console.log(error.message)
+            if (error.message == "validation_invalid_username") {
+                Alert.alert("Username already exists.\n Please select a different username")
+            }
+        }
     }
 
     async function handleLogin(): Promise<void> {
