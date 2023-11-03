@@ -6,20 +6,18 @@ import { createURL } from "expo-linking";
 import React from "react";
 import { PaperProvider } from 'react-native-paper';
 import ChallengeScreen from "screens/ChallengeScreen";
-import HomeScreen from "screens/HomeScreen";
-import MosaiqueScreen from "screens/MosaiqueScreen";
+import FeedScreen from 'screens/FeedScreen';
+import MosaicScreen from "screens/MosaicScreen";
 import ProfileNavigator from "screens/ProfileNavigator";
 import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
-import MosaiqueDataProvider from "src/store/MosaiqueDataProvider";
+import MosaicDataProvider from "src/store/MosaicDataProvider";
 import SettingsButton from "./SettingsButton";
 
 export type AppParamList = {
-    Home: undefined,
     Profile: undefined,
-    Friends: undefined,
     Challenges: undefined,
     Feed: undefined,
-    Mosaique: {
+    Mosaic: {
         imageUri?: string,
     },
 }
@@ -63,21 +61,21 @@ const linking: LinkingOptions<AppParamList> = {
 
 export default function LoggedInApp() {
     return (
-        <MosaiqueDataProvider>
+        <MosaicDataProvider>
             <DailyChallengesProvider>
                 <PaperProvider>
                     <NavigationContainer linking={linking} >
-                        <Tab.Navigator initialRouteName='Home' screenOptions={navigatorOptions}>
+                        <Tab.Navigator initialRouteName='Challenges' screenOptions={navigatorOptions}>
                             <Tab.Screen name="Challenges" component={ChallengeScreen} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
                             }} />
-                            {/* <Tab.Screen name="Feed" component={FeedScreen} options={{
+                            <Tab.Screen name="Feed" component={FeedScreen} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
-                            }} /> */}
-                            <Tab.Screen name="Home" component={HomeScreen} options={{
+                            }} />
+                            {/* <Tab.Screen name="Home" component={HomeScreen} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
                                 headerShown: false,
-                            }} />
+                            }} /> */}
                             {/* <Tab.Screen name="Friends" component={FriendsScreen} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
                               }} /> */}
@@ -85,13 +83,13 @@ export default function LoggedInApp() {
                                 tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                                 headerRight: () => <SettingsButton />,
                             }} />
-                            <Tab.Screen name="Mosaique" component={MosaiqueScreen} options={{
+                            <Tab.Screen name="Mosaic" component={MosaicScreen} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
                             }} />
                         </Tab.Navigator>
                     </NavigationContainer>
                 </PaperProvider>
             </DailyChallengesProvider>
-        </MosaiqueDataProvider>
+        </MosaicDataProvider>
     )
 }
