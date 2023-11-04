@@ -1,12 +1,14 @@
-import { Camera, CameraCapturedPicture, CameraType } from "expo-camera"
-import { useEffect, useRef, useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { Gesture, GestureDetector, GestureHandlerRootView, GestureStateChangeEvent, GestureUpdateEvent, PinchGesture, PinchGestureHandlerEventPayload } from "react-native-gesture-handler";
-import IconButton from "./IconButton";
 import Colors from "constants/colors";
+import { Camera, CameraType } from "expo-camera";
+import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
+import { useEffect, useRef, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Gesture, GestureDetector, GestureHandlerRootView, GestureStateChangeEvent, GestureUpdateEvent, PinchGesture, PinchGestureHandlerEventPayload } from "react-native-gesture-handler";
+import { FixedDimensionImage } from "types";
+import IconButton from "./IconButton";
 
 type ZoomableCameraProps = {
-    onTakePhoto: (photo: CameraCapturedPicture) => void,
+    onTakePhoto: (photo: FixedDimensionImage) => void,
 }
 
 const IMAGE_QUALITY: number = 0.9 // from 0 lowest to 1 highest quality
@@ -22,6 +24,18 @@ export default function ZoomableCamera({ onTakePhoto }: ZoomableCameraProps) {
     useEffect(() => {
         setScale(1)
     }, [type])
+
+    async function openMediaLibrary(): Promise<void> {
+        launchImageLibraryAsync({
+            mediaTypes: MediaTypeOptions.Images,
+            allowsEditing: false,
+            quality: 1,
+            allowsMultipleSelection: false,
+        }).then((result: ImagePickerResult) => {
+            if (result.canceled) return
+            onTakePhoto(result.assets[0])
+        })
+    }
 
     function toggleCameraType() {
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
@@ -47,7 +61,7 @@ export default function ZoomableCamera({ onTakePhoto }: ZoomableCameraProps) {
                 <Camera style={styles.camera} type={type} ref={cameraRef} zoom={ZOOM_SPEED * (scale - 1)}>
                     <View style={styles.upwardsContainer}>
                         <View style={styles.buttonContainer}>
-                            <View style={styles.button} />
+                            <IconButton icon="image-outline" color="white" onPress={openMediaLibrary} size={40} style={styles.button} />
                             <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
                             <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
                         </View>
