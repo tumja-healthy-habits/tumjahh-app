@@ -20,18 +20,7 @@ export default function LoginForm() {
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
 
-    async function handleSignup(): Promise<void> {
-        try {
-            const newRecord: UserRecord = await signup(username, password)
-        }
-        catch(error) {
-            console.log(error.message)
-            if (error.message == "validation_invalid_username") {
-                Alert.alert("Username already exists.\n Please select a different username")
-            }
-        }
-    }
-
+    
     async function handleLogin(): Promise<void> {
         login(username, password)
             .then((record: UserRecord) => {
@@ -41,12 +30,11 @@ export default function LoginForm() {
             })
             .catch(() => Alert.alert("Something went wrong while trying to log in.\n Please try again"))
     }
-    const imageSource: ImageSourcePropType = require("assets/images/behealthy-icon.png")
     return (
         <View style={styles.lcontainer}>
             <ScrollView style={{width:"90%"}} >
                 <Image source={require("assets/images/behealthy-icon.png")} style={{width:250, height:250, alignSelf:'center'}}/>
-                <Text style={{color: Colors.accent, fontSize: 30, margin: 15,}}>Login</Text>
+                <Text style={{color: Colors.accent, fontSize: 30, margin: 15,marginBottom: 20}}>Login</Text>
                 <View>
 
                     {/*<LabelledTextInput label="Username:" placeholder="username" onChangeText={(text: string) => setUsername(text)} />*/}
@@ -81,7 +69,7 @@ export default function LoginForm() {
                 </View>
                 {/* <Button title="Log in" onPress={handleLogin} color={Colors.accent}></Button> */}
                 <CustomButton label={"Login"} onPress={handleLogin} />
-                <Button title="Don't have an account?\n Sign Up!" onPress={() => SignupForm()} color={Colors.accent }></Button>
+                <Button title={"Don't have an account?\n Sign Up!"} onPress={() => SignupForm()} color={Colors.accent }></Button>
             </ScrollView>
         </View>
     )

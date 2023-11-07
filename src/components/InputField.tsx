@@ -27,6 +27,7 @@ export default function InputField({
           style={{flex: 1, paddingVertical: 0}}
           secureTextEntry={true}
           onChangeText={textFunction}
+          autoCapitalize='none'
         />
       ) : (
         <TextInput
@@ -34,6 +35,7 @@ export default function InputField({
           keyboardType={keyboardType}
           style={{flex: 1, paddingVertical: 0}}
           onChangeText={textFunction}
+          autoCapitalize='none'
         />
       )}
       <TouchableOpacity onPress={fieldButtonFunction}>
