@@ -1,9 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BottomTabNavigationOptions, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { LinkingOptions, NavigationContainer } from "@react-navigation/native";
 import Colors from "constants/colors";
 import { createURL } from "expo-linking";
-import React from "react";
+import { cancelScheduledNotificationAsync, scheduleNotificationAsync } from 'expo-notifications';
+import React, { useEffect } from "react";
+import { AppState } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import ChallengeScreen from "screens/ChallengeScreen";
 import HomeScreen from "screens/HomeScreen";
@@ -12,6 +15,8 @@ import ProfileNavigator from "screens/ProfileNavigator";
 import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
 import MosaiqueDataProvider from "src/store/MosaiqueDataProvider";
 import SettingsButton from "./SettingsButton";
+
+const VAR_REMINDER_NOTIFICATION_ID: string = "BeHealthyReminderNotificationId"
 
 export type AppParamList = {
     Home: undefined,
@@ -62,6 +67,27 @@ const linking: LinkingOptions<AppParamList> = {
 }
 
 export default function LoggedInApp() {
+    useEffect(() => {
+        AppState.addEventListener("change", (state: string) => {
+            if (state === "inactive") {
+                AsyncStorage.getItem(VAR_REMINDER_NOTIFICATION_ID).then((notificationId: string | null) => {
+                    if (notificationId !== null) {
+                        cancelScheduledNotificationAsync(notificationId)
+                    }
+                })
+                scheduleNotificationAsync({
+                    content: {
+                        title: "You have been gone for a while",
+                        body: "Come back and take a photo of your healthy habit"
+                    },
+                    trigger: {
+                        seconds: 10,
+                        repeats: false,
+                    }
+                })
+            }
+        })
+    })
     return (
         <MosaiqueDataProvider>
             <DailyChallengesProvider>
