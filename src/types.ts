@@ -32,6 +32,15 @@ export interface ChallengesRecord extends Record {
     habit_id: string;
 }
 
+export interface MosaicRecord extends Record {
+    name: string;
+}
+
+export interface MosaicMembersRecord extends Record {
+    mosaic_id: string;
+    user_id: string;
+}
+
 export interface LocalStorageChallengeEntry {
     record: ChallengesRecord;
     repetitionsGoal: number;
