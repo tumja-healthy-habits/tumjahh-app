@@ -17,6 +17,7 @@ import MosaiqueDataProvider from "src/store/MosaiqueDataProvider";
 import SettingsButton from "./SettingsButton";
 
 const VAR_REMINDER_NOTIFICATION_ID: string = "BeHealthyReminderNotificationId"
+const DAYS_UNTIL_REMINDER: number = 3
 
 export type AppParamList = {
     Home: undefined,
@@ -81,8 +82,8 @@ export default function LoggedInApp() {
                         body: "Come back and take a photo of your healthy habit"
                     },
                     trigger: {
-                        seconds: 10,
                         repeats: false,
+                        seconds: 60 * 60 * 24 * DAYS_UNTIL_REMINDER,
                     }
                 })
             }
