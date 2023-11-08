@@ -61,7 +61,7 @@ export function AuthenticatedUserProvider({ children }: any) {
     } as UserRecord
 
     return (
-        <AuthenticatedUserContext.Provider value={{ currentUser: dummy, setCurrentUser }}>
+        <AuthenticatedUserContext.Provider value={{ currentUser, setCurrentUser }}>
             {children}
         </AuthenticatedUserContext.Provider>
     )

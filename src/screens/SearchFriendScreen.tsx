@@ -1,17 +1,20 @@
-import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { NavigationProp, RouteProp, useNavigation, usePreventRemoveContext, useRoute } from "@react-navigation/native";
 import ActionButton from "components/ActionButton";
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, TextInput, PermissionsAndroid } from "react-native";
 import { ProfileParamList } from "./ProfileNavigator";
 import UserQRCode from "components/UserQRCode";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Colors from "constants/colors";
 import BlurModal from "components/BlurModal";
 import ProfilePreview from "components/ProfilePreview";
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
+import FriendSearch from "components/FriendSearch"
 
 export default function SearchFriendScreen() {
     // const navigation = useNavigation<NavigationProp<ProfileParamList, 'SearchFriend'>>()
+    const { currentUser, setCurrentUser } = useAuthenticatedUser()
     const { params } = useRoute<RouteProp<ProfileParamList, 'SearchFriend'>>()
-    console.log("getting these params:", params)
+    //console.log("getting these params:", params)
     const [friendId, setFriendId] = useState<string>(params?.friendId || "")
     const [showQRCode, setShowQRCode] = useState<boolean>(false)
 
@@ -27,5 +30,6 @@ export default function SearchFriendScreen() {
             userId: '123',
         })} /> */}
         <ActionButton title="Add Friend Modal" onPress={() => setFriendId("0v5nlflehtbnnco")} />
+        <FriendSearch />
     </View>
 }
