@@ -13,6 +13,8 @@ import {
 import Colors from "constants/colors";
 import { useState } from "react";
 import { styles } from "../styles";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+
 
 import { VAR_PASSWORD, VAR_USERNAME, login, signup } from "src/authentification";
 
@@ -20,6 +22,8 @@ import InputField from './InputField';
 import LoginForm from './LoginForm';
 import CustomButton from './CustomButton';
 import { UserRecord } from 'types';
+import { LoginParamList } from "./LoginNavigator";
+
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -28,7 +32,6 @@ import TextInputMask from 'react-native-masked-text'
 
 
 export default function SignupForm() {
-    console.log("Inside signup form")
 
     const [username, setUsername] = useState<string>("")
     const [name, setName] = useState<string>("")
@@ -39,6 +42,12 @@ export default function SignupForm() {
     const [date, setDate] = useState(new Date());
     const [open, setOpen] = useState(false);
     const [dobLabel, setDobLabel] = useState('Date of Birth');
+
+    //const navigation = useNavigation<NavigationProp<LoginParamList, "SignupForm">>()
+
+    const { navigate, goBack } = useNavigation<NavigationProp<LoginParamList, "SignupForm">>()
+
+
 
     async function handleSignup(): Promise<void> {
         try {
@@ -65,8 +74,8 @@ export default function SignupForm() {
         showsVerticalScrollIndicator={false}
         style={{width:"90%"}}>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom:30}}>
-            <Text style={{color: Colors.accent, fontSize: 30, marginLeft: 15, alignSelf:'flex-end'}}>Sign Up</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom:15}}>
+            <Text style={{color: Colors.accent, fontSize: 30, marginLeft: 15, alignSelf:'flex-end', marginBottom:15}}>Register</Text>
             <Image source={require("assets/images/behealthy-icon.png")} style={{width:170, height:170, alignSelf:'flex-end'}}/>
         </View>
 
@@ -149,7 +158,18 @@ export default function SignupForm() {
         
 
         <CustomButton label={'Register'} onPress={handleSignup} />
-        <Button title={"Already registered?\n Login!"} onPress={() => LoginForm()} color={Colors.accent }></Button>
+        {/* <Button title={"Already registered?\n Login!"} onPress={goBack} color={Colors.accent }></Button> */}
+
+        <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    marginBottom: 30,
+                }}>
+                    <Text>Already registered?</Text>
+                    <TouchableOpacity onPress={goBack}>
+                        <Text style={{color: '#FFF4EC', fontWeight: '700'}}> Login</Text>
+                    </TouchableOpacity>
+                </View>
 
       </ScrollView>
     </View>
