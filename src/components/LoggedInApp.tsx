@@ -1,23 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BottomTabNavigationOptions, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Colors from "constants/colors";
-import React from "react";
+import { cancelScheduledNotificationAsync, scheduleNotificationAsync } from 'expo-notifications';
+import React, { useEffect } from "react";
+import { AppState } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import ChallengeScreen from "screens/ChallengeScreen";
-import HomeScreen from "screens/HomeScreen";
-import MosaiqueScreen from "screens/MosaiqueScreen";
+import FeedScreen from 'screens/FeedScreen';
+import MosaicScreen from "screens/MosaicScreen";
 import ProfileNavigator from "screens/ProfileNavigator";
 import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
-import MosaiqueDataProvider from "src/store/MosaiqueDataProvider";
+import MosaicDataProvider from "src/store/MosaicDataProvider";
 import SettingsButton from "./SettingsButton";
 
+const VAR_REMINDER_NOTIFICATION_ID: string = "BeHealthyReminderNotificationId"
+const DAYS_UNTIL_REMINDER: number = 3
+
 export type AppParamList = {
-    Home: undefined,
     Profile: undefined,
-    Friends: undefined,
     Challenges: undefined,
     Feed: undefined,
-    Mosaique: {
+    Mosaic: {
         imageUri?: string,
     },
 }
@@ -40,8 +44,29 @@ const navigatorOptions: BottomTabNavigationOptions = {
 
 
 export default function LoggedInApp() {
+    useEffect(() => {
+        AppState.addEventListener("change", (state: string) => {
+            if (state === "inactive") {
+                AsyncStorage.getItem(VAR_REMINDER_NOTIFICATION_ID).then((notificationId: string | null) => {
+                    if (notificationId !== null) {
+                        cancelScheduledNotificationAsync(notificationId)
+                    }
+                })
+                scheduleNotificationAsync({
+                    content: {
+                        title: "You have been gone for a while",
+                        body: "Come back and take a photo of your healthy habit"
+                    },
+                    trigger: {
+                        repeats: false,
+                        seconds: 60 * 60 * 24 * DAYS_UNTIL_REMINDER,
+                    }
+                })
+            }
+        })
+    })
     return (
-        <MosaiqueDataProvider>
+        <MosaicDataProvider>
             <DailyChallengesProvider>
                 <PaperProvider>
                     <Tab.Navigator initialRouteName='Home' screenOptions={navigatorOptions}>
@@ -68,6 +93,6 @@ export default function LoggedInApp() {
                     </Tab.Navigator>
                 </PaperProvider>
             </DailyChallengesProvider>
-        </MosaiqueDataProvider>
+        </MosaicDataProvider>
     )
 }

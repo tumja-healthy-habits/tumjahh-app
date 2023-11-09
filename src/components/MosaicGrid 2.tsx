@@ -1,15 +1,15 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
-import { useMosaiqueData } from "src/store/MosaiqueDataProvider";
+import { useMosaicData } from "src/store/MosaicDataProvider";
 import FloatingPicture from "./FloatingPicture";
 import { AppParamList } from "./LoggedInApp";
-import MosaiqueTile from "./MosaiqueTile";
+import MosaicTile from "./MosaicTile";
 
-export default function MosaiqueGrid() {
-    const { numRings } = useMosaiqueData()
+export default function MosaicGrid() {
+    const { numRings } = useMosaicData()
     const gridSize: number = 2 * numRings + 1
-    const { params } = useRoute<RouteProp<AppParamList, "Mosaique">>()
+    const { params } = useRoute<RouteProp<AppParamList, "Mosaic">>()
 
     const getIndices = useCallback(
         function (i: number, j: number) {
@@ -26,7 +26,7 @@ export default function MosaiqueGrid() {
                         {Array.from({ length: gridSize }).map((_, columnIndex) => {
                             const [i, j] = getIndices(columnIndex, rowIndex)
                             return (
-                                <MosaiqueTile
+                                <MosaicTile
                                     key={columnIndex}
                                     x={i}
                                     y={j}
