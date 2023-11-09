@@ -165,7 +165,7 @@ export default function SignupForm() {
                     justifyContent: 'center',
                     marginBottom: 30,
                 }}>
-                    <Text>Already registered?</Text>
+                    <Text style = {{color: Colors.accent}}>Already registered?</Text>
                     <TouchableOpacity onPress={goBack}>
                         <Text style={{color: '#FFF4EC', fontWeight: '700'}}> Login</Text>
                     </TouchableOpacity>

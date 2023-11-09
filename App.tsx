@@ -1,6 +1,4 @@
 import LoggedInApp from 'components/LoggedInApp';
-import LoginForm from 'components/LoginForm';
-import SignupForm from 'components/SignupForm';
 import { setNotificationHandler } from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
