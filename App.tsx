@@ -2,7 +2,10 @@ import LoggedInApp from 'components/LoggedInApp';
 import LoginForm from 'components/LoginForm';
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
+import EventSource from "react-native-sse";
 import { AuthenticatedUserContext, AuthenticatedUserProvider } from 'src/store/AuthenticatedUserProvider';
+
+global.EventSource = EventSource as any
 
 export default function App() {
   return (
