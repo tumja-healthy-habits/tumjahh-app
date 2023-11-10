@@ -37,6 +37,7 @@ export default function MosaiqueTile({ x, y }: MosaiqueTileProps) {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: "white",
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.2,
