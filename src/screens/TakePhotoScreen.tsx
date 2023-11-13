@@ -77,7 +77,7 @@ export default function TakePhotoScreen() {
             export: () => ({}),
         } as unknown as PhotosRecord)
         if (photo !== undefined) {
-            appNavigation.navigate("Mosaique", {
+            appNavigation.navigate("Mosaic", {
                 imageUri: photo?.uri,
             })
         }

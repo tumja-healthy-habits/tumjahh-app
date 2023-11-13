@@ -1,28 +1,28 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { createContext, useContext, useEffect, useState } from "react"
-import { MosaiqueData } from "types"
+import { MosaicData } from "types"
 
 export const VAR_NUM_RINGS: string = "BeHealthyNumRings"
-export const VAR_IMAGE_IDS: string = "BeHealthyMosaique"
+export const VAR_IMAGE_IDS: string = "BeHealthyMosaic"
 
 
-type MosaiqueContext = {
+type MosaicContext = {
     numRings: number,
     putImage: (i: number, j: number, uri: string) => void,
     getImageUri: (i: number, j: number) => string,
-    deleteMosaique: () => void,
+    deleteMosaic: () => void,
 }
 
-const MosaiqueContext = createContext<MosaiqueContext>({
+const MosaicContext = createContext<MosaicContext>({
     numRings: 0,
     putImage: () => { },
     getImageUri: () => "",
-    deleteMosaique: () => { },
+    deleteMosaic: () => { },
 })
 
-export default function MosaiqueDataProvider({ children }: any) {
+export default function MosaicDataProvider({ children }: any) {
     const [numRings, setNumRings] = useState<number>(0)
-    const [imageUris, setImageUris] = useState<MosaiqueData>({})
+    const [imageUris, setImageUris] = useState<MosaicData>({})
 
     useEffect(() => {
         AsyncStorage.getItem(VAR_NUM_RINGS).then((numRings) => {
@@ -62,7 +62,7 @@ export default function MosaiqueDataProvider({ children }: any) {
     }
 
     return (
-        <MosaiqueContext.Provider value={{
+        <MosaicContext.Provider value={{
             numRings,
             putImage: (i: number, j: number, uri: string) => {
                 AsyncStorage.mergeItem(VAR_IMAGE_IDS, JSON.stringify({
@@ -71,7 +71,7 @@ export default function MosaiqueDataProvider({ children }: any) {
                     }
                 }))
                 setImageUris((imageUris) => {
-                    const newImageUris: MosaiqueData = { ...imageUris }
+                    const newImageUris: MosaicData = { ...imageUris }
                     if (newImageUris[i] === undefined) newImageUris[i] = []
                     newImageUris[i][j] = uri
                     return newImageUris
@@ -80,7 +80,7 @@ export default function MosaiqueDataProvider({ children }: any) {
             getImageUri: (i: number, j: number) => {
                 return imageUris[i] && imageUris[i][j] || ""
             },
-            deleteMosaique: () => {
+            deleteMosaic: () => {
                 AsyncStorage.setItem(VAR_IMAGE_IDS, JSON.stringify({}))
                 AsyncStorage.setItem(VAR_NUM_RINGS, JSON.stringify(0))
                 setImageUris([])
@@ -88,10 +88,10 @@ export default function MosaiqueDataProvider({ children }: any) {
             },
         }}>
             {children}
-        </MosaiqueContext.Provider>
+        </MosaicContext.Provider>
     )
 }
 
-export function useMosaiqueData() {
-    return useContext(MosaiqueContext)
+export function useMosaicData() {
+    return useContext(MosaicContext)
 }
