@@ -7,7 +7,7 @@ import React from "react";
 import { PaperProvider } from 'react-native-paper';
 import ChallengeScreen from "screens/ChallengeScreen";
 import HomeScreen from "screens/HomeScreen";
-import MosaiqueScreen from "screens/MosaiqueScreen";
+import MosaicNavigator from 'screens/MosaicNavigator';
 import ProfileNavigator from "screens/ProfileNavigator";
 import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
 import MosaiqueDataProvider from "src/store/MosaiqueDataProvider";
@@ -85,7 +85,7 @@ export default function LoggedInApp() {
                                 tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                                 headerRight: () => <SettingsButton />,
                             }} />
-                            <Tab.Screen name="Mosaique" component={MosaiqueScreen} options={{
+                            <Tab.Screen name="Mosaique" component={MosaicNavigator} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
                             }} />
                         </Tab.Navigator>
