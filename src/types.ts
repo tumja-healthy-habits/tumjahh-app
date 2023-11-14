@@ -46,3 +46,9 @@ export type MosaicData = {
 export type ChallengeData = {
     [key: string]: LocalStorageChallengeEntry | null
 }
+
+export type FixedDimensionImage = {
+    uri: string;
+    width: number;
+    height: number;
+}
