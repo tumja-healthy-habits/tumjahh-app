@@ -38,9 +38,9 @@ export default function DailyChallengeButton({ dailyChallenge, openCamera }: Dai
         if (pressed) tickOffChallenge()
     }
 
-    function openMosaique(): void {
+    function openMosaic(): void {
         if (dailyChallenge.photo === null) return
-        appNavigation.navigate("Mosaique", {
+        appNavigation.navigate("Mosaic", {
             imageUri: dailyChallenge.photo.photo,
         })
     }
@@ -78,7 +78,7 @@ export default function DailyChallengeButton({ dailyChallenge, openCamera }: Dai
     return (
         <Pressable
             style={({ pressed }) => [styles.outerContainer, pressed && { backgroundColor: Colors.anotherPeachColor }]}
-            onPress={openMosaique}
+            onPress={openMosaic}
         >
             {({ pressed }) => (<View>
                 <View style={styles.nameAndButtonsContainer}>

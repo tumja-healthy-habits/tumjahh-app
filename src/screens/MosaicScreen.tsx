@@ -1,16 +1,16 @@
 import ActionButton from "components/ActionButton";
-import MosaiqueGrid from "components/MosaiqueGrid";
+import MosaicGrid from "components/MosaicGrid";
 import NavigatableView from "components/NavigatableView";
 import { useMemo } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { Extrapolate, interpolate } from "react-native-reanimated";
-import { useMosaiqueData } from "src/store/MosaiqueDataProvider";
+import { useMosaicData } from "src/store/MosaicDataProvider";
 
 const MIN_ZOOM: number = 0.2
 const MAX_ZOOM: number = 3
 
-export default function MosaiqueScreen() {
-    const { numRings, deleteMosaique } = useMosaiqueData()
+export default function MosaicScreen() {
+    const { numRings, deleteMosaic } = useMosaicData()
 
     const zoom: number = useMemo(() => {
         return interpolate(numRings, [0, 3], [MAX_ZOOM / 4, MIN_ZOOM], Extrapolate.CLAMP)
@@ -18,8 +18,8 @@ export default function MosaiqueScreen() {
 
     return <View style={{}}>
         {numRings !== undefined ? <NavigatableView minZoom={MIN_ZOOM} maxZoom={MAX_ZOOM} initialZoom={zoom}>
-            <MosaiqueGrid />
-            <ActionButton title="Reset" onPress={deleteMosaique} />
+            <MosaicGrid />
+            <ActionButton title="Reset" onPress={deleteMosaic} />
         </NavigatableView> : <ActivityIndicator />}
     </View>
 }

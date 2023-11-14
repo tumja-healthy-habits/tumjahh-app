@@ -37,7 +37,7 @@ export interface LocalStorageChallengeEntry {
     repetitionsGoal: number;
 }
 
-export type MosaiqueData = {
+export type MosaicData = {
     [key: number]: {
         [key: number]: string
     }

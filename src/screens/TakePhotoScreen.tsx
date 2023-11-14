@@ -58,7 +58,7 @@ export default function TakePhotoScreen() {
         saveToLibraryAsync(photo!.uri)
 
         if (photo !== undefined) {
-            appNavigation.navigate("Mosaique", {
+            appNavigation.navigate("Mosaic", {
                 imageUri: photo.uri,
             })
         }

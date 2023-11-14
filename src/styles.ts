@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
     hcontainer: {
         flexDirection: "row",
         alignItems: "center",
+        justifyContent: "center",
     },
     textfieldText: {
         color: Colors.accent,
