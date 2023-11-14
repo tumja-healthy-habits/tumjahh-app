@@ -41,8 +41,6 @@ export default function MosaicDataProvider({ children }: any) {
         })
     }, [])
 
-    useEffect(() => console.log("numRings has been updated"), [numRings])
-
     useEffect(() => {
         if (ringCompleted()) {
             AsyncStorage.setItem(VAR_NUM_RINGS, JSON.stringify(numRings + 1))

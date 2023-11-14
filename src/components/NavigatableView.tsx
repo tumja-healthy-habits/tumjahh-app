@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { StyleProp, ViewStyle, useWindowDimensions } from "react-native"
-import { PanGesture, Gesture, PinchGesture, ComposedGesture, GestureHandlerRootView, GestureDetector } from "react-native-gesture-handler"
-import Animated, { SharedValue, useSharedValue, useAnimatedStyle } from "react-native-reanimated"
+import { ComposedGesture, Gesture, GestureDetector, GestureHandlerRootView, PanGesture, PinchGesture } from "react-native-gesture-handler"
+import Animated, { SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 
 type NavigatableViewProps = {
     minZoom: number,

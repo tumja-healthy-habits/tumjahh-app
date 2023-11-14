@@ -8,7 +8,7 @@ import { AppState } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import ChallengeScreen from "screens/ChallengeScreen";
 import FeedScreen from 'screens/FeedScreen';
-import MosaicScreen from "screens/MosaicScreen";
+import MosaicNavigator from 'screens/MosaicNavigator';
 import ProfileNavigator from "screens/ProfileNavigator";
 import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
 import MosaicDataProvider from "src/store/MosaicDataProvider";
@@ -64,24 +64,24 @@ export default function LoggedInApp() {
             <DailyChallengesProvider>
                 <PaperProvider>
                     <Tab.Navigator initialRouteName='Feed' screenOptions={navigatorOptions}>
-                        <Tab.Screen name="Feed" component={FeedScreen} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
-                        }} />
                         <Tab.Screen name="Challenges" component={ChallengeScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
                         }} />
+                        <Tab.Screen name="Feed" component={FeedScreen} options={{
+                            tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
+                        }} />
                         {/* <Tab.Screen name="Home" component={HomeScreen} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
-                            headerShown: false,
-                        }} /> */}
-                        {/* <Tab.Screen name="Friends" component={FriendsScreen} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
+                                tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
+                                headerShown: false,
                             }} /> */}
+                        {/* <Tab.Screen name="Friends" component={FriendsScreen} options={{
+                                tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
+                              }} /> */}
                         <Tab.Screen name="Profile" component={ProfileNavigator} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                             headerRight: () => <SettingsButton />,
                         }} />
-                        <Tab.Screen name="Mosaic" component={MosaicScreen} options={{
+                        <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
                         }} />
                     </Tab.Navigator>

@@ -16,7 +16,7 @@ export default function MosaicTile({ x, y }: MosaicTileProps) {
     function handlePress(): void {
         if (params === undefined || params.imageUri === undefined) return
         putImage(x, y, params.imageUri)
-        navigation.navigate("Mosaic", {
+        navigation.setParams({
             imageUri: undefined,
         })
     }
@@ -37,6 +37,7 @@ export default function MosaicTile({ x, y }: MosaicTileProps) {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: "white",
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.2,
@@ -46,10 +47,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: 200,
         height: 200,
-        margin: 0,
     },
     empty: {
-        backgroundColor: "white",
         borderColor: "black",
         borderWidth: 0,
     },
@@ -60,6 +59,5 @@ const styles = StyleSheet.create({
     pressed: {
         opacity: 1,
         borderColor: "blue",
-        backgroundColor: "white",
     }
 })

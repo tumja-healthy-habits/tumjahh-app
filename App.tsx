@@ -1,33 +1,33 @@
-import LoggedInApp from 'components/LoggedInApp';
+import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
+import LoggedInApp, { AppParamList } from 'components/LoggedInApp';
+import LoginNavigator from 'components/LoginNavigator';
+import { createURL } from "expo-linking";
 import { setNotificationHandler } from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
-import { createURL } from "expo-linking";
-import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
+import EventSource from "react-native-sse";
 import { AuthenticatedUserContext, AuthenticatedUserProvider } from 'src/store/AuthenticatedUserProvider';
-import { AppParamList } from 'components/LoggedInApp';
-import LoginNavigator from 'components/LoginNavigator';
 
 const prefix: string = createURL('/')
 const linking: LinkingOptions<AppParamList> = {
-    prefixes: [prefix],
-    config: {
+  prefixes: [prefix],
+  config: {
+    screens: {
+      Profile: {
         screens: {
-            Profile: {
-                screens: {
-                    SearchFriend: {
-                        path: 'addfriend/:friendId',
-                        parse: {
-                            friendId: (friendId: string) => `${friendId}`,
-                        },
-                        stringify: {
-                            friendId: (friendId: string) => `${friendId}`,
-                        },
-                    }
-                }
-            }
+          SearchFriend: {
+            path: 'addfriend/:friendId',
+            parse: {
+              friendId: (friendId: string) => `${friendId}`,
+            },
+            stringify: {
+              friendId: (friendId: string) => `${friendId}`,
+            },
+          }
         }
+      }
     }
+  }
 }
 
 
@@ -38,6 +38,8 @@ setNotificationHandler({
     shouldSetBadge: false,
   })
 })
+
+global.EventSource = EventSource as any
 
 export default function App() {
   // useEffect(() => {

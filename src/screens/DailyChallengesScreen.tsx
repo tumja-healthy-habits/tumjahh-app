@@ -17,7 +17,7 @@ export default function DailyChallengesScreen() {
     const [showChallengesModal, setShowChallengesModal] = useState<boolean>(false)
     const [cameraModalChallenge, setCameraModalChallenge] = useState<string>()
 
-    const { setOptions } = useNavigation<NavigationProp<AppParamList, "Home">>()
+    const { setOptions } = useNavigation<NavigationProp<AppParamList, "Challenges">>()
 
     useEffect(() => {
         setOptions({
