@@ -7,14 +7,14 @@ import { useEffect, useState } from "react";
 import { Button, FlatList, ListRenderItemInfo, Text, View } from "react-native";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { DailyChallenge, useDailyChallenges } from "src/store/DailyChallengesProvider";
-import { styles } from "src/styles";
+import { globalStyles } from "src/styles";
 
 export default function DailyChallengesScreen() {
     const { challenges } = useDailyChallenges()
     const [showModal, setShowModal] = useState<boolean>(false)
     const { currentUser } = useAuthenticatedUser()
 
-    const { setOptions } = useNavigation<NavigationProp<AppParamList, "Home">>()
+    const { setOptions } = useNavigation<NavigationProp<AppParamList, "Challenges">>()
 
     useEffect(() => {
         setOptions({
@@ -24,8 +24,8 @@ export default function DailyChallengesScreen() {
 
     if (currentUser === null) {
         return (
-            <View style={styles.container}>
-                <Text style={styles.textfieldTitle}>You need to be logged in to use this feature</Text>
+            <View style={globalStyles.container}>
+                <Text style={globalStyles.textfieldTitle}>You need to be logged in to use this feature</Text>
             </View>
         )
     }
@@ -35,8 +35,8 @@ export default function DailyChallengesScreen() {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: Colors.pastelViolet, paddingTop: 10, width: "100%" }]}>
-            <Text style={styles.textfieldTitle}>Hi, {currentUser.name}.</Text>
+        <View style={[globalStyles.container, { backgroundColor: Colors.pastelViolet, paddingTop: 10, width: "100%" }]}>
+            <Text style={globalStyles.textfieldTitle}>Hi, {currentUser.name}.</Text>
             {challenges.length === 0 ? <Button title="Select some challenges here :)" onPress={() => setShowModal(true)} color={Colors.accent} />
                 : <FlatList
                     data={challenges}

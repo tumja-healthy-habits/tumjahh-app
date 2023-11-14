@@ -31,16 +31,8 @@ const Tab = createBottomTabNavigator<AppParamList>();
 const navigatorOptions: BottomTabNavigationOptions = {
     tabBarActiveTintColor: Colors.anotherPeachColor,
     headerShown: false,
-    // headerStyle: {
-    //     backgroundColor: Colors.white,
-    // },
-    // headerTitleStyle: {
-    //     fontWeight: 'bold',
-    //     color: "black",
-    // },
     tabBarActiveBackgroundColor: "white",
     tabBarInactiveBackgroundColor: "white",
-    
 }
 
 

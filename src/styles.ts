@@ -2,7 +2,7 @@ import Colors from 'constants/colors';
 import { StyleSheet } from "react-native";
 
 // styles
-export const styles = StyleSheet.create({
+export const globalStyles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.background,
@@ -13,13 +13,6 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-    },
-    lcontainer: {
-        backgroundColor: '#d7c3de',
-        height: '100%', 
-        width: '100%',
-        paddingTop: 50,
-        alignItems: 'center'
     },
     textfieldText: {
         color: Colors.accent,
