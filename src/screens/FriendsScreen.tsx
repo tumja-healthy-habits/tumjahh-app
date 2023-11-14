@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { FlatList, ListRenderItemInfo, Text, View } from 'react-native'
 import { pb } from 'src/pocketbaseService'
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider'
-import { styles } from "src/styles"
+import { globalStyles } from "src/styles"
 import { FriendsWithRecord, UserRecord } from 'types'
 
 export default function FriendsScreen() {
@@ -37,8 +37,8 @@ export default function FriendsScreen() {
     }
 
     return (
-        <View style={[styles.container, { alignItems: 'stretch' }]}>
-            {friends.length === 0 && <Text style={styles.textfieldText}>You haven't added any friends yet</Text>}
+        <View style={[globalStyles.container, { alignItems: 'stretch' }]}>
+            {friends.length === 0 && <Text style={globalStyles.textfieldText}>You haven't added any friends yet</Text>}
             <FlatList
                 data={friends}
                 keyExtractor={(user: UserRecord) => user.id}

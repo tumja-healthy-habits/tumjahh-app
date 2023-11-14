@@ -1,6 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserRecord } from "types";
 import { pb } from "./pocketbaseService";
-import AsyncStorage from "@react-native-async-storage/async-storage"
 
 // the keys used in the local storage
 export const VAR_USERNAME: string = "BeHealthyUsername"
@@ -14,23 +14,33 @@ export async function login(username: string, password: string): Promise<UserRec
 
 
 // returns the newly created user record
-export async function signup(username: string, password: string): Promise<UserRecord> { 
-    try{
+export async function signup(username: string, name: string, email: string, pw: string, pwConfirm: string): Promise<UserRecord | undefined> {
+    try {
         const data: any = {
             username: username,
-            name: username,
-            password: password,
-            passwordConfirm: password,
+            name: name,
+            email: email,
+            password: pw,
+            passwordConfirm: pwConfirm,
         }
         await pb.collection("users").create<UserRecord>(data)
-        return login(username, password)
+        return login(username, pw)
     }
-    catch(error) {
+    catch (error: any) {
         console.log(error.response)
         if ("username" in error.response.data) {
             if (error.response.data.username.code == "validation_invalid_username") {
-                console.log(error.response.data.username)
                 throw new Error(error.response.data.username.code)
+            }
+        }
+        else if ("password" in error.response.data) {
+            if (error.response.data.password.code == "validation_required") {
+                throw new Error(error.response.data.password.code)
+            }
+        }
+        else if ("email" in error.response.data) {
+            if (error.response.data.email.code == "validation_invalid_email") {
+                throw new Error(error.response.data.email.code)
             }
         }
     }
