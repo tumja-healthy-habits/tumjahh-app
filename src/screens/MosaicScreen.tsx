@@ -23,29 +23,3 @@ export default function MosaicScreen() {
         </NavigatableView> : <ActivityIndicator />}
     </View>
 }
-
-// function Grid({ scale }: { scale: SharedValue<number> }) {
-//     const [gridSize, setGridSize] = useState<number>(5)
-//     useAnimatedReaction(() => {
-//         return Math.ceil(INITIAL_GRID_SIZE / scale.value) !== gridSize
-//     }, () => {
-//         runOnJS(setGridSize)(Math.ceil(INITIAL_GRID_SIZE / scale.value))
-//     })
-
-//     return (
-//         <View style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}>
-//             {
-//                 Array.from({ length: gridSize }).map((_: any, rowIndex: number) => (
-//                     <View style={{ flexDirection: 'row' }} key={rowIndex}>
-//                         {Array.from({ length: gridSize }).map((_, columnIndex) => (
-//                             <GridTile
-//                                 key={columnIndex}
-//                                 index={rowIndex * gridSize + columnIndex}
-//                             />
-//                         ))}
-//                     </View>
-//                 ))
-//             }
-//         </View>
-//     )
-// }

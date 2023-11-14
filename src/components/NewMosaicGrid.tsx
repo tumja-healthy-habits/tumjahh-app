@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
+import { Extrapolate, interpolate } from "react-native-reanimated";
 import { pb, useRealTimeSubscription } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { ContainsRecord, FixedDimensionImage, MosaicRecord, PhotosRecord } from "types";
+import NavigatableView from "./NavigatableView";
 import NewMosaicTile from "./NewMosaicTile";
+
+const MIN_ZOOM: number = 0.2
+const MAX_ZOOM: number = 3
 
 type NewMosaicGridProps = {
     mosaicId: string
@@ -33,6 +38,10 @@ export default function NewMosaicGrid({ mosaicId }: NewMosaicGridProps) {
 
     const { currentUser } = useAuthenticatedUser()
 
+    const zoom: number = useMemo(() => {
+        if (mosaicRecord === undefined) return 1
+        return interpolate(mosaicRecord.numRings, [0, 3], [MAX_ZOOM / 4, MIN_ZOOM], Extrapolate.CLAMP)
+    }, [mosaicRecord?.numRings]) // TODO: check this dependency list once numRings gets updated
 
     useEffect(() => {
         // load the mosaic record and the photos that are in the mosaic and read them into a grid
@@ -88,16 +97,6 @@ export default function NewMosaicGrid({ mosaicId }: NewMosaicGridProps) {
         })
     }
 
-    if (mosaicRecord === undefined) {
-        // Show an activita indicator while the mosaic record is loading
-        return (
-            <View style={styles.container}>
-                <ActivityIndicator />
-            </View>
-        )
-    }
-
-    const gridSize: number = 2 * mosaicRecord.numRings + 1
 
     // compute the indices of the photo in the grid from the position of the photo in the database
     function getIndices(x: number, y: number, numRings: number) {
@@ -129,7 +128,18 @@ export default function NewMosaicGrid({ mosaicId }: NewMosaicGridProps) {
         })
     }
 
-    return <View style={styles.container}>
+    if (mosaicRecord === undefined) {
+        // Show an activity indicator while the mosaic record is loading
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator />
+            </View>
+        )
+    }
+
+    const gridSize: number = 2 * mosaicRecord.numRings + 1
+
+    return <NavigatableView minZoom={MIN_ZOOM} maxZoom={MAX_ZOOM} initialZoom={zoom} style={styles.container}>
         {
             Array.from({ length: gridSize }).map((_: any, columnIndex: number) =>
                 <View style={styles.row} key={columnIndex}>
@@ -146,7 +156,7 @@ export default function NewMosaicGrid({ mosaicId }: NewMosaicGridProps) {
                 </View>
             )
         }
-    </View>
+    </NavigatableView>
 }
 
 const styles = StyleSheet.create({

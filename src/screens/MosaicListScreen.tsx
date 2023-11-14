@@ -1,7 +1,7 @@
 import MosaicPreview from "components/MosaicPreview";
 import Colors from "constants/colors";
 import { useEffect, useState } from "react";
-import { FlatList, ListRenderItemInfo, StyleSheet, View } from "react-native";
+import { FlatList, ListRenderItemInfo, SafeAreaView, StyleSheet } from "react-native";
 import { pb, useRealTimeSubscription } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { MosaicMembersRecord, MosaicRecord } from "types";
@@ -48,14 +48,14 @@ export default function () {
         }
     }
 
-    return <View style={styles.container}>
+    return <SafeAreaView style={styles.container}>
         <FlatList
             data={mosaics}
             renderItem={(info: ListRenderItemInfo<MosaicRecord>) => <MosaicPreview record={info.item} />}
             keyExtractor={(mosaic: MosaicRecord) => mosaic.id}
             style={{ backgroundColor: Colors.backgroundProfile }}
         />
-    </View>
+    </SafeAreaView>
 }
 
 const styles = StyleSheet.create({
