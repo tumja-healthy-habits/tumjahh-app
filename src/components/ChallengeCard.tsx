@@ -3,7 +3,7 @@ import React from "react";
 import { Text } from "react-native";
 import Counter from "react-native-counters";
 import { useDailyChallenges } from "src/store/DailyChallengesProvider";
-import { styles } from "src/styles";
+import { globalStyles } from "src/styles";
 import { LocalStorageChallengeEntry } from "types";
 import ContentBox from "./ContentBox";
 
@@ -21,7 +21,7 @@ export default function ChallengeCard({ challengeEntry }: ChallengeCardProps) {
 
     return (
         <ContentBox style={repetitionsGoal === 0 && { opacity: 0.8 }}>
-            <Text style={[styles.textfieldText, repetitionsGoal === 0 && { opacity: 0.5 }, { marginBottom: 15 }]}>{record.name}</Text>
+            <Text style={[globalStyles.textfieldText, repetitionsGoal === 0 && { opacity: 0.5 }, { marginBottom: 15 }]}>{record.name}</Text>
             <Counter
                 start={repetitionsGoal}
                 onChange={updateChallenge}

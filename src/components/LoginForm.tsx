@@ -1,13 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import LabelledTextInput from "components/LabelledTextInput";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Colors from "constants/colors";
 import { useState } from "react";
-import { Alert, Button, Text, View } from "react-native";
-import { VAR_PASSWORD, VAR_USERNAME, login, signup } from "src/authentification";
+import { Alert, Image, StyleSheet, Text, View } from "react-native";
+import { VAR_PASSWORD, VAR_USERNAME, login } from "src/authentification";
 import { pb } from "src/pocketbaseService";
 import { UserRecord } from "types";
-import { styles } from "../styles";
+import { globalStyles } from "../styles";
 import BlurModal from "./BlurModal";
+import CustomButton from "./CustomButton";
+import ForgotPasswordLabel from "./ForgotPasswordLabel";
+import { FormTextInput } from './InputField';
+import { LoginParamList } from "./LoginNavigator";
 
 export default function LoginForm() {
     const [username, setUsername] = useState<string>("")
@@ -15,17 +19,8 @@ export default function LoginForm() {
     const [showPasswordResetModal, setShowPasswordResetModal] = useState<boolean>(false)
     const [email, setEmail] = useState<string>("")
 
-    async function handleSignup(): Promise<void> {
-        try {
-            const newRecord: UserRecord = await signup(username, password)
-        }
-        catch (error) {
-            console.log(error.message)
-            if (error.message == "validation_invalid_username") {
-                Alert.alert("Username already exists.\n Please select a different username")
-            }
-        }
-    }
+    const navigation = useNavigation<NavigationProp<LoginParamList, "LoginForm">>()
+
 
     async function handleLogin(): Promise<void> {
         login(username, password)
@@ -44,21 +39,78 @@ export default function LoginForm() {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.textfieldText}>Not signed in.</Text>
-            <View>
-                <LabelledTextInput label="Username:" placeholder="username" onChangeText={(text: string) => setUsername(text)} />
-                <LabelledTextInput label="Password:" placeholder='password' onChangeText={(text: string) => setPassword(text)} secureTextEntry />
-            </View>
-            <Button title="Log in" onPress={handleLogin} color={Colors.accent}></Button>
-            <Button title="Forgot password?" onPress={() => setShowPasswordResetModal(true)} color={Colors.accent}></Button>
-            <Button title="Create an account" onPress={handleSignup} color={Colors.accent}></Button>
-            <BlurModal visible={showPasswordResetModal} onClose={() => setShowPasswordResetModal(false)}>
-                <View style={styles.container}>
-                    <LabelledTextInput label="Email:" placeholder="Your email address" onChangeText={setEmail} autoCapitalize="none" autoCorrect={false} style={{ textAlign: "center" }} />
-                    <Button title="Reset password" onPress={handleForgotPassword} color={Colors.accent} />
+        <View style={[globalStyles.container, styles.outerContainer]}>
+            <View style={{ width: "90%" }} >
+                <Image source={require("assets/images/behealthy-icon.png")} style={{ width: 250, height: 250, alignSelf: 'center' }} />
+                <Text style={styles.formTitle}>Login</Text>
+                <View>
+
+                    <FormTextInput
+                        label={'Email or Username'}
+                        iconName="at-outline"
+                        keyboardType="email-address"
+                        onChangeText={setUsername}
+                    />
+
+                    <FormTextInput
+                        label={'Password'}
+                        iconName="ios-lock-closed-outline"
+                        inputType="password"
+                        onChangeText={setPassword}
+                        fieldButtonLabel={"Forgot?"}
+                        fieldButtonFunction={() => setShowPasswordResetModal(true)}
+                    />
                 </View>
-            </BlurModal>
+                <CustomButton label="Login" onPress={handleLogin} />
+
+                <BlurModal visible={showPasswordResetModal} onClose={() => setShowPasswordResetModal(false)}>
+                    <View style={styles.modalContainer} >
+                        <Text style={styles.modalText}>Please enter your e-mail address to reset your password</Text>
+                        <FormTextInput
+                            label={'Email'}
+                            iconName="at-outline"
+                            keyboardType="email-address"
+                            onChangeText={setUsername}
+                        />
+                        <CustomButton label="Reset password" onPress={handleForgotPassword} />
+                    </View>
+                </BlurModal>
+
+                <ForgotPasswordLabel
+                    textLabel="New to the app?"
+                    buttonLabel="Register"
+                    onPress={() => navigation.navigate('SignupForm')}
+                />
+            </View>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    outerContainer: {
+        backgroundColor: '#d7c3de',
+    },
+    formTitle: {
+        color: Colors.accent,
+        fontSize: 30,
+        margin: 15,
+        marginBottom: 20,
+    },
+    modalContainer: {
+        backgroundColor: '#d7c3de',
+        margin: 20,
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2, },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+        fontSize: 16,
+    }
+})

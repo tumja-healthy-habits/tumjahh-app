@@ -10,7 +10,7 @@ import { Alert, Button, Pressable, TextInput, View } from "react-native";
 import { VAR_USERNAME, logout } from "src/authentification";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { imageStyles, styles } from "src/styles";
+import { globalStyles, imageStyles } from "src/styles";
 import { UserRecord } from "types";
 import { ProfileParamList } from "./ProfileNavigator";
 
@@ -71,13 +71,13 @@ export default function ProfileScreenAlt() {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: Colors.backgroundProfile }]}>
-            <TextInput value={name} onChangeText={setName} style={styles.textfieldText} />
+        <View style={[globalStyles.container, { backgroundColor: Colors.backgroundProfile }]}>
+            <TextInput value={name} onChangeText={setName} style={globalStyles.textfieldText} />
             <Pressable onPress={handleTapProfilePicture}>
                 <ProfilePicture uri={photoUri} style={[imageStyles.profilePicture, { borderColor: "transparent" }]} />
             </Pressable>
-            <TextInput value={username} onChangeText={setUsername} style={styles.textfieldText} />
-            <TextInput value={email} onChangeText={setEmail} style={styles.textfieldText} />
+            <TextInput value={username} onChangeText={setUsername} style={globalStyles.textfieldText} />
+            <TextInput value={email} onChangeText={setEmail} style={globalStyles.textfieldText} />
             <Button title="Save changes" onPress={() => updateUser(undefined)} disabled={!hasChanged} />
             <ActionButton title="Log out" onPress={logout} />
             <ActionButton title="Add friends" onPress={() => navigate("SearchFriend", { friendId: undefined })} />

@@ -17,7 +17,7 @@ const Stack = createStackNavigator<ProfileParamList>()
 
 export default function ProfileNavigator() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{headerTitle: "", headerTransparent: true}}>
             <Stack.Screen name="ProfilePage" component={ProfileScreenAlt} />
             <Stack.Screen name="SearchFriend" component={SearchFriendScreen} />
             <Stack.Screen name="AddFriend" component={AddFriendScreen} />
