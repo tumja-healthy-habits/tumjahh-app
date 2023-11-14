@@ -8,6 +8,7 @@ import { AppState } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import ChallengeScreen from "screens/ChallengeScreen";
 import FeedScreen from 'screens/FeedScreen';
+import FriendsScreen from 'screens/FriendsScreen';
 import MosaicNavigator from 'screens/MosaicNavigator';
 import ProfileNavigator from "screens/ProfileNavigator";
 import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
@@ -67,7 +68,7 @@ export default function LoggedInApp() {
                         <Tab.Screen name="Challenges" component={ChallengeScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
                         }} />
-                        <Tab.Screen name="Feed" component={FeedScreen} options={{
+                        <Tab.Screen name="Feed" component={FriendsScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
                         }} />
                         {/* <Tab.Screen name="Home" component={HomeScreen} options={{
