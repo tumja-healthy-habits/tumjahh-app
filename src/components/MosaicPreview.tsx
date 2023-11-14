@@ -14,7 +14,7 @@ export default function MosaicPreview({ record }: MosaicPreviewProps) {
     const { navigate } = useNavigation<NavigationProp<MosaicParamList, "List">>()
 
     function handlePress(): void {
-        navigate("Mosaic", { mosaicId: record.id })
+        navigate("SingleMosaic", { mosaicId: record.id })
     }
 
     return (

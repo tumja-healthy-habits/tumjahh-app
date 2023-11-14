@@ -77,7 +77,7 @@ export default function NewMosaicGrid({ mosaicId }: NewMosaicGridProps) {
             setPhotoGrid((oldPhotoGrid: PhotoGrid) => {
                 const newPhotoGrid: PhotoGrid = { ...oldPhotoGrid }
                 newPhotoGrid[i][j] = photoRecord
-                console.log("newPhotoGrid", newPhotoGrid)
+                // console.log("newPhotoGrid", newPhotoGrid)
                 return newPhotoGrid
             })
         }).catch(console.error)

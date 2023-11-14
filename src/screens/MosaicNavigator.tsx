@@ -4,7 +4,7 @@ import NewMosaicScreen from "./NewMosaicScreen"
 
 export type MosaicParamList = {
     "List": undefined,
-    "Mosaic": {
+    "SingleMosaic": {
         mosaicId: string,
     },
 }
@@ -17,9 +17,9 @@ const MosaicStack = createStackNavigator<MosaicParamList>()
 
 export default function MosaicNavigator() {
     return (
-        <MosaicStack.Navigator screenOptions={navigatorOptions}>
+        <MosaicStack.Navigator screenOptions={navigatorOptions} initialRouteName="List">
             <MosaicStack.Screen name="List" component={MosaicListScreen} />
-            <MosaicStack.Screen name="Mosaic" component={NewMosaicScreen} />
+            <MosaicStack.Screen name="SingleMosaic" component={NewMosaicScreen} />
         </MosaicStack.Navigator>
     )
 }
