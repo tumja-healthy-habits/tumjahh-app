@@ -7,6 +7,7 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { ProgressBar } from "react-native-paper";
 import { HomeStackNavigatorParamList } from "screens/HomeScreen";
+import { pb } from "src/pocketbaseService";
 import { DailyChallenge } from "src/store/DailyChallengesProvider";
 import { AppParamList } from "./LoggedInApp";
 
@@ -14,9 +15,10 @@ const OPEN_CAMERA_DELAY: number = 300 // in milliseconds
 
 type DailyChallengeProps = {
     dailyChallenge: DailyChallenge,
+    openCamera: (challengeName: string) => void,
 }
 
-export default function DailyChallengeButton({ dailyChallenge }: DailyChallengeProps) {
+export default function DailyChallengeButton({ dailyChallenge, openCamera }: DailyChallengeProps) {
     const navigation = useNavigation<NavigationProp<HomeStackNavigatorParamList, "Challenges">>()
     const appNavigation = useNavigation<NavigationProp<AppParamList>>()
     const { name } = dailyChallenge.challengeEntry.record
@@ -25,9 +27,7 @@ export default function DailyChallengeButton({ dailyChallenge }: DailyChallengeP
 
     function tickOffChallenge(): void {
         if (dailyChallenge.photo === null) {
-            setTimeout(() => navigation.navigate("Take Photo", {
-                challengeName: name,
-            }), OPEN_CAMERA_DELAY)
+            setTimeout(() => openCamera(name), OPEN_CAMERA_DELAY)
             setTimeout(() => setShowCameraIcon(true), OPEN_CAMERA_DELAY + 1000)
         }
     }
@@ -73,7 +73,7 @@ export default function DailyChallengeButton({ dailyChallenge }: DailyChallengeP
         </Pressable>
     )
 
-    const uri: string = dailyChallenge.photo.photo /* pb.getFileUrl(dailyChallenge.photo, dailyChallenge.photo.photo) */
+    const uri: string = pb.getFileUrl(dailyChallenge.photo, dailyChallenge.photo.photo)
 
     return (
         <Pressable

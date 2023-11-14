@@ -2,20 +2,18 @@ import { NavigationProp, RouteProp, useIsFocused, useNavigation, useRoute } from
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { AppParamList } from "components/LoggedInApp"
 import ZoomableCamera from "components/ZoomableCamera"
-import { CameraCapturedPicture } from "expo-camera"
-import { BaseModel } from "pocketbase"
+import Colors from "constants/colors"
+import { saveToLibraryAsync } from "expo-media-library"
 import { useEffect, useState } from "react"
-import { Button, Image, View } from "react-native"
-import Animated from "react-native-reanimated"
-import { Colors } from "react-native/Libraries/NewAppScreen"
+import { Button, Image, StyleSheet, View } from "react-native"
 import { pb } from "src/pocketbaseService"
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
 import { useDailyChallenges } from "src/store/DailyChallengesProvider"
-import { PhotosRecord } from "types"
+import { FixedDimensionImage, PhotosRecord } from "types"
 import { HomeStackNavigatorParamList } from "./HomeScreen"
 
 export default function TakePhotoScreen() {
-    const [photo, setPhoto] = useState<CameraCapturedPicture>()
+    const [photo, setPhoto] = useState<FixedDimensionImage>()
     const { currentUser } = useAuthenticatedUser()
     const { params } = useRoute<RouteProp<HomeStackNavigatorParamList, "Take Photo">>()
     const navigation = useNavigation<NativeStackNavigationProp<HomeStackNavigatorParamList, "Challenges">>()
@@ -47,40 +45,42 @@ export default function TakePhotoScreen() {
     }
 
     function handleUsePhoto(): void {
-        // This is for when pocketbase is running again:
-        // sendPhoto().then((photoRecord: PhotosRecord) => {
-        //     completeChallenge(params.challengeName, photoRecord)
-        //     if (navigation.canGoBack()) {
-        //         navigation.goBack()
-        //     }
-        // })
-        //     .catch((e: any) => console.log(JSON.stringify(e)))
-        //     .finally(() => setPhoto(undefined))
+        // This is for when pocketbase is running
+        sendPhoto().then((photoRecord: PhotosRecord) => {
+            completeChallenge(params.challengeName, photoRecord)
+            if (navigation.canGoBack()) {
+                navigation.goBack()
+            }
+        })
+            .catch((e: any) => console.log(JSON.stringify(e)))
+            .finally(() => setPhoto(undefined))
 
-        // This is for when pocketbase is down:
-        completeChallenge(params.challengeName, {
-            id: "fake-id",
-            photo: "https://picsum.photos/200",
-            user_id: "fake-user-id",
-            width: 0,
-            height: 0,
-            challenge_name: params.challengeName,
-            collectionId: "fake-collection-id",
-            created: "fake-created-date",
-            updated: "fake-updated-date",
-            collectionName: "fake-collection-name",
-            expand: {},
-            load: () => { },
-            loadExpand: () => { },
-            isNew: true,
-            clone: () => { return {} as BaseModel },
-            export: () => ({}),
-        } as unknown as PhotosRecord)
+        saveToLibraryAsync(photo!.uri)
+
         if (photo !== undefined) {
             appNavigation.navigate("Mosaic", {
-                imageUri: photo?.uri,
+                imageUri: photo.uri,
             })
         }
+        // This is for when pocketbase is down:
+        // completeChallenge(params.challengeName, {
+        //     id: "fake-id",
+        //     photo: "https://picsum.photos/200",
+        //     user_id: "fake-user-id",
+        //     width: 0,
+        //     height: 0,
+        //     challenge_name: params.challengeName,
+        //     collectionId: "fake-collection-id",
+        //     created: "fake-created-date",
+        //     updated: "fake-updated-date",
+        //     collectionName: "fake-collection-name",
+        //     expand: {},
+        //     load: () => { },
+        //     loadExpand: () => { },
+        //     isNew: true,
+        //     clone: () => { return {} as BaseModel },
+        //     export: () => ({}),
+        // } as unknown as PhotosRecord)
     }
 
     function handleSkipPhoto(): void {
@@ -90,18 +90,15 @@ export default function TakePhotoScreen() {
     }
 
     return photo ? (
-        <View style={{
-            flex: 1,
-            justifyContent: 'center',
-            backgroundColor: Colors.pastelViolet,
-        }}>
-            <Animated.View style={{ flex: 1, }}>
-                <Image source={{ uri: photo.uri }} style={{ flex: 1, resizeMode: "contain" }} />
-            </Animated.View>
-            <Button disabled color={Colors.accent} title="Send photo" onPress={sendPhoto} />
-            <Button color={Colors.accent} title="Maybe later" onPress={handleSkipPhoto} />
-            <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(undefined)} />
-            <Button color={Colors.accent} title="Use photo" onPress={handleUsePhoto} />
+        <View style={styles.container}>
+            <View style={styles.imageContainer} >
+                <Image source={{ uri: photo.uri }} style={[styles.image, { aspectRatio: photo.width / photo.height }]} />
+            </View>
+            <View style={styles.buttonContainer} >
+                <Button color={Colors.accent} title="Maybe later" onPress={handleSkipPhoto} />
+                <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(undefined)} />
+                <Button color={Colors.accent} title="Use photo" onPress={handleUsePhoto} />
+            </View>
         </View>
     ) : (
         <View style={{
@@ -113,3 +110,38 @@ export default function TakePhotoScreen() {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Colors.pastelViolet,
+        justifyContent: "space-between",
+    },
+    image: {
+        resizeMode: "contain",
+        width: "100%",
+    },
+    imageContainer: {
+        //show a red border
+        borderColor: "red",
+        borderWidth: 2,
+        borderRadius: 10,
+        overflow: "hidden",
+    },
+    button: {
+        backgroundColor: Colors.accent,
+        borderRadius: 10,
+        padding: 20,
+        margin: 20,
+    },
+    buttonText: {
+        color: Colors.white,
+        fontSize: 20,
+        textAlign: "center",
+    },
+    buttonContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        backgroundColor: Colors.white,
+    },
+})

@@ -41,6 +41,9 @@ const navigatorOptions: BottomTabNavigationOptions = {
         fontWeight: 'bold',
         color: "black",
     },
+    tabBarStyle: {
+        borderTopWidth: 0,
+    }
 }
 
 const prefix: string = createURL('/')
