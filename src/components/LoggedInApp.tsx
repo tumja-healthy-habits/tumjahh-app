@@ -7,12 +7,12 @@ import React, { useEffect } from "react";
 import { AppState } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import ChallengeScreen from "screens/ChallengeScreen";
-import FriendsScreen from 'screens/FriendsScreen';
-import MosaicNavigator from 'screens/MosaicNavigator';
-import ProfileNavigator from "screens/ProfileNavigator";
+import FriendsScreen from 'screens/FeedScreen';
+import HomeScreen from 'screens/HomeScreen';
+import MosaicNavigator from 'screens/mosaic/MosaicNavigator';
+import ProfileNavigator from "screens/profile/ProfileNavigator";
 import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
 import MosaicDataProvider from "src/store/MosaicDataProvider";
-import SettingsButton from "./SettingsButton";
 
 const VAR_REMINDER_NOTIFICATION_ID: string = "BeHealthyReminderNotificationId"
 const DAYS_UNTIL_REMINDER: number = 3
@@ -22,8 +22,9 @@ export type AppParamList = {
     Challenges: undefined,
     Feed: undefined,
     Mosaic: {
-        imageUri?: string,
+        photoId?: string,
     },
+    Home: undefined,
 }
 
 const Tab = createBottomTabNavigator<AppParamList>();
@@ -70,16 +71,14 @@ export default function LoggedInApp() {
                         <Tab.Screen name="Feed" component={FriendsScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
                         }} />
-                        {/* <Tab.Screen name="Home" component={HomeScreen} options={{
-                                tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
-                                headerShown: false,
-                            }} /> */}
+                        <Tab.Screen name="Home" component={HomeScreen} options={{
+                            tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
+                        }} />
                         {/* <Tab.Screen name="Friends" component={FriendsScreen} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
                               }} /> */}
                         <Tab.Screen name="Profile" component={ProfileNavigator} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
-                            headerRight: () => <SettingsButton />,
                         }} />
                         <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,

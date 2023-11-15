@@ -1,8 +1,8 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import ActionButton from "components/ActionButton";
-import ChallengeCard from "components/ChallengeCard";
-import ChallengeSelectionModal from "components/ChallengeSelectionModal";
 import { AppParamList } from "components/LoggedInApp";
+import ChallengeCard from "components/challenges/ChallengeCard";
+import ChallengeSelectionModal from "components/challenges/ChallengeSelectionModal";
+import ActionButton from "components/misc/ActionButton";
 import Colors from "constants/colors";
 import { useEffect, useState } from "react";
 import { Button, FlatList, ListRenderItemInfo, View } from "react-native";
