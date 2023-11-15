@@ -4,7 +4,7 @@ import { ActivityIndicator, FlatList, ListRenderItemInfo, Modal, SafeAreaView, T
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { pb } from "src/pocketbaseService"
 import { DailyChallenge, useDailyChallenges } from "src/store/DailyChallengesProvider"
-import { styles } from "src/styles"
+import { globalStyles } from "src/styles"
 import { ChallengesRecord, HabitsRecord } from "types"
 import ActionButton from "./ActionButton"
 import ContentBox from "./ContentBox"
@@ -73,7 +73,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
     function renderHabit({ item }: ListRenderItemInfo<HabitsRecord>) {
         return (
             <ContentBox style={{ alignItems: "flex-start" }}>
-                <Text style={[styles.textfieldText, styles.textfieldTitle, { marginVertical: 10, alignSelf: "center" }]}>{item.title}</Text>
+                <Text style={[globalStyles.textfieldText, globalStyles.textfieldTitle, { marginVertical: 10, alignSelf: "center" }]}>{item.title}</Text>
                 <FlatList
                     data={item.challenges}
                     keyExtractor={(item, index) => item.id + index}
@@ -106,7 +106,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
 
     // always rendered on top of the list
     const ListHeader = () => <View style={{ padding: 20, backgroundColor: Colors.pastelOrange }}>
-        <Text style={styles.textfieldTitle}>Pick your challenges</Text>
+        <Text style={globalStyles.textfieldTitle}>Pick your challenges</Text>
     </View>
 
     return (
@@ -115,7 +115,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
             visible={visible}
             onRequestClose={onClose}
         >
-            <SafeAreaView style={[styles.container, { flex: 1 }]}>
+            <SafeAreaView style={[globalStyles.container, { flex: 1 }]}>
                 <FlatList
                     data={data}
                     keyExtractor={(item, index) => item.title + index}

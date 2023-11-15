@@ -1,6 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserRecord } from "types";
 import { pb } from "./pocketbaseService";
-import AsyncStorage from "@react-native-async-storage/async-storage"
 
 // the keys used in the local storage
 export const VAR_USERNAME: string = "BeHealthyUsername"
@@ -12,15 +12,38 @@ export async function login(username: string, password: string): Promise<UserRec
         .then(({ record }) => record)
 }
 
+
 // returns the newly created user record
-export async function signup(username: string, password: string): Promise<UserRecord> {
-    const data: any = {
-        username: username,
-        password: password,
-        passwordConfirm: password,
+export async function signup(username: string, name: string, email: string, pw: string, pwConfirm: string): Promise<UserRecord | undefined> {
+    try {
+        const data: any = {
+            username: username,
+            name: name,
+            email: email,
+            password: pw,
+            passwordConfirm: pwConfirm,
+        }
+        await pb.collection("users").create<UserRecord>(data)
+        return login(username, pw)
     }
-    await pb.collection("users").create<UserRecord>(data)
-    return login(username, password)
+    catch (error: any) {
+        console.log(error.response)
+        if ("username" in error.response.data) {
+            if (error.response.data.username.code == "validation_invalid_username") {
+                throw new Error(error.response.data.username.code)
+            }
+        }
+        else if ("password" in error.response.data) {
+            if (error.response.data.password.code == "validation_required") {
+                throw new Error(error.response.data.password.code)
+            }
+        }
+        else if ("email" in error.response.data) {
+            if (error.response.data.email.code == "validation_invalid_email") {
+                throw new Error(error.response.data.email.code)
+            }
+        }
+    }
 }
 
 export async function logout(): Promise<void> {

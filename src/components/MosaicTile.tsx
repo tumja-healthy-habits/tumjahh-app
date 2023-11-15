@@ -1,22 +1,22 @@
 import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import { Image, Pressable, StyleSheet, View } from "react-native"
-import { useMosaiqueData } from "src/store/MosaiqueDataProvider"
+import { useMosaicData } from "src/store/MosaicDataProvider"
 import { AppParamList } from "./LoggedInApp"
 
-type MosaiqueTileProps = {
+type MosaicTileProps = {
     x: number
     y: number
 }
 
-export default function MosaiqueTile({ x, y }: MosaiqueTileProps) {
-    const { getImageUri, putImage } = useMosaiqueData()
-    const { params } = useRoute<RouteProp<AppParamList, "Mosaique">>()
-    const navigation = useNavigation<NavigationProp<AppParamList, "Mosaique">>()
+export default function MosaicTile({ x, y }: MosaicTileProps) {
+    const { getImageUri, putImage } = useMosaicData()
+    const { params } = useRoute<RouteProp<AppParamList, "Mosaic">>()
+    const navigation = useNavigation<NavigationProp<AppParamList, "Mosaic">>()
 
     function handlePress(): void {
         if (params === undefined || params.imageUri === undefined) return
         putImage(x, y, params.imageUri)
-        navigation.navigate("Mosaique", {
+        navigation.setParams({
             imageUri: undefined,
         })
     }
@@ -37,6 +37,7 @@ export default function MosaiqueTile({ x, y }: MosaiqueTileProps) {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: "white",
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.2,
@@ -46,10 +47,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: 200,
         height: 200,
-        margin: 0,
     },
     empty: {
-        backgroundColor: "white",
         borderColor: "black",
         borderWidth: 0,
     },
@@ -60,6 +59,5 @@ const styles = StyleSheet.create({
     pressed: {
         opacity: 1,
         borderColor: "blue",
-        backgroundColor: "white",
     }
 })

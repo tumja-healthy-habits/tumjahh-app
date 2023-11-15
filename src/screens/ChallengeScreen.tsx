@@ -7,7 +7,7 @@ import Colors from "constants/colors";
 import { useEffect, useState } from "react";
 import { Button, FlatList, ListRenderItemInfo, View } from "react-native";
 import { DailyChallenge, useDailyChallenges } from "src/store/DailyChallengesProvider";
-import { styles } from "src/styles";
+import { globalStyles } from "src/styles";
 
 export default function ChallengeScreen() {
     const [showModal, setShowModal] = useState<boolean>(false)
@@ -25,7 +25,7 @@ export default function ChallengeScreen() {
     }
 
     return (
-        <View style={[styles.container, { paddingTop: 10 }]}>
+        <View style={[globalStyles.container, { paddingTop: 10 }]}>
             {challenges.length === 0 ? <Button title="Select some challenges here :)" onPress={() => setShowModal(true)} color={Colors.accent} />
                 : <>
                     <FlatList

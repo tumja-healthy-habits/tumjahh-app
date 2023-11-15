@@ -19,6 +19,8 @@ export interface FriendsWithRecord extends Record {
 export interface PhotosRecord extends Record {
     photo: string;
     user_id: string;
+    height: number,
+    width: number,
 }
 
 export interface HabitsRecord extends Record {
@@ -32,12 +34,33 @@ export interface ChallengesRecord extends Record {
     habit_id: string;
 }
 
+export interface MosaicRecord extends Record {
+    name: string;
+    numRings: number;
+    thumbnail: string;
+}
+
+export interface MosaicMembersRecord extends Record {
+    mosaic_id: string;
+    user_id: string;
+}
+
+export interface ContainsRecord extends Record {
+    mosaic_id: string;
+    photo_id: string;
+    index_x: number;
+    index_y: number;
+    expand: {
+        photo_id: PhotosRecord
+    };
+}
+
 export interface LocalStorageChallengeEntry {
     record: ChallengesRecord;
     repetitionsGoal: number;
 }
 
-export type MosaiqueData = {
+export type MosaicData = {
     [key: number]: {
         [key: number]: string
     }
@@ -45,4 +68,10 @@ export type MosaiqueData = {
 
 export type ChallengeData = {
     [key: string]: LocalStorageChallengeEntry | null
+}
+
+export type FixedDimensionImage = {
+    uri: string;
+    width: number;
+    height: number;
 }
