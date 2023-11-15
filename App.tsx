@@ -1,6 +1,6 @@
 import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import LoggedInApp, { AppParamList } from 'components/LoggedInApp';
-import LoginNavigator from 'components/LoginNavigator';
+import LoginNavigator from 'components/authentication/LoginNavigator';
 import { createURL } from "expo-linking";
 import { setNotificationHandler } from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';

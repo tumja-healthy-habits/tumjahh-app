@@ -1,7 +1,7 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import CameraModal from "components/CameraModal";
-import ChallengeSelectionModal from "components/ChallengeSelectionModal";
-import DailyChallengeButton from "components/DailyChallengeButton";
+import CameraModal from "components/camera/CameraModal";
+import ChallengeSelectionModal from "components/challenges/ChallengeSelectionModal";
+import DailyChallengeButton from "components/challenges/DailyChallengeButton";
 import { AppParamList } from "components/LoggedInApp";
 import Colors from "constants/colors";
 import { useEffect, useState } from "react";

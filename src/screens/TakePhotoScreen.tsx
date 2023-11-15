@@ -1,7 +1,7 @@
 import { NavigationProp, RouteProp, useIsFocused, useNavigation, useRoute } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { AppParamList } from "components/LoggedInApp"
-import ZoomableCamera from "components/ZoomableCamera"
+import ZoomableCamera from "components/camera/ZoomableCamera"
 import Colors from "constants/colors"
 import { saveToLibraryAsync } from "expo-media-library"
 import { useEffect, useState } from "react"
