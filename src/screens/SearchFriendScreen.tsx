@@ -1,14 +1,14 @@
-import { NavigationProp, RouteProp, useNavigation, usePreventRemoveContext, useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import ActionButton from "components/ActionButton";
-import { View, Image, Text, TextInput, PermissionsAndroid } from "react-native";
-import { ProfileParamList } from "./ProfileNavigator";
-import UserQRCode from "components/UserQRCode";
-import { useEffect, useState } from "react";
-import Colors from "constants/colors";
 import BlurModal from "components/BlurModal";
+import FriendSearch from "components/FriendSearch";
 import ProfilePreview from "components/ProfilePreview";
+import UserQRCode from "components/UserQRCode";
+import Colors from "constants/colors";
+import { useState } from "react";
+import { View } from "react-native";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import FriendSearch from "components/FriendSearch"
+import { ProfileParamList } from "./ProfileNavigator";
 
 export default function SearchFriendScreen() {
     // const navigation = useNavigation<NavigationProp<ProfileParamList, 'SearchFriend'>>()
