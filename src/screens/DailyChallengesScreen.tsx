@@ -5,7 +5,7 @@ import DailyChallengeButton from "components/DailyChallengeButton";
 import { AppParamList } from "components/LoggedInApp";
 import Colors from "constants/colors";
 import { useEffect, useState } from "react";
-import { Button, FlatList, ListRenderItemInfo, Text, View } from "react-native";
+import { Button, FlatList, ListRenderItemInfo, SafeAreaView, Text, View } from "react-native";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { DailyChallenge, useDailyChallenges } from "src/store/DailyChallengesProvider";
 import { globalStyles } from "src/styles";
@@ -38,7 +38,7 @@ export default function DailyChallengesScreen() {
     }
 
     return (
-        <View style={[globalStyles.container, { backgroundColor: Colors.pastelViolet, paddingTop: 10, width: "100%" }]}>
+        <SafeAreaView style={[globalStyles.container, { backgroundColor: Colors.pastelViolet, paddingTop: 10, width: "100%" }]}>
             <Text style={globalStyles.textfieldTitle}>Hi, {currentUser.name}.</Text>
             {challenges.length === 0 ? <Button title="Select some challenges here :)" onPress={() => setShowChallengesModal(true)} color={Colors.accent} />
                 : <FlatList
@@ -48,6 +48,6 @@ export default function DailyChallengesScreen() {
                 />}
             <ChallengeSelectionModal visible={showChallengesModal} onClose={() => setShowChallengesModal(false)} />
             <CameraModal challengeName={cameraModalChallenge} onClose={() => setCameraModalChallenge(undefined)} />
-        </View>
+        </SafeAreaView>
     )
 }

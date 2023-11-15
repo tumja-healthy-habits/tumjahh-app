@@ -1,4 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import Colors from "constants/colors";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { ProfileParamList } from "screens/ProfileNavigator";
@@ -11,23 +13,27 @@ type FriendSearchResultProps = {
 
 export default function FriendSearchResult({ user }: FriendSearchResultProps) {
 
-    const { navigate } = useNavigation<NavigationProp<ProfileParamList, 'SearchFriend'>>()
+    const { setParams } = useNavigation<NavigationProp<ProfileParamList, 'SearchFriend'>>()
 
     function handleTapFriend(): void {
         console.log("TODO Add friend")
-        navigate("AddFriend", {
-            userId: user.id,
+        setParams({
+            friendId: user.id,
         })
-        // TODO: In the future we can perform some action when the user taps on a friend card
     }
 
     return <Pressable style={({ pressed }) => [styles.container, pressed && { opacity: 0.3 }]} onPress={handleTapFriend}>
-        <ProfilePicture user={user} style={styles.image} />
+        <ProfilePicture userRecord={user} style={styles.image} />
         <View style={styles.innerContainer}>
             <Text style={styles.name}>{user.name}</Text>
             <Text style={styles.username}>{user.username}</Text>
         </View>
-        <Button mode="contained" onPress={handleTapFriend}>Add</Button>
+        <Button
+            mode="outlined"
+            onPress={handleTapFriend}
+            buttonColor={Colors.pastelGreen}
+            labelStyle={{ fontSize: 16 }}
+            icon={() => <Ionicons name="person-add-outline" size={20} />}>Add</Button>
     </Pressable>
 }
 
@@ -47,8 +53,8 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     name: {
-        fontSize: 26,
-        bold: true,
+        fontSize: 24,
+        fontWeight: "bold",
     },
     username: {
         fontSize: 16,

@@ -6,7 +6,7 @@ import ProfilePicture from "components/ProfilePicture";
 import Colors from "constants/colors";
 import { ImagePickerAsset, ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 import { useState } from "react";
-import { Alert, Button, Pressable, TextInput, View } from "react-native";
+import { Alert, Button, Pressable, SafeAreaView, TextInput } from "react-native";
 import { VAR_USERNAME, logout } from "src/authentification";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
@@ -71,7 +71,7 @@ export default function ProfileScreenAlt() {
     }
 
     return (
-        <View style={[globalStyles.container, { backgroundColor: Colors.backgroundProfile }]}>
+        <SafeAreaView style={[globalStyles.container, { backgroundColor: Colors.backgroundProfile }]}>
             <TextInput value={name} onChangeText={setName} style={globalStyles.textfieldText} />
             <Pressable onPress={handleTapProfilePicture}>
                 <ProfilePicture uri={photoUri} style={[imageStyles.profilePicture, { borderColor: "transparent" }]} />
@@ -81,6 +81,6 @@ export default function ProfileScreenAlt() {
             <Button title="Save changes" onPress={() => updateUser(undefined)} disabled={!hasChanged} />
             <ActionButton title="Log out" onPress={logout} />
             <ActionButton title="Add friends" onPress={() => navigate("SearchFriend", { friendId: undefined })} />
-        </View>
+        </SafeAreaView>
     )
 }
