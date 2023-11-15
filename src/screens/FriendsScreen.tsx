@@ -1,10 +1,10 @@
 import { useIsFocused } from '@react-navigation/native'
-import { styles } from "src/styles"
 import FriendCard from 'components/FriendCard'
 import { useEffect, useState } from 'react'
-import { FlatList, ListRenderItemInfo, StyleSheet, View, Text } from 'react-native'
+import { FlatList, ListRenderItemInfo, Text, View } from 'react-native'
 import { pb } from 'src/pocketbaseService'
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider'
+import { styles } from "src/styles"
 import { FriendsWithRecord, UserRecord } from 'types'
 
 export default function FriendsScreen() {
