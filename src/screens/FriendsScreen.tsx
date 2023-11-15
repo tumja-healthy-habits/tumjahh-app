@@ -1,6 +1,6 @@
 import FriendCard from 'components/FriendCard'
 import { useEffect, useState } from 'react'
-import { FlatList, ListRenderItemInfo, Text, View } from 'react-native'
+import { FlatList, ListRenderItemInfo, SafeAreaView, Text } from 'react-native'
 import { pb } from 'src/pocketbaseService'
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider'
 import { globalStyles } from "src/styles"
@@ -8,7 +8,6 @@ import { FriendsWithRecord, UserRecord } from 'types'
 
 export default function FriendsScreen() {
     const [friends, setFriends] = useState<UserRecord[]>([])
-    // const [photos, setPhotos]= useState<PhotosRecord[]>([])
     const { currentUser } = useAuthenticatedUser()
 
     useEffect(() => {
@@ -37,13 +36,13 @@ export default function FriendsScreen() {
     }
 
     return (
-        <View style={[globalStyles.container, { alignItems: 'stretch' }]}>
+        <SafeAreaView style={[globalStyles.container, { alignItems: 'stretch' }]}>
             {friends.length === 0 && <Text style={globalStyles.textfieldText}>You haven't added any friends yet</Text>}
             <FlatList
                 data={friends}
                 keyExtractor={(user: UserRecord) => user.id}
                 renderItem={renderFriend}
             />
-        </View>
+        </SafeAreaView>
     )
 }

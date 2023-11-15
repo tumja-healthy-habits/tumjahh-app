@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { View, Text, Image, StyleSheet, ImageSourcePropType } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { Image, ImageSourcePropType, StyleSheet, Text, View } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
@@ -39,6 +39,7 @@ export default function ProfilePreview({ userId }: ProfilePreviewProps) {
 
     return (
         <View style={styles.container}>
+            {/* <ProfilePicture user={friendRecord} style={styles.profilePicture} /> */}
             <Image source={profilePicSource} style={styles.profilePicture} />
             <Text style={styles.name}>{friendRecord.name}</Text>
             <Text style={styles.username}>{friendRecord.username}</Text>

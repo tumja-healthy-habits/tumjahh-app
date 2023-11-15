@@ -42,19 +42,6 @@ setNotificationHandler({
 global.EventSource = EventSource as any
 
 export default function App() {
-  // useEffect(() => {
-  //   // update the last logged in time
-  //   AsyncStorage.setItem("lastActive", Date.now().toString())
-  //   getStatusAsync().then((status) => {
-  //     console.log("Background fetch status:", status)
-  //   })
-  //   // register background inactivity checking task
-  //   registerTaskAsync(INACTIVITY_TASK_NAME, {
-  //     minimumInterval: 5,
-  //     stopOnTerminate: false,
-  //     startOnBoot: true,
-  //   })
-  // }, [])
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style="dark" />

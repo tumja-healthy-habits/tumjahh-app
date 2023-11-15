@@ -13,7 +13,7 @@ type ProfilePictureProps = {
 
 export default function ProfilePicture({ userRecord, style, uri }: ProfilePictureProps) {
     if (uri !== undefined) {
-        return <Image source={{ uri: uri }} style={[imageStyles.image, style]} />
+        return <Image source={{ uri: uri, cache: "force-cache" }} style={[imageStyles.image, style]} />
     }
     // if the user has an avatar picture, compute its pocketbase uri, otherwise use a default avatar picture
     const user: UserRecord = userRecord ?? useAuthenticatedUser().currentUser as UserRecord // can't be null because we're using this component in the ProfileScreen

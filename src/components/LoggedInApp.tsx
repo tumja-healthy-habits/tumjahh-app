@@ -7,7 +7,6 @@ import React, { useEffect } from "react";
 import { AppState } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import ChallengeScreen from "screens/ChallengeScreen";
-import FeedScreen from 'screens/FeedScreen';
 import FriendsScreen from 'screens/FriendsScreen';
 import MosaicNavigator from 'screens/MosaicNavigator';
 import ProfileNavigator from "screens/ProfileNavigator";
@@ -59,7 +58,7 @@ export default function LoggedInApp() {
                 })
             }
         })
-    })
+    }, [])
     return (
         <MosaicDataProvider>
             <DailyChallengesProvider>

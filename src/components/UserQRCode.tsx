@@ -1,6 +1,7 @@
 import Colors, { opacity } from "constants/colors"
 import { createURL } from "expo-linking"
-import { View, Text, StyleSheet, Image } from "react-native"
+import { useState } from "react"
+import { Image, StyleSheet, Text, View } from "react-native"
 import QRCode from "react-native-qrcode-svg"
 import { pb } from "src/pocketbaseService"
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
@@ -9,19 +10,20 @@ const PROFILE_IMAGE_WIDTH_AND_HEIGHT: number = 120
 
 export default function UserQRCode() {
     const { currentUser } = useAuthenticatedUser()
+    const [loaded, setLoaded] = useState<boolean>(false)
 
     if (currentUser === null) return <View />
 
     const friendUrl: string = createURL(`addfriend/${currentUser.id}`)
     const profilePicUri: string = pb.getFileUrl(currentUser, currentUser.avatar)
 
-    console.error(profilePicUri)
-
     return (
         // alternatively put the BeHealthy logo in the center of the QR code
         <View style={styles.container}>
             <View style={styles.profilePictureContainer}>
-                <Image source={{ uri: profilePicUri }} style={styles.profilePicture} />
+                <Image source={{ uri: profilePicUri, cache: "force-cache" }}
+                    style={[styles.profilePicture, loaded && { borderWidth: 2 }]}
+                    onLoad={() => setLoaded(true)} />
             </View>
             <QRCode
                 value={friendUrl}
@@ -57,12 +59,12 @@ const styles = StyleSheet.create({
         top: -(PROFILE_IMAGE_WIDTH_AND_HEIGHT / 2),
         justifyContent: "center",
         alignItems: "center",
+        borderRadius: PROFILE_IMAGE_WIDTH_AND_HEIGHT / 2,
     },
     profilePicture: {
         width: PROFILE_IMAGE_WIDTH_AND_HEIGHT,
         height: PROFILE_IMAGE_WIDTH_AND_HEIGHT,
         borderRadius: PROFILE_IMAGE_WIDTH_AND_HEIGHT / 2,
-        borderWidth: 2,
         borderColor: Colors.white,
     }
 })

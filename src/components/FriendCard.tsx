@@ -13,6 +13,7 @@ export default function FriendCard({ user }: FriendCardProps) {
     const [photos, setPhotos] = useState<PhotosRecord[]>([])
 
     function handleTapFriend(): void {
+        console.log("TODO Add friend")
         // TODO: In the future we can perform some action when the user taps on a friend card
     }
     useEffect(() => {
