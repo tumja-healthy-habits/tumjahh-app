@@ -1,5 +1,6 @@
 import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import BlurModal from "components/misc/BlurModal";
+import FriendRequestList from "components/profile/FriendRequestList";
 import FriendSearch from "components/profile/FriendSearch";
 import ProfilePreview from "components/profile/ProfilePreview";
 import UserQRCode from "components/profile/UserQRCode";
@@ -20,6 +21,7 @@ export default function SearchFriendScreen() {
         <BlurModal visible={params.friendId !== undefined} onClose={() => setParams({ friendId: undefined })}>
             {params.friendId && <ProfilePreview userId={params.friendId} />}
         </BlurModal>
+        <FriendRequestList />
         <FriendSearch showQRCode={() => setShowQRCode(true)} />
     </SafeAreaView>
 }
@@ -27,7 +29,7 @@ export default function SearchFriendScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         backgroundColor: Colors.pastelViolet,
     },
     image: {

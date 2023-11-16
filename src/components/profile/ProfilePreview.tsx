@@ -3,7 +3,7 @@ import { Image, ImageSourcePropType, StyleSheet, Text, View } from "react-native
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { UserRecord } from "types";
+import { FriendRequestsRecord, UserRecord } from "types";
 import ActionButton from "../misc/ActionButton";
 
 type ProfilePreviewProps = {
@@ -32,8 +32,11 @@ export default function ProfilePreview({ userId }: ProfilePreviewProps) {
     </View>
 
     async function handleAddFriend(): Promise<void> {
-        console.log("adding friend", friendRecord)
-        //TODO: create friends_with entry in pocketbase, maybe refresh / add the new friend to the Feed directly
+        if (currentUser === null || friendRecord === undefined) return
+        pb.collection("friend_requests").create<FriendRequestsRecord>({
+            from: currentUser.id,
+            to: friendRecord.id,
+        }).catch(console.error)
     }
 
 
