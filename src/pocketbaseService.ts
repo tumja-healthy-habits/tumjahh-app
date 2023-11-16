@@ -1,5 +1,5 @@
-import PocketBase, { Record, RecordSubscription, UnsubscribeFunc } from 'pocketbase'
-import { DependencyList, useEffect } from 'react'
+import PocketBase, { Record, RecordFullListQueryParams, RecordSubscription, UnsubscribeFunc } from 'pocketbase'
+import { DependencyList, useEffect, useState } from 'react'
 
 const PB_URL: string = "http://tuzvhja-habits.srv.mwn.de/"
 const pb: PocketBase = new PocketBase(PB_URL)
@@ -45,4 +45,27 @@ export function useRealTimeSubscription<RecordType extends Record>(collection: s
             }
         }
     }, dependencies)
-} 
+}
+
+export function useRealTimeCollection<RecordType extends Record>(collection: string, dependencies: DependencyList, params?: RecordFullListQueryParams): RecordType[] {
+    const [records, setRecords] = useState<RecordType[]>([])
+
+    useEffect(() => {
+        pb.collection(collection).getFullList<RecordType>(params)
+            .then(setRecords).catch(console.error)
+    }, dependencies)
+
+    useRealTimeSubscription<RecordType>(collection, {
+        onCreate: (record: RecordType) => {
+            setRecords((records: RecordType[]) => [...records, record])
+        },
+        onDelete: (record: RecordType) => {
+            setRecords((records: RecordType[]) => records.filter((r: RecordType) => r.id !== record.id))
+        },
+        onUpdate: (record: RecordType) => {
+            setRecords((records: RecordType[]) => records.map((r: RecordType) => r.id === record.id ? record : r))
+        }
+    }, dependencies)
+
+    return records
+}
