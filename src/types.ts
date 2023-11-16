@@ -14,6 +14,10 @@ export interface UserRecord extends Record {
 export interface FriendsWithRecord extends Record {
     user1: string;
     user2: string;
+    expand: {
+        user1: UserRecord;
+        user2: UserRecord;
+    }
 }
 
 export interface PhotosRecord extends Record {
@@ -53,6 +57,15 @@ export interface ContainsRecord extends Record {
     expand: {
         photo_id: PhotosRecord
     };
+}
+
+export interface FriendRequestsRecord extends Record {
+    from: string;
+    to: string;
+    expand: {
+        from: UserRecord;
+        to: UserRecord;
+    }
 }
 
 export interface LocalStorageChallengeEntry {

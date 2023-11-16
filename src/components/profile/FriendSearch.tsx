@@ -5,6 +5,7 @@ import { useState } from "react";
 import { FlatList, ListRenderItemInfo, Text, View } from "react-native";
 import { Divider, TextInput } from "react-native-paper";
 import { pb } from "src/pocketbaseService";
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { globalStyles } from "src/styles";
 import { UserRecord } from "types";
 import FriendSearchResult from "./FriendSearchResult";
@@ -18,14 +19,17 @@ export default function FriendSearch({ showQRCode }: FriendSearchProps) {
     const [searchResults, setSearchResults] = useState<UserRecord[]>([]);
     const [showResults, setShowResults] = useState<boolean>(false)
 
+    const { currentUser } = useAuthenticatedUser()
+
     console.log(searchResults, "\nshowing results: ", showResults)
 
     async function submitSearch() {
+        if (currentUser === null) return
         if (searchInput.length > 0) {
             // USERS
             setShowResults(true)
             const foundByUsername: UserRecord[] = (await pb.collection("users").getFullList<UserRecord>({
-                filter: `username ~ "${searchInput}"`
+                filter: `username ~ "${searchInput}" && id != "${currentUser.id}"`
             }))
             console.log("found by username", foundByUsername.map((user: UserRecord) => user.username))
 
