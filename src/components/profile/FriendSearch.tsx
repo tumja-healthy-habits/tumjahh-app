@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, ListRenderItemInfo, Text, View } from "react-native";
 import { Divider, TextInput, Tooltip } from "react-native-paper";
 import { pb } from "src/pocketbaseService";
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { globalStyles } from "src/styles";
 import { UserRecord } from "types";
 import FriendSearchResult from "./FriendSearchResult";
@@ -18,6 +19,8 @@ export default function FriendSearch({ showQRCode }: FriendSearchProps) {
     const [searchResults, setSearchResults] = useState<UserRecord[]>([]);
     const [showResults, setShowResults] = useState<boolean>(false)
 
+    const { currentUser } = useAuthenticatedUser()
+
     console.log(searchResults, "\nshowing results: ", showResults)
 
     useEffect(() => {
@@ -25,7 +28,7 @@ export default function FriendSearch({ showQRCode }: FriendSearchProps) {
     }, [searchInput])
 
     async function submitSearch() {
-        if (searchInput.length === 0) {
+        if (searchInput.length === 0 || currentUser === undefined) {
             setShowResults(false)
             setSearchResults([])
             return
@@ -33,8 +36,8 @@ export default function FriendSearch({ showQRCode }: FriendSearchProps) {
         // USERS
         setShowResults(true)
         const foundByUsername: UserRecord[] = (await pb.collection("users").getFullList<UserRecord>({
-            filter: `username ~ "${searchInput}"`
-        }))
+                filter: `username ~ "${searchInput}" && id != "${currentUser.id}"`
+            }))
 
         // contacts permission
         const { status } = await requestPermissionsAsync()

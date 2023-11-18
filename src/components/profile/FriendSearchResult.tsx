@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Colors from "constants/colors";
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { ProfileParamList } from "screens/profile/ProfileNavigator";
@@ -14,9 +15,9 @@ type FriendSearchResultProps = {
 export default function FriendSearchResult({ user }: FriendSearchResultProps) {
 
     const { setParams } = useNavigation<NavigationProp<ProfileParamList, 'SearchFriend'>>()
+    const [alreadyFriends, setAlreadyFriends] = useState<boolean>(false)
 
     function handleTapFriend(): void {
-        console.log("TODO Add friend")
         setParams({
             friendId: user.id,
         })
@@ -33,7 +34,8 @@ export default function FriendSearchResult({ user }: FriendSearchResultProps) {
             onPress={handleTapFriend}
             buttonColor={Colors.pastelGreen}
             labelStyle={{ fontSize: 16 }}
-            icon={() => <Ionicons name="person-add-outline" size={20} />}>Add</Button>
+            disabled={alreadyFriends}
+            icon={() => <Ionicons name="person-add-outline" size={20} />}>{alreadyFriends ? "Friend" : "Add"}</Button>
     </Pressable>
 }
 
