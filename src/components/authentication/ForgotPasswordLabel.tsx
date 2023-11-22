@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'center',
-        marginBottom: 30,
+        marginTop: 30,
     },
     text: {
         color: Colors.accent,
