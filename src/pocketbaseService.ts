@@ -9,9 +9,9 @@ pb.autoCancellation(false)
 export { pb }
 
 type RecordActions<RecordType extends Record> = {
-    onCreate?: (record: RecordType) => void,
-    onDelete?: (record: RecordType) => void,
-    onUpdate?: (record: RecordType) => void,
+    onCreate?: (record: RecordType) => void
+    onDelete?: (record: RecordType) => void
+    onUpdate?: (record: RecordType) => void
 }
 
 export function useRealTimeSubscription<RecordType extends Record>(collection: string, { onCreate, onDelete, onUpdate }: RecordActions<RecordType>, dependencies: DependencyList) {
@@ -55,17 +55,33 @@ export function useRealTimeCollection<RecordType extends Record>(collection: str
             .then(setRecords).catch(console.error)
     }, dependencies)
 
-    useRealTimeSubscription<RecordType>(collection, {
+    function addRecord(record: RecordType) {
+        setRecords((records: RecordType[]) => [...records, record])
+    }
+
+    function deleteRecord(record: RecordType) {
+        setRecords((records: RecordType[]) => records.filter((r: RecordType) => r.id !== record.id))
+    }
+
+    function updateRecord(record: RecordType) {
+        setRecords((records: RecordType[]) => records.map((r: RecordType) => r.id === record.id ? record : r))
+    }
+
+    const actions: RecordActions<RecordType> = params && params.expand ? {
         onCreate: (record: RecordType) => {
-            setRecords((records: RecordType[]) => [...records, record])
+            pb.collection(collection).getOne<RecordType>(record.id, params).then(addRecord).catch(console.error)
         },
-        onDelete: (record: RecordType) => {
-            setRecords((records: RecordType[]) => records.filter((r: RecordType) => r.id !== record.id))
-        },
+        onDelete: deleteRecord,
         onUpdate: (record: RecordType) => {
-            setRecords((records: RecordType[]) => records.map((r: RecordType) => r.id === record.id ? record : r))
+            pb.collection(collection).getOne<RecordType>(record.id, params).then(updateRecord).catch(console.error)
         }
-    }, dependencies)
+    } : {
+        onCreate: addRecord,
+        onDelete: deleteRecord,
+        onUpdate: updateRecord
+    }
+
+    useRealTimeSubscription<RecordType>(collection, actions, dependencies)
 
     return records
 }

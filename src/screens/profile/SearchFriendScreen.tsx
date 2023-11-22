@@ -12,6 +12,8 @@ import { ProfileParamList } from "./ProfileNavigator";
 export default function SearchFriendScreen() {
     const { params } = useRoute<RouteProp<ProfileParamList, 'SearchFriend'>>()
     const [showQRCode, setShowQRCode] = useState<boolean>(false)
+    const [searchText, setSearchText] = useState<string>("")
+
     const { setParams } = useNavigation<NavigationProp<ProfileParamList, 'SearchFriend'>>()
 
     return <SafeAreaView style={styles.container}>
@@ -19,10 +21,10 @@ export default function SearchFriendScreen() {
             <UserQRCode />
         </BlurModal>
         <BlurModal visible={params.friendId !== undefined} onClose={() => setParams({ friendId: undefined })}>
-            {params.friendId && <ProfilePreview userId={params.friendId} />}
+            {params.friendId && <ProfilePreview userId={params.friendId} onClose={() => setParams({ friendId: undefined })} />}
         </BlurModal>
-        <FriendRequestList />
-        <FriendSearch showQRCode={() => setShowQRCode(true)} />
+        <FriendSearch showQRCode={() => setShowQRCode(true)} searchText={searchText} setSearchText={setSearchText} />
+        {searchText === "" && <FriendRequestList />}
     </SafeAreaView>
 }
 

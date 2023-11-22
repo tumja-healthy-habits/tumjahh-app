@@ -1,17 +1,15 @@
 import { Image, Pressable, StyleSheet, View } from "react-native";
 import { pb } from "src/pocketbaseService";
-import { FixedDimensionImage, PhotosRecord } from "types";
+import { PhotosRecord } from "types";
 
 type NewMosaicTileProps = {
-    putImage: (photo: FixedDimensionImage) => void,
     photo?: PhotosRecord,
 }
 
-export default function NewMosaicTile({ photo, putImage }: NewMosaicTileProps) {
+export default function NewMosaicTile({ photo }: NewMosaicTileProps) {
 
     function handlePress(): void {
         if (photo === undefined) return
-        // putImage(...) TODO: get params
     }
 
     return photo ? (
@@ -28,12 +26,12 @@ export default function NewMosaicTile({ photo, putImage }: NewMosaicTileProps) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "white",
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.2,
-        shadowRadius: 10,
-        elevation: 5,
+        // backgroundColor: "white",
+        // shadowColor: 'black',
+        // shadowOffset: { width: 0, height: 0 },
+        // shadowOpacity: 0.2,
+        // shadowRadius: 10,
+        // elevation: 5,
         justifyContent: "center",
         alignItems: "center",
         width: 200,
