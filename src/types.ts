@@ -46,7 +46,6 @@ export interface ChallengesRecord extends Record {
 
 export interface MosaicRecord extends Record {
     name: string;
-    numRings: number;
     thumbnail: string;
 }
 
@@ -58,8 +57,6 @@ export interface MosaicMembersRecord extends Record {
 export interface ContainsRecord extends Record {
     mosaic_id: string;
     photo_id: string;
-    index_x: number;
-    index_y: number;
     expand: {
         photo_id: PhotosRecord
     };
