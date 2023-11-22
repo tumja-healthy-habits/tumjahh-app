@@ -1,23 +1,25 @@
 import { useEffect, useMemo, useState } from "react";
 import { Image, ImageSourcePropType, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { FriendRequestsRecord, UserRecord } from "types";
+import { UserRecord } from "types";
 import ActionButton from "../misc/ActionButton";
 
 type ProfilePreviewProps = {
     userId: string
+    onClose: () => void
 }
 
-export default function ProfilePreview({ userId }: ProfilePreviewProps) {
+export default function ProfilePreview({ userId, onClose }: ProfilePreviewProps) {
     const { currentUser } = useAuthenticatedUser()
     const [friendRecord, setFriendRecord] = useState<UserRecord>()
 
     useEffect(() => {
-        pb.collection("users").getOne<UserRecord>(userId)
-            .then(setFriendRecord)
-            .catch(() => setFriendRecord(currentUser!))
+        pb.collection("users").getOne<UserRecord>(userId, {
+            expand: "friend_requests(from).to, friend_requests(to).from, friends_with(user2).user1, friends_with(user1)"
+        }).then(setFriendRecord)
     }, [userId])
 
     const profilePicSource = useMemo<ImageSourcePropType>(() => {
@@ -27,26 +29,36 @@ export default function ProfilePreview({ userId }: ProfilePreviewProps) {
 
     if (currentUser === null) return <View />
 
-    if (friendRecord === undefined) return <View>
-        <Text>Sorry. This user was not found :(</Text>
-    </View>
+    if (friendRecord === undefined) return <ActivityIndicator />
 
-    async function handleAddFriend(): Promise<void> {
-        if (currentUser === null || friendRecord === undefined) return
-        pb.collection("friend_requests").create<FriendRequestsRecord>({
+    function handleAddFriend(): void {
+        if (currentUser === null || friendRecord === undefined || currentUser.id === friendRecord.id) {
+            return onClose()
+        }
+        pb.collection("friend_requests").create<UserRecord>({
             from: currentUser.id,
             to: friendRecord.id,
-        }).catch(console.error)
+        })
+        onClose()
     }
 
+    const alreadyFriends: boolean = friendRecord.expand["friends_with(user1)"] !== undefined || friendRecord.expand["friends_with(user2)"] !== undefined
+    const friendRequestSent: boolean = friendRecord.expand["friend_requests(from)"] !== undefined
+    const friendRequestReceived: boolean = friendRecord.expand["friend_requests(to)"] !== undefined
 
     return (
         <View style={styles.container}>
-            {/* <ProfilePicture user={friendRecord} style={styles.profilePicture} /> */}
             <Image source={profilePicSource} style={styles.profilePicture} />
             <Text style={styles.name}>{friendRecord.name}</Text>
             <Text style={styles.username}>{friendRecord.username}</Text>
-            <ActionButton title="Add as a friend" onPress={handleAddFriend} />
+            {alreadyFriends ? (
+                <Text>Already friends</Text>
+            ) : friendRequestSent ? (
+                <Text>Friend request sent</Text>
+            ) : friendRequestReceived ? (
+                <Text>Friend request received</Text>
+            ) : (<ActionButton title="Add as a friend" onPress={handleAddFriend} />)
+            }
         </View>
     )
 }

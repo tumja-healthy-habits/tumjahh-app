@@ -56,6 +56,8 @@ export default function LoggedInApp() {
                         repeats: false,
                         seconds: 60 * 60 * 24 * DAYS_UNTIL_REMINDER,
                     }
+                }).then((notificationId: string) => {
+                    AsyncStorage.setItem(VAR_REMINDER_NOTIFICATION_ID, notificationId)
                 })
             }
         })

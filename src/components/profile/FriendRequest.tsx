@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons"
 import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
-import { ActivityIndicator, Button } from "react-native-paper"
+import { ActivityIndicator, Button, IconButton } from "react-native-paper"
 import { Colors } from "react-native/Libraries/NewAppScreen"
 import { pb } from "src/pocketbaseService"
 import { FriendRequestsRecord, UserRecord } from "types"
@@ -9,14 +9,13 @@ import ProfilePicture from "./ProfilePicture"
 
 type FriendRequestProps = {
     friendRequest: FriendRequestsRecord,
-    incoming: boolean,
 }
 
-export default function FriendRequest({ friendRequest, incoming }: FriendRequestProps) {
+export default function FriendRequest({ friendRequest }: FriendRequestProps) {
     const [friend, setFriend] = useState<UserRecord>()
 
     useEffect(() => {
-        pb.collection("users").getOne<UserRecord>(incoming ? friendRequest.from : friendRequest.to)
+        pb.collection("users").getOne<UserRecord>(friendRequest.from)
             .then(setFriend)
             .catch((error: any) => console.error(error, friendRequest))
     }, [])
@@ -37,30 +36,18 @@ export default function FriendRequest({ friendRequest, incoming }: FriendRequest
         console.log("request accepted")
     }
 
-    function deleteRequest(): void {
-        pb.collection("friend_requests").delete(friendRequest.id)
-        console.log("request deleted")
-    }
-
     return <View style={styles.container}>
         <ProfilePicture userRecord={friend} style={styles.image} />
         <View style={styles.innerContainer}>
             <Text style={styles.name}>{friend.name}</Text>
             <Text style={styles.username}>{friend.username}</Text>
         </View>
-        <View>
-            {incoming ? (<><RequestActionButton
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <RequestActionButton
                 onPress={acceptRequest}
                 iconName="person-add-outline"
                 label="Accept" />
-                <RequestActionButton
-                    onPress={rejectRequest}
-                    iconName="close-outline"
-                    label="Decline" /></>)
-                : (<RequestActionButton
-                    onPress={deleteRequest}
-                    iconName="close-outline"
-                    label="Revoke" />)}
+            <IconButton icon="close" onPress={rejectRequest} />
         </View>
     </View>
 }
@@ -76,8 +63,8 @@ function RequestActionButton({ onPress, label, iconName }: RequestActionButtonPr
         mode="outlined"
         onPress={onPress}
         buttonColor={Colors.pastelGreen}
-        labelStyle={{ fontSize: 16 }}
-        icon={() => <Ionicons name={iconName} size={20} />}>{label}</Button>
+        labelStyle={{ fontSize: 14 }}
+        icon={() => <Ionicons name={iconName} size={16} />}>{label}</Button>
 }
 
 const styles = StyleSheet.create({
@@ -96,7 +83,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     name: {
-        fontSize: 24,
+        fontSize: 18,
         fontWeight: "bold",
     },
     username: {
