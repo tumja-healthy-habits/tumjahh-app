@@ -35,7 +35,7 @@ export default function InputField({
 				autoCorrect={false}
 			/>
 			{fieldButtonLabel && <TouchableOpacity onPress={fieldButtonFunction}>
-				<Text style={styles.textfieldText}>{fieldButtonLabel}</Text>
+				<Text style={styles.textfieldButton}>{fieldButtonLabel}</Text>
 			</TouchableOpacity>}
 		</View>
 	);
@@ -68,6 +68,10 @@ const styles = StyleSheet.create({
 		color: '#FFF4EC',
 		fontSize: 16,
 		// marginBottom: 10,
+	},
+	textfieldButton: {
+		color: '#FFF4EC',
+		fontWeight: "700"
 	},
 	textfield: {
 		flex: 1,
