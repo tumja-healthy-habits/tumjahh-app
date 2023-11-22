@@ -12,23 +12,22 @@ import FriendSearchResult from "./FriendSearchResult";
 
 type FriendSearchProps = {
     showQRCode: () => void
+    searchText: string,
+    setSearchText: (text: string) => void
 }
 
-export default function FriendSearch({ showQRCode }: FriendSearchProps) {
-    const [searchInput, setSearchInput] = useState<string>("")
+export default function FriendSearch({ showQRCode, searchText, setSearchText }: FriendSearchProps) {
     const [searchResults, setSearchResults] = useState<UserRecord[]>([]);
     const [showResults, setShowResults] = useState<boolean>(false)
 
     const { currentUser } = useAuthenticatedUser()
 
-    console.log(searchResults, "\nshowing results: ", showResults)
-
     useEffect(() => {
         submitSearch()
-    }, [searchInput])
+    }, [searchText])
 
     async function submitSearch() {
-        if (searchInput.length === 0 || currentUser === undefined) {
+        if (searchText.length === 0 || currentUser === null) {
             setShowResults(false)
             setSearchResults([])
             return
@@ -36,15 +35,16 @@ export default function FriendSearch({ showQRCode }: FriendSearchProps) {
         // USERS
         setShowResults(true)
         const foundByUsername: UserRecord[] = (await pb.collection("users").getFullList<UserRecord>({
-                filter: `username ~ "${searchInput}" && id != "${currentUser.id}"`
-            }))
+            filter: `username ~ "${searchText}" && id != "${currentUser.id}"`,
+            expand: "friend_requests(from).to, friend_requests(to).from, friends_with(user2).user1, friends_with(user1)"
+        }))
 
         // contacts permission
         const { status } = await requestPermissionsAsync()
         if (status === PermissionStatus.GRANTED) {
             // getting contacts
             const { data } = await getContactsAsync({
-                name: searchInput,
+                name: searchText,
                 fields: [ContactFields.PhoneNumbers]
             })
             // extracting numbers from contacts --> creating filter
@@ -77,7 +77,8 @@ export default function FriendSearch({ showQRCode }: FriendSearchProps) {
             }
             // Matching phone numbers
             pb.collection("users").getFullList<UserRecord>({
-                filter: `username !~ "${searchInput}" && (${phoneNumberQuery})`
+                filter: `username !~ "${searchText}" && (${phoneNumberQuery})`,
+                expand: "friend_requests(from).to, friend_requests(to).from, friends_with(user2).user1, friends_with(user1)"
             }).then((records: UserRecord[]) => {
                 // console.log("found by phone numbers", records)
                 setSearchResults(foundByUsername.concat(records))
@@ -85,15 +86,28 @@ export default function FriendSearch({ showQRCode }: FriendSearchProps) {
         }
     }
 
-    function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
-        return <FriendSearchResult user={item} />
+    function updateSearchResult(user: UserRecord): void {
+        pb.collection("users").getOne<UserRecord>(user.id, {
+            expand: "friend_requests(from).to, friend_requests(to).from, friends_with(user2).user1, friends_with(user1)"
+        }).then((updatedUser: UserRecord) => {
+            setSearchResults((oldResults: UserRecord[]) => oldResults.map((result: UserRecord) => {
+                if (result.id === updatedUser.id) {
+                    return updatedUser
+                }
+                return result
+            }))
+        }).catch(console.error)
     }
 
-    return <View style={{ backgroundColor: Colors.pastelGreen, flex: 1 }
+    function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
+        return <FriendSearchResult user={item} updateSearchResult={updateSearchResult} />
+    }
+
+    return <View style={{ backgroundColor: Colors.pastelGreen }
     }>
-        <TextInput value={searchInput}
+        <TextInput value={searchText}
             placeholder="Search for your friend's username"
-            onChangeText={setSearchInput}
+            onChangeText={setSearchText}
             autoCapitalize="none"
             autoCorrect={false}
             left={<TextInput.Icon icon={() => <Ionicons name="search-outline" size={24} color="black" />} />}
@@ -106,7 +120,7 @@ export default function FriendSearch({ showQRCode }: FriendSearchProps) {
             keyExtractor={(user: UserRecord) => user.id}
             renderItem={renderFriend}
             ItemSeparatorComponent={() => <Divider bold horizontalInset />}
-        />) : searchInput.length > 0 ?
+        />) : searchText.length > 0 ?
             (<Text style={globalStyles.textfieldText}>No results</Text>
             ) : null}
     </View >
