@@ -1,19 +1,18 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Colors from "constants/colors";
 import React, { useState, useRef } from 'react';
-import { Alert, Image, StyleSheet, Text, View, Button } from 'react-native';
+import { Alert, Image, StyleSheet, Text, View, KeyboardAvoidingView } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler'
 import DropDownPicker from 'react-native-dropdown-picker';
 import PhoneInput from "react-native-phone-number-input";
 import { Ionicons } from '@expo/vector-icons';
 import {Dropdown} from 'react-native-element-dropdown';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 import { signup } from "src/authentification";
 
 import LoginButton from './LoginButton';
-import PhoneNumberInput, { CalendarInput, FormTextInput} from './InputField';
+import { CalendarInput, FormTextInput} from './InputField';
 import { LoginParamList } from "./LoginNavigator";
 
 
@@ -27,7 +26,6 @@ export default function SignupForm() {
 	const [email, setEmail] = useState<string>("")
 	const [password, setPassword] = useState<string>("")
 	const [passwordConfirm, setPasswordConfirm] = useState<string>("")
-	//const [open, setOpen] = useState(false);
 	const [gender, setGender] = useState<string>("");
 	const genderOptions = [
 		{label: 'Male', value: 'male'},
@@ -79,14 +77,11 @@ export default function SignupForm() {
 					<Image source={require("assets/images/behealthy-icon.png")} style={{ width: 170, height: 170, alignSelf: 'flex-end' }} />
 				</View>
 				
-				{/* <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}> */}
 				<FormTextInput
 					label={'Username'}
 					iconName="person-outline"
 					onChangeText={setUsername}
 				/>
-				{/* </KeyboardAvoidingView> */}
-
 
 				<FormTextInput
 					label={'Name'}
@@ -101,15 +96,6 @@ export default function SignupForm() {
 					onChangeText={setEmail}
 				/>
 
-				{/* <PhoneNumberInput
-					defaultValue={phoneValue}
-					onChangeText={(text) => {
-						setPhoneValue(text);
-					}}
-					onChangeFormattedText={(text) => {
-						setFormattedPhoneValue(text);
-					}}
-				/> */}
 				<View style={styles.inputFieldContainer}>
 					<Ionicons name={'ios-call-outline'} size={20} color="#666" style={{ marginRight: 5,}} />
 					<PhoneInput
@@ -143,15 +129,6 @@ export default function SignupForm() {
 					onChangeText={setPasswordConfirm}
 				/>
 
-				{/* <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}> */}
-				{/* <FormTextInput 
-					label={'Age'}
-					inputType='numeric'
-					iconName=""
-					onChangeText={setAge}
-				/> */}
-				{/* </KeyboardAvoidingView> */}
-
 				<View style={{flexDirection:'row', justifyContent: 'space-between',}}>
 					<CalendarInput 
 						label="Birthdate"
@@ -183,38 +160,7 @@ export default function SignupForm() {
 						}}
 					/>
 				</View>
-				
-				{/* <View style={{flexDirection:'row'}}>
-					<Button 
-						title="Birthdate" 
-						onPress={() => setOpenDatepicker(true)} 
-						//color='transparent'
-					/>
-					{openDatepicker && <DateTimePicker
-						value={birthdate}
-						mode={"date"}
-						//is24Hour={true}
-						onChange={onChangeDate}
-					/>}
-				</View> */}
-				
-
-			{/*	
-				<DatePicker
-					modal
-					open={openDatepicker}
-					date={birthdate}
-					mode="date"
-					onConfirm={(date) => {
-					setOpenDatepicker(false)
-					setBirthdate(date)
-					}}
-					onCancel={() => {
-					setOpenDatepicker(false)
-					}}
-				/> */}
-
-
+			
 				<LoginButton label={'Register'} onPress={handleSignup} />
 				<ForgotPasswordLabel
 					textLabel="Already registered?"
@@ -256,16 +202,12 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		borderBottomColor: '#FFF4EC',
 		borderBottomWidth: 1,
-		//paddingBottom: 8,
 		marginBottom: 25,
 		backgroundColor: 'transparent',
 		width: '100%',
-		//alignItems:'flex-start'
 	},
 	inputText: {
-		//color: "#666",
 		fontSize: 16,
-		// marginBottom: 10,
 	},
 	phoneNumberContainer: {
 		backgroundColor: 'transparent',
