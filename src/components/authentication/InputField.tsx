@@ -1,6 +1,6 @@
-import React from 'react';
-import { KeyboardTypeOptions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
+import React, {forwardRef} from 'react';
+import { KeyboardTypeOptions, StyleSheet, Text, TextInput, TouchableOpacity, View, Pressable } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 
 type InputFieldProps = {
@@ -54,7 +54,38 @@ export function FormTextInput({ label, iconName, onChangeText, ...props }: FormT
 		icon={<Ionicons name={iconName} size={20} color="#666" style={{ marginRight: 5 }} />}
 		onChangeText={onChangeText}
 	/>
+};
+
+type CalendarInputProps = {
+	label: string;
+	iconName: any;
+	onChangeDate: (event:any, selectedDate:any) => void;
+	mode: any;
+	value: Date;
+	onPress: () => void;
+	openPicker: boolean;
 }
+
+export function CalendarInput({label, iconName, onChangeDate, mode, value, onPress, openPicker}: CalendarInputProps) {
+	return <View style={[styles.container, {width:'45%'}]}>
+		
+		<Ionicons name={iconName} size={20} color="#666" style={{ marginRight: 5, alignSelf:"flex-end"}} />
+
+		{!openPicker && 
+		<Pressable onPress={onPress} style={{alignSelf:"flex-end"}}>
+		 	<Text style={{color:"#a89bb0", fontSize:16}}>{label}</Text>
+		</Pressable>}
+		
+		{openPicker && <DateTimePicker
+			value={value}
+			mode={mode}
+			onChange={onChangeDate}
+			style={{alignSelf:"flex-end", paddingBottom:0, marginBottom:0}}
+		/>}
+	</View>
+
+}
+
 
 const styles = StyleSheet.create({
 	container: {
@@ -63,18 +94,23 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		paddingBottom: 8,
 		marginBottom: 25,
+		backgroundColor: 'transparent'
 	},
 	textfieldText: {
 		color: '#FFF4EC',
-		fontSize: 16,
+		fontSize: 12,
 		// marginBottom: 10,
 	},
 	textfieldButton: {
 		color: '#FFF4EC',
-		fontWeight: "700"
+		fontWeight: "700",
 	},
 	textfield: {
 		flex: 1,
 		paddingVertical: 0,
+		fontSize:16
 	},
-})
+	phoneNumberContainer: {
+		backgroundColor: 'transparent'
+	}
+}) 

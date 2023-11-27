@@ -2,13 +2,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Colors from "constants/colors";
 import { useState } from "react";
-import { Alert, Image, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, View, ScrollView } from "react-native";
 import { VAR_PASSWORD, VAR_USERNAME, login } from "src/authentification";
 import { pb } from "src/pocketbaseService";
 import { UserRecord } from "types";
 import { globalStyles } from "../../styles";
 import BlurModal from "../misc/BlurModal";
-import CustomButton from "./CustomButton";
+import LoginButton from "./LoginButton";
 import ForgotPasswordLabel from "./ForgotPasswordLabel";
 import { FormTextInput } from './InputField';
 import { LoginParamList } from "./LoginNavigator";
@@ -39,7 +39,7 @@ export default function LoginForm() {
     }
 
     return (
-        <View style={[globalStyles.container, styles.outerContainer]}>
+        <ScrollView contentContainerStyle={[globalStyles.container, styles.outerContainer]}>
             <View style={{ width: "90%" }} >
                 <Image source={require("assets/images/behealthy-icon.png")} style={{ width: 250, height: 250, alignSelf: 'center' }} />
                 <Text style={styles.formTitle}>Login</Text>
@@ -61,7 +61,7 @@ export default function LoginForm() {
                         fieldButtonFunction={() => setShowPasswordResetModal(true)}
                     />
                 </View>
-                <CustomButton label="Login" onPress={handleLogin} />
+                <LoginButton label="Login" onPress={handleLogin} />
 
                 <BlurModal visible={showPasswordResetModal} onClose={() => setShowPasswordResetModal(false)}>
                     <View style={styles.modalContainer} >
@@ -72,7 +72,7 @@ export default function LoginForm() {
                             keyboardType="email-address"
                             onChangeText={setUsername}
                         />
-                        <CustomButton label="Reset password" onPress={handleForgotPassword} />
+                        <LoginButton label="Reset password" onPress={handleForgotPassword} />
                     </View>
                 </BlurModal>
 
@@ -82,7 +82,7 @@ export default function LoginForm() {
                     onPress={() => navigation.navigate('SignupForm')}
                 />
             </View>
-        </View>
+        </ScrollView>
     )
 }
 

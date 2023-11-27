@@ -1,12 +1,19 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Colors from "constants/colors";
-import React, { useState } from 'react';
-import { Alert, Image, StyleSheet, Text, View } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { Alert, Image, StyleSheet, Text, View, Button } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler'
+import DropDownPicker from 'react-native-dropdown-picker';
+import PhoneInput from "react-native-phone-number-input";
+import { Ionicons } from '@expo/vector-icons';
+import {Dropdown} from 'react-native-element-dropdown';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 import { signup } from "src/authentification";
 
-import CustomButton from './CustomButton';
-import { FormTextInput } from './InputField';
+import LoginButton from './LoginButton';
+import PhoneNumberInput, { CalendarInput, FormTextInput} from './InputField';
 import { LoginParamList } from "./LoginNavigator";
 
 
@@ -20,20 +27,29 @@ export default function SignupForm() {
 	const [email, setEmail] = useState<string>("")
 	const [password, setPassword] = useState<string>("")
 	const [passwordConfirm, setPasswordConfirm] = useState<string>("")
+	//const [open, setOpen] = useState(false);
+	const [gender, setGender] = useState<string>("");
+	const genderOptions = [
+		{label: 'Male', value: 'male'},
+		{label: 'Female', value: 'female'},
+		{label: 'Diverse', value: 'diverse'},
+		{label: 'Not specified', value: 'not specified'}
+	];
+	const [phoneNumber, setPhoneNumber] = useState("");
+  	const [formattedPhoneNumber, setFormattedPhoneNumber] = useState("");
+	const phoneInput = useRef<PhoneInput>(null);
+	const [age, setAge] = useState(0);
+	const [birthdate, setBirthdate] = useState(new Date())
+	const [openDatepicker, setOpenDatepicker] = useState(false)
+	console.log(birthdate)
 
-	const [date, setDate] = useState(new Date());
-	const [open, setOpen] = useState(false);
-	const [dobLabel, setDobLabel] = useState('Date of Birth');
-
-	//const navigation = useNavigation<NavigationProp<LoginParamList, "SignupForm">>()
 
 	const { goBack } = useNavigation<NavigationProp<LoginParamList, "SignupForm">>()
 
 
-
 	function handleSignup(): void {
 		try {
-			signup(username, name ? name : username, email, password, passwordConfirm)
+			signup(username, name ? name : username, email, password, passwordConfirm, formattedPhoneNumber, gender, birthdate)
 		}
 		catch (error: any) {
 			console.log(error.message)
@@ -49,20 +65,28 @@ export default function SignupForm() {
 		}
 	}
 
+	const onChangeDate = (event:any, selectedDate:any) => {
+		const currentDate = selectedDate;
+		setBirthdate(currentDate);
+	};
+
 
 	return (
-		<View style={[globalStyles.container, styles.outerContainer]}>
+		<ScrollView contentContainerStyle={[globalStyles.container, styles.outerContainer]}>
 			<View style={{ width: "90%" }}>
 				<View style={styles.headerContainer}>
 					<Text style={styles.formTitle}>Register</Text>
 					<Image source={require("assets/images/behealthy-icon.png")} style={{ width: 170, height: 170, alignSelf: 'flex-end' }} />
 				</View>
-
+				
+				{/* <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}> */}
 				<FormTextInput
 					label={'Username'}
 					iconName="person-outline"
 					onChangeText={setUsername}
 				/>
+				{/* </KeyboardAvoidingView> */}
+
 
 				<FormTextInput
 					label={'Name'}
@@ -76,6 +100,34 @@ export default function SignupForm() {
 					keyboardType="email-address"
 					onChangeText={setEmail}
 				/>
+
+				{/* <PhoneNumberInput
+					defaultValue={phoneValue}
+					onChangeText={(text) => {
+						setPhoneValue(text);
+					}}
+					onChangeFormattedText={(text) => {
+						setFormattedPhoneValue(text);
+					}}
+				/> */}
+				<View style={styles.inputFieldContainer}>
+					<Ionicons name={'ios-call-outline'} size={20} color="#666" style={{ marginRight: 5,}} />
+					<PhoneInput
+						ref={phoneInput}
+						defaultValue={phoneNumber}
+						defaultCode="DE"
+						layout="second"
+						onChangeText={(text) => {
+						setPhoneNumber(text);
+						}}
+						onChangeFormattedText={(text) => {
+						setFormattedPhoneNumber(text);
+						}}
+						containerStyle={styles.phoneNumberContainer}
+						textContainerStyle={styles.phoneNumberContainer}
+						textInputStyle={styles.inputText}
+					/>
+				</View>
 
 				<FormTextInput
 					label={'Password'}
@@ -91,29 +143,97 @@ export default function SignupForm() {
 					onChangeText={setPasswordConfirm}
 				/>
 
-				{/* <TextInputMask
-            refInput={setDate}
-            type={'datetime'}
-            options={{
-                format: 'DD-MM-YYYY HH:mm:ss'
-            }}
-        /> */}
+				{/* <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}> */}
+				{/* <FormTextInput 
+					label={'Age'}
+					inputType='numeric'
+					iconName=""
+					onChangeText={setAge}
+				/> */}
+				{/* </KeyboardAvoidingView> */}
+
+				<View style={{flexDirection:'row', justifyContent: 'space-between',}}>
+					<CalendarInput 
+						label="Birthdate"
+						iconName="calendar-outline"
+						onChangeDate={onChangeDate}
+						mode={"date"}
+						onPress={() => setOpenDatepicker(true)}
+						value={birthdate}
+						openPicker={openDatepicker}
+					/>
+					<Dropdown
+						style={styles.dropdown}
+						placeholderStyle={styles.inputText}
+						//selectedTextStyle={styles.selectedTextStyle}
+						//inputSearchStyle={styles.inputSearchStyle}
+						//iconStyle={styles.iconStyle}
+						data={genderOptions}
+						//search
+						maxHeight={300}
+						labelField="label"
+						valueField="value"
+						placeholder={'Gender'}
+						value={gender}
+						//onFocus={() => setIsFocus(true)}
+						//onBlur={() => setIsFocus(false)}
+						onChange={(item) => {
+							setGender(item.value);
+							//setIsFocus(false);
+						}}
+					/>
+				</View>
+				
+				{/* <View style={{flexDirection:'row'}}>
+					<Button 
+						title="Birthdate" 
+						onPress={() => setOpenDatepicker(true)} 
+						//color='transparent'
+					/>
+					{openDatepicker && <DateTimePicker
+						value={birthdate}
+						mode={"date"}
+						//is24Hour={true}
+						onChange={onChangeDate}
+					/>}
+				</View> */}
+				
+
+			{/*	
+				<DatePicker
+					modal
+					open={openDatepicker}
+					date={birthdate}
+					mode="date"
+					onConfirm={(date) => {
+					setOpenDatepicker(false)
+					setBirthdate(date)
+					}}
+					onCancel={() => {
+					setOpenDatepicker(false)
+					}}
+				/> */}
 
 
-				<CustomButton label={'Register'} onPress={handleSignup} />
+				<LoginButton label={'Register'} onPress={handleSignup} />
 				<ForgotPasswordLabel
 					textLabel="Already registered?"
 					buttonLabel="Login"
 					onPress={goBack}
 				/>
+
+				<Text style={{marginBottom:25}}/>
 			</View>
-		</View>
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	outerContainer: {
 		backgroundColor: '#d7c3de',
+		minHeight:'100%',
+		paddingTop:'15%',
+		flexGrow: 1
 	},
 	headerContainer: {
 		flexDirection: 'row',
@@ -132,4 +252,33 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		marginBottom: 30,
 	},
+	inputFieldContainer: {
+		flexDirection: 'row',
+		borderBottomColor: '#FFF4EC',
+		borderBottomWidth: 1,
+		//paddingBottom: 8,
+		marginBottom: 25,
+		backgroundColor: 'transparent',
+		width: '100%',
+		//alignItems:'flex-start'
+	},
+	inputText: {
+		//color: "#666",
+		fontSize: 16,
+		// marginBottom: 10,
+	},
+	phoneNumberContainer: {
+		backgroundColor: 'transparent',
+		alignSelf: 'flex-start',
+		paddingTop:0,
+		paddingLeft:0
+	},
+	dropdown: {
+		width:'45%',
+		borderColor:'#FFF4EC',
+		borderRadius:8,
+		borderWidth: 1,
+		paddingHorizontal: 8,
+		marginBottom:25
+	}
 })

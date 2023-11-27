@@ -1,12 +1,12 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 
-type CustomButtonProps = {
+type LoginButtonProps = {
 	label: string;
 	onPress: () => void;
 };
 
-export default function CustomButton({ label, onPress }: CustomButtonProps) {
+export default function LoginButton({ label, onPress }: LoginButtonProps) {
 	return (
 		<Pressable
 			onPress={onPress}
