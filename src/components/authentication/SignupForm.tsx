@@ -41,7 +41,7 @@ export default function SignupForm() {
 	const [birthdate, setBirthdate] = useState(new Date())
 	const [openDatepicker, setOpenDatepicker] = useState(false)
 	const [isStudent, setIsStudent] = useState("")
-	const [profilePicture, setProfilePicture] = useState<FixedDimensionImage>({"uri":"assets/images/default-avatar.png", "width":125, "height":125})
+	const [profilePicture, setProfilePicture] = useState<FixedDimensionImage>()
 	console.log(birthdate)
 	console.log(isStudent)
 	console.log(password)
@@ -53,7 +53,19 @@ export default function SignupForm() {
 
 
 	function handleSignup(): void {
-		signup(username, name ? name : username, email, password, passwordConfirm, formattedPhoneNumber, gender, birthdate, isStudent === 'yes' ? true : false)
+		signup(username, 
+			name ? name : username, 
+			email, 
+			password, 
+			passwordConfirm, 
+			formattedPhoneNumber, 
+			gender, birthdate, 
+			isStudent === 'yes' ? true : false, 
+			profilePicture !== undefined ? {
+				uri: profilePicture!.uri,
+				name: profilePicture!.uri,
+				type: "image/jpg"
+        	} : {})
 	}
 
 	const onChangeDate = (event:any, selectedDate:any) => {
@@ -183,9 +195,9 @@ export default function SignupForm() {
 							</RadioButton.Group>
 						</View>
 					</View>
-					{/* <View style={{width:"50%"}}>
+					<View style={{width:"50%"}}>
 						<ProfilePictureInput onTakePhoto={setProfilePicture} profilePicture={profilePicture}/>
-					</View> */}
+					</View>
 				</View>
 			
 				<LoginButton label={'Register'} onPress={handleSignup} />

@@ -109,7 +109,7 @@ export function CalendarInput({label, iconName, onChangeDate, mode, value, onPre
 
 type ProfilePictureInputProps = {
 	onTakePhoto: (photo: FixedDimensionImage) => void,
-	profilePicture: FixedDimensionImage
+	profilePicture?: FixedDimensionImage
 }
 
 export function ProfilePictureInput({onTakePhoto, profilePicture}:ProfilePictureInputProps) {
@@ -125,16 +125,18 @@ export function ProfilePictureInput({onTakePhoto, profilePicture}:ProfilePicture
             onTakePhoto(result.assets[0])
         })
     }
-	console.log(profilePicture.uri)
+	profilePicture ? console.log(profilePicture.uri) : {}
 	return( 
 		<View style={styles.profilePictureContainer}>
-			<Image
-				// source={require("assets/images/default-avatar.png")} // Replace with your image source
-				source={require("assets/images/default-avatar.png")}
-				style={{width:125, height:125, opacity:0.5}}
-			/>
-			<View style={styles.overlay}>
-				<IconButton icon="image-outline" color="white" onPress={openMediaLibrary} size={40} />
+			<Text style={{fontSize:16}}>Profile Picture</Text>
+			<View style={styles.profilePictureContainer}>
+				<Image
+					source={profilePicture ? {uri: profilePicture!.uri} : require("assets/images/default-avatar.png")}
+					style={{width:100, height:100, opacity:0.5, borderRadius:8}}
+				/>
+				<View style={styles.overlay}>
+					<IconButton icon="image-outline" color="white" onPress={openMediaLibrary} size={40} />
+				</View>
 			</View>
 		</View>
 	)

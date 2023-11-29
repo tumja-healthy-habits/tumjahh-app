@@ -15,7 +15,7 @@ export async function login(username: string, password: string): Promise<UserRec
 
 
 // returns the newly created user record
-export async function signup(username: string, name: string, email: string, pw: string, pwConfirm: string, phoneNumber:string, gender:string, birthdate:Date, isStudent:boolean): Promise<UserRecord | undefined> {
+export async function signup(username: string, name: string, email: string, pw: string, pwConfirm: string, phoneNumber:string, gender:string, birthdate:Date, isStudent:boolean, profilePicture?:any): Promise<UserRecord | undefined> {
     try {
         const data: any = {
             username: username,
@@ -26,8 +26,22 @@ export async function signup(username: string, name: string, email: string, pw: 
             phoneNumber:phoneNumber,
             gender:gender,
             birthdate:birthdate,
-            isStudent:isStudent
+            isStudent:isStudent,
+            avatar:profilePicture
         }
+        // const formData: FormData = new FormData()
+        // formData.append('avatar', {
+        //     uri: profilePicture!.uri,
+        //     name: profilePicture!.uri,
+        //     type: "image/jpg"
+        // } as any)
+        // formData.append("username", username)
+        // formData.append("name", name)
+        // formData.append("email", email)
+        // formData.append("password", pw)
+        // formData.append("passwordConfirm", pwConfirm)
+        // formData.append("phoneNumber", phoneNumber)
+        // formData.append("gender", gender)
         console.log(pw)
         await pb.collection("users").create<UserRecord>(data)
         return login(username, pw)
