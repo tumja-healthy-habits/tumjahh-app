@@ -117,9 +117,10 @@ export function ProfilePictureInput({onTakePhoto, profilePicture}:ProfilePicture
 	async function openMediaLibrary(): Promise<void> {
         launchImageLibraryAsync({
             mediaTypes: MediaTypeOptions.Images,
-            allowsEditing: false,
+            allowsEditing: true,
             quality: 1,
             allowsMultipleSelection: false,
+			aspect: [1, 1] //for android, on ios the crop rectangle is always a square
         }).then((result: ImagePickerResult) => {
             if (result.canceled) return
             onTakePhoto(result.assets[0])

@@ -15,35 +15,24 @@ export async function login(username: string, password: string): Promise<UserRec
 
 
 // returns the newly created user record
-export async function signup(username: string, name: string, email: string, pw: string, pwConfirm: string, phoneNumber:string, gender:string, birthdate:Date, isStudent:boolean, profilePicture?:any): Promise<UserRecord | undefined> {
-    try {
-        const data: any = {
-            username: username,
-            name: name,
-            email: email,
-            password: pw,
-            passwordConfirm: pwConfirm,
-            phoneNumber:phoneNumber,
-            gender:gender,
-            birthdate:birthdate,
-            isStudent:isStudent,
-            avatar:profilePicture
-        }
-        // const formData: FormData = new FormData()
-        // formData.append('avatar', {
-        //     uri: profilePicture!.uri,
-        //     name: profilePicture!.uri,
-        //     type: "image/jpg"
-        // } as any)
-        // formData.append("username", username)
-        // formData.append("name", name)
-        // formData.append("email", email)
-        // formData.append("password", pw)
-        // formData.append("passwordConfirm", pwConfirm)
-        // formData.append("phoneNumber", phoneNumber)
-        // formData.append("gender", gender)
-        console.log(pw)
-        await pb.collection("users").create<UserRecord>(data)
+export async function signup(username: string, name: string, email: string, pw: string, pwConfirm: string, phoneNumber:string, gender:string, birthdate:Date, isStudent:boolean, profilePicture:any): Promise<UserRecord | undefined> {
+    try {        
+        const formData: FormData = new FormData()
+        formData.append('avatar', {
+            uri: profilePicture!.uri,
+            name: profilePicture!.uri,
+            type: "image/jpg"
+        } as any)
+        formData.append("username", username)
+        formData.append("name", name)
+        formData.append("email", email)
+        formData.append("password", pw)
+        formData.append("passwordConfirm", pwConfirm)
+        formData.append("phoneNumber", phoneNumber)
+        formData.append("gender", gender)
+        formData.append("birthdate", birthdate.toISOString())
+        formData.append("isStudent", isStudent.toString())
+        await pb.collection("users").create<UserRecord>(formData)
         return login(username, pw)
     }
     catch (error: any) {
