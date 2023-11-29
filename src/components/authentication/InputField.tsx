@@ -1,7 +1,26 @@
 import React, {forwardRef} from 'react';
-import { KeyboardTypeOptions, StyleSheet, Text, TextInput, TouchableOpacity, View, Pressable } from 'react-native';
+import { KeyboardTypeOptions, StyleSheet, Text, TextInput, TouchableOpacity, View, Pressable,Image } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
+import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
+import { FixedDimensionImage } from 'types';
+import IconButton from "../misc/IconButton";
+
+type StarIconProps = {
+	iconName: any;
+	style?: any;
+}
+
+const StarIcon = ({iconName, style={}}:StarIconProps) => {
+	return (
+	  <View style={[{flexDirection:'row',  marginRight: 10}, style]}>
+		{<Ionicons name={iconName} size={20} color="#666" />}
+		<Text style={{position:'absolute', top:-5, right:-5, fontSize:16, }}>*</Text>
+	  </View>
+	);
+  };
+export {StarIcon}
+  
 
 type InputFieldProps = {
 	label: string;
@@ -45,13 +64,14 @@ type FormTextInputProps = InputFieldProps & {
 	label: string;
 	iconName: any;
 	onChangeText: (text: string) => void;
+	mandatory: boolean;
 };
 
-export function FormTextInput({ label, iconName, onChangeText, ...props }: FormTextInputProps) {
+export function FormTextInput({ label, iconName, onChangeText, mandatory, ...props }: FormTextInputProps) {
 	return <InputField
 		{...props}
 		label={label}
-		icon={<Ionicons name={iconName} size={20} color="#666" style={{ marginRight: 5 }} />}
+		icon= {mandatory? <StarIcon iconName={iconName}/>  : <Ionicons name={iconName} size={20} color="#666" style={{ marginRight: 5 }} />}
 		onChangeText={onChangeText}
 	/>
 };
@@ -69,7 +89,8 @@ type CalendarInputProps = {
 export function CalendarInput({label, iconName, onChangeDate, mode, value, onPress, openPicker}: CalendarInputProps) {
 	return <View style={[styles.container, {width:'45%'}]}>
 		
-		<Ionicons name={iconName} size={20} color="#666" style={{ marginRight: 5, alignSelf:"flex-end"}} />
+		{/* <Ionicons name={iconName} size={20} color="#666" style={{ marginRight: 5, alignSelf:"flex-end"}} /> */}
+		<StarIcon iconName={iconName} style={{alignSelf:'flex-end'}}/>
 
 		{!openPicker && 
 		<Pressable onPress={onPress} style={{alignSelf:"flex-end"}}>
@@ -84,6 +105,39 @@ export function CalendarInput({label, iconName, onChangeDate, mode, value, onPre
 		/>}
 	</View>
 
+}
+
+type ProfilePictureInputProps = {
+	onTakePhoto: (photo: FixedDimensionImage) => void,
+	profilePicture: FixedDimensionImage
+}
+
+export function ProfilePictureInput({onTakePhoto, profilePicture}:ProfilePictureInputProps) {
+
+	async function openMediaLibrary(): Promise<void> {
+        launchImageLibraryAsync({
+            mediaTypes: MediaTypeOptions.Images,
+            allowsEditing: false,
+            quality: 1,
+            allowsMultipleSelection: false,
+        }).then((result: ImagePickerResult) => {
+            if (result.canceled) return
+            onTakePhoto(result.assets[0])
+        })
+    }
+	console.log(profilePicture.uri)
+	return( 
+		<View style={styles.profilePictureContainer}>
+			<Image
+				// source={require("assets/images/default-avatar.png")} // Replace with your image source
+				source={require("assets/images/default-avatar.png")}
+				style={{width:125, height:125, opacity:0.5}}
+			/>
+			<View style={styles.overlay}>
+				<IconButton icon="image-outline" color="white" onPress={openMediaLibrary} size={40} />
+			</View>
+		</View>
+	)
 }
 
 
@@ -112,5 +166,15 @@ const styles = StyleSheet.create({
 	},
 	phoneNumberContainer: {
 		backgroundColor: 'transparent'
-	}
+	},
+	profilePictureContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	overlay: {
+		...StyleSheet.absoluteFillObject,
+		justifyContent: 'center',
+		alignItems: 'center',
+	  },
 }) 

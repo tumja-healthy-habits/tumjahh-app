@@ -1,19 +1,21 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Colors from "constants/colors";
 import React, { useState, useRef } from 'react';
-import { Alert, Image, StyleSheet, Text, View, KeyboardAvoidingView } from 'react-native';
+import { Alert, Image, StyleSheet, Text, View, KeyboardAvoidingView, Platform } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler'
 import DropDownPicker from 'react-native-dropdown-picker';
 import PhoneInput from "react-native-phone-number-input";
 import { Ionicons } from '@expo/vector-icons';
 import {Dropdown} from 'react-native-element-dropdown';
+import {RadioButton} from 'react-native-paper';
 
 
 import { signup } from "src/authentification";
 
 import LoginButton from './LoginButton';
-import { CalendarInput, FormTextInput} from './InputField';
+import { CalendarInput, FormTextInput, ProfilePictureInput} from './InputField';
 import { LoginParamList } from "./LoginNavigator";
+import { FixedDimensionImage } from "types";
 
 
 import { globalStyles } from 'src/styles';
@@ -36,31 +38,22 @@ export default function SignupForm() {
 	const [phoneNumber, setPhoneNumber] = useState("");
   	const [formattedPhoneNumber, setFormattedPhoneNumber] = useState("");
 	const phoneInput = useRef<PhoneInput>(null);
-	const [age, setAge] = useState(0);
 	const [birthdate, setBirthdate] = useState(new Date())
 	const [openDatepicker, setOpenDatepicker] = useState(false)
+	const [isStudent, setIsStudent] = useState("")
+	const [profilePicture, setProfilePicture] = useState<FixedDimensionImage>({"uri":"assets/images/default-avatar.png", "width":125, "height":125})
 	console.log(birthdate)
+	console.log(isStudent)
+	console.log(password)
+	console.log(passwordConfirm)
+	console.log(profilePicture)
 
 
 	const { goBack } = useNavigation<NavigationProp<LoginParamList, "SignupForm">>()
 
 
 	function handleSignup(): void {
-		try {
-			signup(username, name ? name : username, email, password, passwordConfirm, formattedPhoneNumber, gender, birthdate)
-		}
-		catch (error: any) {
-			console.log(error.message)
-			if (error.message == "validation_invalid_username") {
-				Alert.alert("Username already exists.\n Please choose a different username")
-			}
-			else if (error.message == "validation_required") {
-				Alert.alert("Confirm Password and Password must be the same")
-			}
-			else if (error.message == "validation_invalid_email") {
-				Alert.alert("E-Mail already registered.\n Please use a different E-Mail")
-			}
-		}
+		signup(username, name ? name : username, email, password, passwordConfirm, formattedPhoneNumber, gender, birthdate, isStudent === 'yes' ? true : false)
 	}
 
 	const onChangeDate = (event:any, selectedDate:any) => {
@@ -70,23 +63,29 @@ export default function SignupForm() {
 
 
 	return (
-		<ScrollView contentContainerStyle={[globalStyles.container, styles.outerContainer]}>
-			<View style={{ width: "90%" }}>
+		//<ScrollView contentContainerStyle={[globalStyles.container, styles.outerContainer]}>
+		<KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : null}
+                    style={[globalStyles.container, styles.outerContainer]}>
+			<View style={styles.innerContainer}>
 				<View style={styles.headerContainer}>
 					<Text style={styles.formTitle}>Register</Text>
 					<Image source={require("assets/images/behealthy-icon.png")} style={{ width: 170, height: 170, alignSelf: 'flex-end' }} />
 				</View>
 				
+				<ScrollView>
 				<FormTextInput
 					label={'Username'}
 					iconName="person-outline"
 					onChangeText={setUsername}
+					mandatory={true}
 				/>
 
 				<FormTextInput
 					label={'Name'}
 					iconName="person-outline"
 					onChangeText={setName}
+					mandatory={false}
 				/>
 
 				<FormTextInput
@@ -94,10 +93,12 @@ export default function SignupForm() {
 					iconName="at-outline"
 					keyboardType="email-address"
 					onChangeText={setEmail}
+					mandatory={true}
 				/>
 
 				<View style={styles.inputFieldContainer}>
 					<Ionicons name={'ios-call-outline'} size={20} color="#666" style={{ marginRight: 5,}} />
+					{/* <StarIcon iconName={'ios-call-outline'} /> */}
 					<PhoneInput
 						ref={phoneInput}
 						defaultValue={phoneNumber}
@@ -120,6 +121,7 @@ export default function SignupForm() {
 					iconName="ios-lock-closed-outline"
 					inputType="password"
 					onChangeText={setPassword}
+					mandatory={true}
 				/>
 
 				<FormTextInput
@@ -127,6 +129,7 @@ export default function SignupForm() {
 					iconName="ios-lock-closed-outline"
 					inputType="password"
 					onChangeText={setPasswordConfirm}
+					mandatory={true}
 				/>
 
 				<View style={{flexDirection:'row', justifyContent: 'space-between',}}>
@@ -150,7 +153,7 @@ export default function SignupForm() {
 						maxHeight={300}
 						labelField="label"
 						valueField="value"
-						placeholder={'Gender'}
+						placeholder={'Gender *'}
 						value={gender}
 						//onFocus={() => setIsFocus(true)}
 						//onBlur={() => setIsFocus(false)}
@@ -160,6 +163,30 @@ export default function SignupForm() {
 						}}
 					/>
 				</View>
+
+				<View style={{flexDirection:'row', justifyContent: 'space-between', marginBottom:25}}>
+					<View style={{width:'50%'}}>
+						<Text style={{fontSize:16}}>Are you a student? *</Text>
+						<View style={{width:'50%'}}>
+							<RadioButton.Group
+								onValueChange={(value) => setIsStudent(value)}
+								value={isStudent}
+							>
+								<RadioButton.Item label="Yes" value="yes" 
+									style={styles.radioButton} 
+									labelStyle={styles.radioButtonLabel}
+									color="#FFF4EC"/>
+								<RadioButton.Item label="No" value="no" 
+									style={styles.radioButton}
+									labelStyle={styles.radioButtonLabel}
+									color="#FFF4EC"/>
+							</RadioButton.Group>
+						</View>
+					</View>
+					{/* <View style={{width:"50%"}}>
+						<ProfilePictureInput onTakePhoto={setProfilePicture} profilePicture={profilePicture}/>
+					</View> */}
+				</View>
 			
 				<LoginButton label={'Register'} onPress={handleSignup} />
 				<ForgotPasswordLabel
@@ -167,20 +194,28 @@ export default function SignupForm() {
 					buttonLabel="Login"
 					onPress={goBack}
 				/>
+				</ScrollView>
 
-				<Text style={{marginBottom:25}}/>
 			</View>
-		</ScrollView>
+		</KeyboardAvoidingView>
+		// </ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	outerContainer: {
 		backgroundColor: '#d7c3de',
-		minHeight:'100%',
-		paddingTop:'15%',
-		flexGrow: 1
+		// minHeight:'100%',
+		//paddingTop:'40%',
+		flexGrow: 1,
 	},
+	innerContainer:{
+        flex: 1,
+        justifyContent: "center",
+        width: "90%",
+		marginTop:"15%", 
+		paddingBottom:"15%"
+    },
 	headerContainer: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
@@ -222,5 +257,17 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		paddingHorizontal: 8,
 		marginBottom:25
-	}
+	},
+	radioButton: {
+		borderWidth: 1,
+		borderColor:'#FFF4EC',
+		borderRadius:8,
+		margin:5,
+		paddingVertical:0,
+		paddingLeft:7,
+		paddingRight:0,
+	},
+	radioButtonLabel: {
+		paddingHorizontal:0
+	},
 })

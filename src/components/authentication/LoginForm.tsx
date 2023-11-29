@@ -2,10 +2,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Colors from "constants/colors";
 import { useState } from "react";
-import { Alert, Image, StyleSheet, Text, View, ScrollView } from "react-native";
+import { Alert, Image, StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { VAR_PASSWORD, VAR_USERNAME, login } from "src/authentification";
 import { pb } from "src/pocketbaseService";
-import { UserRecord } from "types";
+import { UserRecord, } from "types";
 import { globalStyles } from "../../styles";
 import BlurModal from "../misc/BlurModal";
 import LoginButton from "./LoginButton";
@@ -39,28 +39,34 @@ export default function LoginForm() {
     }
 
     return (
-        <ScrollView contentContainerStyle={[globalStyles.container, styles.outerContainer]}>
-            <View style={{ width: "90%" }} >
+        //<ScrollView contentContainerStyle={[globalStyles.container, styles.outerContainer]}>
+        <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : null}
+                    style={[globalStyles.container, styles.outerContainer]}>
+            <View style={styles.innerContainer} >
                 <Image source={require("assets/images/behealthy-icon.png")} style={{ width: 250, height: 250, alignSelf: 'center' }} />
                 <Text style={styles.formTitle}>Login</Text>
-                <View>
 
-                    <FormTextInput
-                        label={'Email or Username'}
-                        iconName="at-outline"
-                        keyboardType="email-address"
-                        onChangeText={setUsername}
-                    />
+                
+                <FormTextInput
+                    label={'Email or Username'}
+                    iconName="at-outline"
+                    keyboardType="email-address"
+                    onChangeText={setUsername}
+                    mandatory={false}
+                />
 
-                    <FormTextInput
-                        label={'Password'}
-                        iconName="ios-lock-closed-outline"
-                        inputType="password"
-                        onChangeText={setPassword}
-                        fieldButtonLabel={"Forgot?"}
-                        fieldButtonFunction={() => setShowPasswordResetModal(true)}
-                    />
-                </View>
+                <FormTextInput
+                    label={'Password'}
+                    iconName="ios-lock-closed-outline"
+                    inputType="password"
+                    onChangeText={setPassword}
+                    fieldButtonLabel={"Forgot?"}
+                    fieldButtonFunction={() => setShowPasswordResetModal(true)}
+                    mandatory={false}
+                />
+                
+                
                 <LoginButton label="Login" onPress={handleLogin} />
 
                 <BlurModal visible={showPasswordResetModal} onClose={() => setShowPasswordResetModal(false)}>
@@ -71,6 +77,7 @@ export default function LoginForm() {
                             iconName="at-outline"
                             keyboardType="email-address"
                             onChangeText={setUsername}
+                            mandatory={false}
                         />
                         <LoginButton label="Reset password" onPress={handleForgotPassword} />
                     </View>
@@ -81,14 +88,21 @@ export default function LoginForm() {
                     buttonLabel="Register"
                     onPress={() => navigation.navigate('SignupForm')}
                 />
+
+                {/* <Text style={{marginTop:50, marginBottom:50}}></Text> */}
             </View>
-        </ScrollView>
+        </KeyboardAvoidingView>
     )
 }
 
 const styles = StyleSheet.create({
     outerContainer: {
         backgroundColor: '#d7c3de',
+    },
+    innerContainer:{
+        flex: 1,
+        justifyContent: "center",
+        width: "90%",
     },
     formTitle: {
         color: Colors.accent,

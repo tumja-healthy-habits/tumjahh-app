@@ -17,6 +17,6 @@ export default function ProfilePicture({ userRecord, style, uri }: ProfilePictur
     }
     // if the user has an avatar picture, compute its pocketbase uri, otherwise use a default avatar picture
     const user: UserRecord = userRecord ?? useAuthenticatedUser().currentUser as UserRecord // can't be null because we're using this component in the ProfileScreen
-    const imageSource: ImageSourcePropType = user.avatar ? { uri: pb.getFileUrl(user, user.avatar) } : require("assets/images/default-avatar.jpeg")
+    const imageSource: ImageSourcePropType = user.avatar ? { uri: pb.getFileUrl(user, user.avatar) } : require("assets/images/default-avatar.png")
     return <Image source={imageSource} style={[imageStyles.image, style]} />
 }
