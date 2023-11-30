@@ -63,7 +63,7 @@ export default function NavigatableView({ minZoom, maxZoom, initialZoom, childre
     const navigateGridGesture: ComposedGesture = Gesture.Simultaneous(panGesture, pinchGesture)
 
     return (
-        <GestureHandlerRootView>
+        <GestureHandlerRootView style={{ flex: 1, overflow: "hidden" }}>
             <GestureDetector gesture={navigateGridGesture}>
                 <Animated.View style={[style, animatedStyles]}>
                     {children}

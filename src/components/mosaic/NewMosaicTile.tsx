@@ -4,9 +4,10 @@ import { PhotosRecord } from "types";
 
 type NewMosaicTileProps = {
     photo?: PhotosRecord,
+    latest?: number,
 }
 
-export default function NewMosaicTile({ photo }: NewMosaicTileProps) {
+export default function NewMosaicTile({ photo, latest }: NewMosaicTileProps) {
 
     function handlePress(): void {
         if (photo === undefined) return
@@ -14,7 +15,14 @@ export default function NewMosaicTile({ photo }: NewMosaicTileProps) {
 
     return photo ? (
         <View style={styles.container}>
-            <Image source={{ uri: pb.getFileUrl(photo, photo.photo) }} style={styles.image} />
+            <Image
+                source={{ uri: pb.getFileUrl(photo, photo.photo), cache: "force-cache" }}
+                style={[styles.image, latest !== undefined && {
+                    borderColor: `rgba(255, 200, 0, ${1 - latest / 8})`,
+                    borderWidth: 6 - latest / 2,
+                    // adapt the borders which are colored to display the spiral
+
+                }]} />
         </View>
     ) : (
         <Pressable
@@ -26,12 +34,12 @@ export default function NewMosaicTile({ photo }: NewMosaicTileProps) {
 
 const styles = StyleSheet.create({
     container: {
-        // backgroundColor: "white",
-        // shadowColor: 'black',
-        // shadowOffset: { width: 0, height: 0 },
-        // shadowOpacity: 0.2,
-        // shadowRadius: 10,
-        // elevation: 5,
+        backgroundColor: "white",
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.2,
+        shadowRadius: 10,
+        elevation: 5,
         justifyContent: "center",
         alignItems: "center",
         width: 200,
@@ -48,5 +56,9 @@ const styles = StyleSheet.create({
     pressed: {
         opacity: 1,
         borderColor: "blue",
+    },
+    latest: {
+        borderColor: "yellow",
+        borderWidth: 3,
     }
 })
