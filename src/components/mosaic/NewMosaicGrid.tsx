@@ -147,7 +147,7 @@ export default function NewMosaicGrid({ mosaicId }: NewMosaicGridProps) {
                         return (
                             <NewMosaicTile
                                 key={rowIndex}
-                                putImage={(photo: FixedDimensionImage) => putImage(rowIndex, columnIndex, photo)}
+                                // putImage={(photo: FixedDimensionImage) => putImage(rowIndex, columnIndex, photo)}
                                 photo={photoGrid[rowIndex] && photoGrid[rowIndex][columnIndex]}
                             />
                         )

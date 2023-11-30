@@ -14,7 +14,7 @@ export default function NewMosaicTile({ photo }: NewMosaicTileProps) {
 
     return photo ? (
         <View style={styles.container}>
-            <Image source={{ uri: pb.getFileUrl(photo, photo.photo) }} style={styles.image} />
+            <Image source={{ uri: pb.getFileUrl(photo, photo.photo), cache: "force-cache" }} style={styles.image} />
         </View>
     ) : (
         <Pressable
