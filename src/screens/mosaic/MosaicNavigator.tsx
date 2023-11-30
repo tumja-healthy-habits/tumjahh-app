@@ -30,7 +30,7 @@ export default function MosaicNavigator() {
             <MosaicStack.Screen name="SingleMosaic" component={NewMosaicScreen} />
         </MosaicStack.Navigator>
         <PickMosaicsModal
-            visible={!!(params && params.photoId !== undefined)}
+            visible={params !== undefined && params.photoId !== undefined}
             photoId={params && params.photoId}
             onClose={() => setParams({ photoId: undefined })}
         />
