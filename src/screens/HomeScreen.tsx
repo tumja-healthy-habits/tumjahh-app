@@ -15,7 +15,7 @@ export default function HomeScreen() {
     return (
         <Stack.Navigator>
             <Stack.Screen name="Challenges" component={DailyChallengesScreen} options={{
-                headerShown: true,
+                headerShown: false,
             }} />
             <Stack.Screen name="Take Photo" component={TakePhotoScreen} />
         </Stack.Navigator>

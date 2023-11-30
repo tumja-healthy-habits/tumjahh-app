@@ -28,7 +28,8 @@ export default function ZoomableCamera({ onTakePhoto }: ZoomableCameraProps) {
     async function openMediaLibrary(): Promise<void> {
         launchImageLibraryAsync({
             mediaTypes: MediaTypeOptions.Images,
-            allowsEditing: false,
+            allowsEditing: true,
+            aspect: [1, 1], //for android, on ios the crop rectangle is always a square
             quality: 1,
             allowsMultipleSelection: false,
         }).then((result: ImagePickerResult) => {

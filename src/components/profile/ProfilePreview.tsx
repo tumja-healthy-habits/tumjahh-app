@@ -23,7 +23,7 @@ export default function ProfilePreview({ userId, onClose }: ProfilePreviewProps)
     }, [userId])
 
     const profilePicSource = useMemo<ImageSourcePropType>(() => {
-        if (!friendRecord || !friendRecord.avatar) return require("assets/images/default-avatar.jpeg")
+        if (!friendRecord || !friendRecord.avatar) return require("assets/images/default-avatar.png")
         return { uri: pb.getFileUrl(friendRecord, friendRecord.avatar) }
     }, [friendRecord])
 
