@@ -30,6 +30,7 @@ type InputFieldProps = {
 	fieldButtonLabel?: string;
 	fieldButtonFunction?: () => void;
 	onChangeText?: (text: string) => void;
+	value?: string;
 };
 
 export default function InputField({
@@ -39,7 +40,8 @@ export default function InputField({
 	keyboardType,
 	fieldButtonLabel,
 	fieldButtonFunction,
-	onChangeText
+	onChangeText,
+	value
 }: InputFieldProps) {
 	return (
 		<View style={styles.container}>
@@ -52,6 +54,7 @@ export default function InputField({
 				onChangeText={onChangeText}
 				autoCapitalize='none'
 				autoCorrect={false}
+				value={value}
 			/>
 			{fieldButtonLabel && <TouchableOpacity onPress={fieldButtonFunction}>
 				<Text style={styles.textfieldButton}>{fieldButtonLabel}</Text>
