@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack"
 import { AppParamList } from "components/LoggedInApp"
 import PickMosaicsModal from "components/mosaic/PickMosaicsModal"
 import MosaicListScreen from "./MosaicListScreen"
-import NewMosaicScreen from "./NewMosaicScreen"
+import NewMosaicScreen from "./MosaicScreen"
 
 export type MosaicParamList = {
     "List": undefined,
@@ -21,8 +21,6 @@ const MosaicStack = createStackNavigator<MosaicParamList>()
 export default function MosaicNavigator() {
     const { params } = useRoute<RouteProp<AppParamList, "Mosaic">>()
     const { setParams } = useNavigation<NavigationProp<AppParamList, "Mosaic">>()
-
-    console.log(params && params.photoId !== undefined)
 
     return (<>
         <MosaicStack.Navigator screenOptions={navigatorOptions} initialRouteName="List">

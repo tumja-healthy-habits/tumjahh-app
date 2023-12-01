@@ -33,9 +33,10 @@ export default function ProfileScreenAlt() {
     async function handleTapProfilePicture(): Promise<void> {
         launchImageLibraryAsync({
             mediaTypes: MediaTypeOptions.Images,
-            allowsEditing: false,
+            allowsEditing: true,
             quality: 1,
             allowsMultipleSelection: false,
+            aspect: [1, 1],
         }).then((result: ImagePickerResult) => {
             if (result.canceled) return
             updateUser(result.assets[0])

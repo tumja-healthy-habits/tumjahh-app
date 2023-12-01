@@ -46,15 +46,14 @@ const styles = StyleSheet.create({
     },
     memberContainer: {
         alignItems: "center",
-        margin: 5,
     },
     profilePicture: {
-        height: 50,
-        width: 50,
-        borderRadius: 25,
-        borderWidth: 2,
+        height: 40,
+        width: 40,
+        borderRadius: 20,
+        borderWidth: 1,
     },
     memberName: {
-        fontSize: 18,
+        fontSize: 14,
     }
 })
