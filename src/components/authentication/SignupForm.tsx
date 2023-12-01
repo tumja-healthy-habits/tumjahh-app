@@ -41,11 +41,6 @@ export default function SignupForm() {
 	const [openDatepicker, setOpenDatepicker] = useState(false)
 	const [isStudent, setIsStudent] = useState("")
 	const [profilePicture, setProfilePicture] = useState<FixedDimensionImage>()
-	console.log(birthdate)
-	console.log(isStudent)
-	console.log(password)
-	console.log(passwordConfirm)
-	console.log(profilePicture)
 
 
 	const { goBack } = useNavigation<NavigationProp<LoginParamList, "SignupForm">>()
