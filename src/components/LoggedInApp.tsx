@@ -11,6 +11,7 @@ import FriendsScreen from 'screens/FeedScreen';
 import HomeScreen from 'screens/HomeScreen';
 import MosaicNavigator from 'screens/mosaic/MosaicNavigator';
 import ProfileNavigator from "screens/profile/ProfileNavigator";
+import SurveyNavigator from "components/misc/SurveyNavigator";
 import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
 import MosaicDataProvider from "src/store/MosaicDataProvider";
 import SurveyPopup from './misc/SurveyPopup';
@@ -26,6 +27,7 @@ export type AppParamList = {
         photoId?: string,
     },
     Home: undefined,
+    SurveyScreen: undefined,
 }
 
 const Tab = createBottomTabNavigator<AppParamList>();
@@ -84,9 +86,14 @@ export default function LoggedInApp() {
                         <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
                         }} />
-                    </Tab.Navigator>
+                        
+                        
+                        <Tab.Screen name="SurveyScreen" component={SurveyNavigator} options={{
+                            tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
+                        }}/>
+                        
 
-                    <SurveyPopup/>
+                    </Tab.Navigator>
                 </PaperProvider>
             </DailyChallengesProvider>
         </MosaicDataProvider>
