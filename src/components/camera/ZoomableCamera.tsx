@@ -1,8 +1,8 @@
 import Colors from "constants/colors";
-import { Camera, CameraType } from "expo-camera";
+import { Camera, CameraType, } from "expo-camera";
 import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Dimensions } from "react-native";
 import { Gesture, GestureDetector, GestureHandlerRootView, GestureStateChangeEvent, GestureUpdateEvent, PinchGesture, PinchGestureHandlerEventPayload } from "react-native-gesture-handler";
 import { FixedDimensionImage } from "types";
 import IconButton from "../misc/IconButton";
@@ -80,7 +80,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.background,
     },
     camera: {
-        flex: 1,
+        //flex: 1,
+        height: Dimensions.get("window").width
     },
     upwardsContainer: {
         flex: 1,
