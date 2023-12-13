@@ -3,13 +3,9 @@ import { createStackNavigator } from "@react-navigation/stack"
 import { AppParamList } from "components/LoggedInApp"
 import PickMosaicsModal from "components/mosaic/PickMosaicsModal"
 import MosaicListScreen from "./MosaicListScreen"
-<<<<<<< HEAD
-import NewMosaicScreen from "./NewMosaicScreen"
 import CreateMosaicScreen from "./CreateMosaicScreen"
 import EditMosaicScreen from "./EditMosaicScreen"
-=======
 import NewMosaicScreen from "./MosaicScreen"
->>>>>>> origin/main
 
 export type MosaicParamList = {
     "List": undefined,
