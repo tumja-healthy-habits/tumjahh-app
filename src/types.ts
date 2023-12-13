@@ -69,6 +69,40 @@ export interface FriendRequestsRecord extends Record {
     }
 }
 
+export interface SurveyAnswerRecord extends Record {
+    user: UserRecord;
+    challenge: ChallengesRecord;
+    answer1: number;
+    answer2: number;
+    answer3: number;
+    answer4: number;
+}
+
+export interface InitialSurveyRecord extends Record {
+    user: UserRecord;
+
+    transport_bike_public: string;
+    transport_walk: boolean;
+    transport_means: string;
+
+    exercise_frequency: number;
+    exercise_ambition: boolean;
+    exercise_satisfaction: boolean;
+    exercise_sports: string;
+
+    diet_type: string;
+    diet_reasons: string[];
+    diet_criteria: string[];
+
+    sleep_hours: number;
+    sleep_variance: number;
+    sleep_peace: boolean;
+
+    mental_screentime: number;
+    mental_thankfulness: boolean;
+    mental_stress: boolean;
+}
+
 export interface LocalStorageChallengeEntry {
     record: ChallengesRecord;
     repetitionsGoal: number;

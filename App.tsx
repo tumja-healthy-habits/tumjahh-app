@@ -1,6 +1,7 @@
 import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
-import LoggedInApp, { AppParamList } from 'components/LoggedInApp';
+import { AppParamList } from 'components/LoggedInApp';
 import LoginNavigator from 'components/authentication/LoginNavigator';
+import SurveyNavigator from 'components/survey/SurveyNavigator';
 import { createURL } from "expo-linking";
 import { setNotificationHandler } from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
@@ -48,7 +49,7 @@ export default function App() {
       <NavigationContainer linking={linking} >
         <AuthenticatedUserProvider>
           <AuthenticatedUserContext.Consumer>
-            {({ currentUser }) => currentUser ? <LoggedInApp /> : <LoginNavigator />}
+            {({ currentUser }) => currentUser ? <SurveyNavigator /> : <LoginNavigator />}
           </AuthenticatedUserContext.Consumer>
         </AuthenticatedUserProvider>
       </NavigationContainer>
