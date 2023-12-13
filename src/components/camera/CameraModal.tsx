@@ -68,9 +68,9 @@ export default function CameraModal({ challengeName, onClose }: CameraModalProps
                     <Image source={{ uri: photo.uri }} style={[styles.image, { aspectRatio: photo.width / photo.height }]} />
                 </View>
                 <View style={styles.buttonContainer} >
-                    <Button color={Colors.white} title="Maybe later" onPress={handleSkipPhoto} />
-                    <Button color={Colors.white} title="Take another photo" onPress={() => setPhoto(undefined)} />
-                    <Button color={Colors.white} title="Use photo" onPress={handleUsePhoto} />
+                    <Button color={Colors.white} title={"Maybe\n later"} onPress={handleSkipPhoto} />
+                    <Button color={Colors.white} title={"Try \n again"} onPress={() => setPhoto(undefined)} />
+                    <Button color={Colors.white} title={"Use\n photo"} onPress={handleUsePhoto} />
                 </View>
             </SafeAreaView>
         )}
@@ -81,20 +81,20 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.black,
-        justifyContent: "flex-end",
+        justifyContent: "space-evenly",
     },
     image: {
         resizeMode: "contain",
         width: "100%",
     },
     imageContainer: {
-        flex: 1,
+        //flex: 1,
         borderRadius: 10,
         overflow: "hidden",
     },
     buttonContainer: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "space-evenly",
         marginBottom: 20,
     },
 })

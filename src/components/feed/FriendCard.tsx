@@ -31,8 +31,8 @@ export default function FriendCard({ user }: FriendCardProps) {
         return (
             <Image
                 source={{ uri: imgURL }}
-                style={{ width: '100%', height: undefined, aspectRatio: 1, marginRight: 5 }} 
-                resizeMode="contain"
+                style={{ width: Dimensions.get("window").width, height: undefined, aspectRatio: 1}} 
+                resizeMode="cover"
             />
         );
         //item.width / item.height, 
