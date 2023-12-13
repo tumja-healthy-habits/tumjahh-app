@@ -52,6 +52,9 @@ export interface MosaicRecord extends Record {
 export interface MosaicMembersRecord extends Record {
     mosaic_id: string;
     user_id: string;
+    expand: {
+        user_id: UserRecord;
+    }
 }
 
 export interface ContainsRecord extends Record {

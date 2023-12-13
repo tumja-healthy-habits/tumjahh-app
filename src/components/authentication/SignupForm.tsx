@@ -16,6 +16,7 @@ import LoginButton from './LoginButton';
 import { CalendarInput, FormTextInput, ProfilePictureInput} from './InputField';
 import { LoginParamList } from "./LoginNavigator";
 import { FixedDimensionImage } from "types";
+import PictureInput from "components/misc/PictureInput";
 
 
 import { globalStyles } from 'src/styles';
@@ -46,7 +47,6 @@ export default function SignupForm() {
 	console.log(isStudent)
 	console.log(password)
 	console.log(passwordConfirm)
-	console.log(profilePicture)
 
 
 	const { goBack } = useNavigation<NavigationProp<LoginParamList, "SignupForm">>()
@@ -196,7 +196,16 @@ export default function SignupForm() {
 						</View>
 					</View>
 					<View style={{width:"50%"}}>
-						<ProfilePictureInput onTakePhoto={setProfilePicture} profilePicture={profilePicture}/>
+						{/* <ProfilePictureInput onTakePhoto={setProfilePicture} profilePicture={profilePicture}/> */}
+						<PictureInput 
+							onTakePhoto={setProfilePicture} 
+							picture={profilePicture}
+							label="Profile Picture"
+							labelStyle={{fontSize:16}}
+							defaultPicture={require("assets/images/default-avatar.png")}
+							imageStyle={{width:100, height:100,}}
+							iconSize={40}
+							/>
 					</View>
 				</View>
 			

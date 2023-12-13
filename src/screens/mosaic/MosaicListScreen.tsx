@@ -2,13 +2,18 @@ import MosaicPreview from "components/mosaic/MosaicPreview";
 import Colors from "constants/colors";
 import { useEffect, useState } from "react";
 import { FlatList, ListRenderItemInfo, SafeAreaView, StyleSheet } from "react-native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { MosaicParamList } from "screens/mosaic/MosaicNavigator";
 import { pb, useRealTimeSubscription } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { MosaicMembersRecord, MosaicRecord } from "types";
+import IconButton from "../../components/misc/IconButton";
 
 export default function () {
     const { currentUser } = useAuthenticatedUser()
     const [mosaics, setMosaics] = useState<MosaicRecord[]>([])
+
+    const { navigate } = useNavigation<NavigationProp<MosaicParamList, "List">>()
 
     useRealTimeSubscription<MosaicMembersRecord>("mosaic_members", {
         onCreate: handleCreateMosaicMember,
@@ -17,8 +22,10 @@ export default function () {
 
     useEffect(() => {
         // load all mosaics that the user is a member of
-        pb.collection("mosaics").getFullList<MosaicRecord>().then(setMosaics).catch(console.error)
+        console.log("Inside useEffect")
+        pb.collection("mosaics").getFullList<MosaicRecord>({sort: "-updated"}).then(setMosaics).catch(console.error)
     }, [])
+
 
     function handleCreateMosaicMember(record: MosaicMembersRecord): void {
         if (record.user_id === currentUser!.id) {
@@ -29,7 +36,7 @@ export default function () {
                         console.log("mosaic already exists")
                         return oldMosaics
                     }
-                    return [...oldMosaics, mosaic]
+                    return [mosaic, ...oldMosaics]
                 })
             }).catch(console.error)
         }
@@ -49,6 +56,7 @@ export default function () {
     }
 
     return <SafeAreaView style={styles.container}>
+        <IconButton icon={"add"} color="black" onPress={() => navigate("CreateMosaic")} size={40} style={styles.button}/>
         <FlatList
             data={mosaics}
             renderItem={(info: ListRenderItemInfo<MosaicRecord>) => <MosaicPreview record={info.item} />}
@@ -61,6 +69,10 @@ export default function () {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.backgroundProfile,
     },
+    button: {
+        alignSelf:"flex-end",
+        paddingRight:15
+    }
 })

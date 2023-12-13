@@ -79,11 +79,11 @@ export default function LoggedInApp() {
                         {/* <Tab.Screen name="Friends" component={FriendsScreen} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
                               }} /> */}
-                        <Tab.Screen name="Profile" component={ProfileNavigator} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
-                        }} />
                         <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
+                        }} />
+                        <Tab.Screen name="Profile" component={ProfileNavigator} options={{
+                            tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                         }} />
                     </Tab.Navigator>
                 </PaperProvider>
