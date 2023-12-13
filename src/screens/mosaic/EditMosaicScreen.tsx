@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.backgroundProfile,
         flex:1,
         alignItems:"center", 
-        paddingLeft:50
+        //paddingLeft:50
     },
     innerContainer: {
         width:"90%",
