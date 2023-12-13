@@ -89,7 +89,7 @@ export default function SignupForm() {
 					/>
 
 					<FormTextInput
-						label={'Name'}
+						label={'Display name'}
 						iconName="person-outline"
 						onChangeText={setName}
 						mandatory={false}
