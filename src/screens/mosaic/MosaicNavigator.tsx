@@ -3,9 +3,13 @@ import { createStackNavigator } from "@react-navigation/stack"
 import { AppParamList } from "components/LoggedInApp"
 import PickMosaicsModal from "components/mosaic/PickMosaicsModal"
 import MosaicListScreen from "./MosaicListScreen"
+<<<<<<< HEAD
 import NewMosaicScreen from "./NewMosaicScreen"
 import CreateMosaicScreen from "./CreateMosaicScreen"
 import EditMosaicScreen from "./EditMosaicScreen"
+=======
+import NewMosaicScreen from "./MosaicScreen"
+>>>>>>> origin/main
 
 export type MosaicParamList = {
     "List": undefined,
@@ -28,8 +32,6 @@ export default function MosaicNavigator() {
     const { params } = useRoute<RouteProp<AppParamList, "Mosaic">>()
     const { setParams } = useNavigation<NavigationProp<AppParamList, "Mosaic">>()
 
-    console.log(params && params.photoId !== undefined)
-
     return (<>
         <MosaicStack.Navigator screenOptions={navigatorOptions} initialRouteName="List">
             <MosaicStack.Screen name="List" component={MosaicListScreen} />
@@ -38,7 +40,7 @@ export default function MosaicNavigator() {
             <MosaicStack.Screen name="EditMosaic" component={EditMosaicScreen} />
         </MosaicStack.Navigator>
         <PickMosaicsModal
-            visible={!!(params && params.photoId !== undefined)}
+            visible={params !== undefined && params.photoId !== undefined}
             photoId={params && params.photoId}
             onClose={() => setParams({ photoId: undefined })}
         />

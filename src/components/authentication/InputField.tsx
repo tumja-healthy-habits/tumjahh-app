@@ -1,8 +1,8 @@
-import React, {forwardRef} from 'react';
-import { KeyboardTypeOptions, StyleSheet, Text, TextInput, TouchableOpacity, View, Pressable,Image } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
+import React from 'react';
+import { Image, KeyboardTypeOptions, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { FixedDimensionImage } from 'types';
 import IconButton from "../misc/IconButton";
 
@@ -11,16 +11,16 @@ type StarIconProps = {
 	style?: any;
 }
 
-const StarIcon = ({iconName, style={}}:StarIconProps) => {
+const StarIcon = ({ iconName, style = {} }: StarIconProps) => {
 	return (
-	  <View style={[{flexDirection:'row',  marginRight: 10}, style]}>
-		{<Ionicons name={iconName} size={20} color="#666" />}
-		<Text style={{position:'absolute', top:-5, right:-5, fontSize:16, }}>*</Text>
-	  </View>
+		<View style={[{ flexDirection: 'row', marginRight: 10 }, style]}>
+			{<Ionicons name={iconName} size={20} color="#666" />}
+			<Text style={{ position: 'absolute', top: -5, right: -5, fontSize: 16, }}>*</Text>
+		</View>
 	);
-  };
-export {StarIcon}
-  
+};
+export { StarIcon };
+
 
 type InputFieldProps = {
 	label: string;
@@ -30,6 +30,7 @@ type InputFieldProps = {
 	fieldButtonLabel?: string;
 	fieldButtonFunction?: () => void;
 	onChangeText?: (text: string) => void;
+	value?: string;
 };
 
 export default function InputField({
@@ -39,7 +40,8 @@ export default function InputField({
 	keyboardType,
 	fieldButtonLabel,
 	fieldButtonFunction,
-	onChangeText
+	onChangeText,
+	value
 }: InputFieldProps) {
 	return (
 		<View style={styles.container}>
@@ -52,6 +54,7 @@ export default function InputField({
 				onChangeText={onChangeText}
 				autoCapitalize='none'
 				autoCorrect={false}
+				value={value}
 			/>
 			{fieldButtonLabel && <TouchableOpacity onPress={fieldButtonFunction}>
 				<Text style={styles.textfieldButton}>{fieldButtonLabel}</Text>
@@ -71,7 +74,7 @@ export function FormTextInput({ label, iconName, onChangeText, mandatory, ...pro
 	return <InputField
 		{...props}
 		label={label}
-		icon= {mandatory? <StarIcon iconName={iconName}/>  : <Ionicons name={iconName} size={20} color="#666" style={{ marginRight: 5 }} />}
+		icon={mandatory ? <StarIcon iconName={iconName} /> : <Ionicons name={iconName} size={20} color="#666" style={{ marginRight: 5 }} />}
 		onChangeText={onChangeText}
 	/>
 };
@@ -79,29 +82,29 @@ export function FormTextInput({ label, iconName, onChangeText, mandatory, ...pro
 type CalendarInputProps = {
 	label: string;
 	iconName: any;
-	onChangeDate: (event:any, selectedDate:any) => void;
+	onChangeDate: (event: any, selectedDate: any) => void;
 	mode: any;
 	value: Date;
 	onPress: () => void;
 	openPicker: boolean;
 }
 
-export function CalendarInput({label, iconName, onChangeDate, mode, value, onPress, openPicker}: CalendarInputProps) {
-	return <View style={[styles.container, {width:'45%'}]}>
-		
-		{/* <Ionicons name={iconName} size={20} color="#666" style={{ marginRight: 5, alignSelf:"flex-end"}} /> */}
-		<StarIcon iconName={iconName} style={{alignSelf:'flex-end'}}/>
+export function CalendarInput({ label, iconName, onChangeDate, mode, value, onPress, openPicker }: CalendarInputProps) {
+	return <View style={[styles.container, { width: '45%' }]}>
 
-		{!openPicker && 
-		<Pressable onPress={onPress} style={{alignSelf:"flex-end"}}>
-		 	<Text style={{color:"#a89bb0", fontSize:16}}>{label}</Text>
-		</Pressable>}
-		
+		{/* <Ionicons name={iconName} size={20} color="#666" style={{ marginRight: 5, alignSelf:"flex-end"}} /> */}
+		<StarIcon iconName={iconName} style={{ alignSelf: 'flex-end' }} />
+
+		{!openPicker &&
+			<Pressable onPress={onPress} style={{ alignSelf: "flex-end" }}>
+				<Text style={{ color: "#a89bb0", fontSize: 16 }}>{label}</Text>
+			</Pressable>}
+
 		{openPicker && <DateTimePicker
 			value={value}
 			mode={mode}
 			onChange={onChangeDate}
-			style={{alignSelf:"flex-end", paddingBottom:0, marginBottom:0}}
+			style={{ alignSelf: "flex-end", paddingBottom: 0, marginBottom: 0 }}
 		/>}
 	</View>
 
@@ -112,28 +115,28 @@ type ProfilePictureInputProps = {
 	profilePicture?: FixedDimensionImage
 }
 
-export function ProfilePictureInput({onTakePhoto, profilePicture}:ProfilePictureInputProps) {
+export function ProfilePictureInput({ onTakePhoto, profilePicture }: ProfilePictureInputProps) {
 
 	async function openMediaLibrary(): Promise<void> {
-        launchImageLibraryAsync({
-            mediaTypes: MediaTypeOptions.Images,
-            allowsEditing: true,
-            quality: 1,
-            allowsMultipleSelection: false,
+		launchImageLibraryAsync({
+			mediaTypes: MediaTypeOptions.Images,
+			allowsEditing: true,
+			quality: 1,
+			allowsMultipleSelection: false,
 			aspect: [1, 1] //for android, on ios the crop rectangle is always a square
-        }).then((result: ImagePickerResult) => {
-            if (result.canceled) return
-            onTakePhoto(result.assets[0])
-        })
-    }
-	profilePicture ? console.log(profilePicture.uri) : {}
-	return( 
+		}).then((result: ImagePickerResult) => {
+			if (result.canceled) return
+			onTakePhoto(result.assets[0])
+		})
+	}
+
+	return (
 		<View style={styles.profilePictureContainer}>
-			<Text style={{fontSize:16}}>Profile Picture</Text>
+			<Text style={{ fontSize: 16 }}>Profile Picture</Text>
 			<View style={styles.profilePictureContainer}>
 				<Image
-					source={profilePicture ? {uri: profilePicture!.uri} : require("assets/images/default-avatar.png")}
-					style={{width:100, height:100, opacity:0.5, borderRadius:8}}
+					source={profilePicture ? { uri: profilePicture!.uri } : require("assets/images/default-avatar.png")}
+					style={{ width: 100, height: 100, opacity: 0.8, borderRadius: 8 }}
 				/>
 				<View style={styles.overlay}>
 					<IconButton icon="image-outline" color="white" onPress={openMediaLibrary} size={40} />
@@ -165,7 +168,7 @@ const styles = StyleSheet.create({
 	textfield: {
 		flex: 1,
 		paddingVertical: 0,
-		fontSize:16
+		fontSize: 16
 	},
 	phoneNumberContainer: {
 		backgroundColor: 'transparent'
@@ -179,5 +182,5 @@ const styles = StyleSheet.create({
 		...StyleSheet.absoluteFillObject,
 		justifyContent: 'center',
 		alignItems: 'center',
-	  },
+	},
 }) 

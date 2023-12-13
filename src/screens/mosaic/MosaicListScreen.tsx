@@ -20,6 +20,10 @@ export default function () {
         onDelete: handleDeleteMosaicMember,
     }, [])
 
+    useRealTimeSubscription<MosaicRecord>("mosaics", {
+        onUpdate: handleUpdateMosaic,
+    }, [])
+
     useEffect(() => {
         // load all mosaics that the user is a member of
         console.log("Inside useEffect")
@@ -53,6 +57,11 @@ export default function () {
                 return oldMosaics.filter((mosaic: MosaicRecord) => mosaic.id !== record.mosaic_id)
             })
         }
+    }
+
+    function handleUpdateMosaic(record: MosaicRecord): void {
+        setMosaics((oldMosaics: MosaicRecord[]) =>
+            oldMosaics.map((mosaic: MosaicRecord) => mosaic.id === record.id ? record : mosaic))
     }
 
     return <SafeAreaView style={styles.container}>
