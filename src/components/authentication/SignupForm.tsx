@@ -15,7 +15,6 @@ import { FixedDimensionImage } from "types";
 import { CalendarInput, FormTextInput, ProfilePictureInput } from './InputField';
 import LoginButton from './LoginButton';
 import { LoginParamList } from "./LoginNavigator";
-import PictureInput from "components/misc/PictureInput";
 
 
 import { globalStyles } from 'src/styles';
@@ -89,7 +88,7 @@ export default function SignupForm() {
 					/>
 
 					<FormTextInput
-						label={'Display name'}
+						label={'Name'}
 						iconName="person-outline"
 						onChangeText={setName}
 						mandatory={false}
@@ -190,17 +189,8 @@ export default function SignupForm() {
 								</RadioButton.Group>
 							</View>
 						</View>
-						<View style={{width:"50%"}}>
-						{/* <ProfilePictureInput onTakePhoto={setProfilePicture} profilePicture={profilePicture}/> */}
-						<PictureInput 
-							onTakePhoto={setProfilePicture} 
-							picture={profilePicture}
-							label="Profile Picture"
-							labelStyle={{fontSize:16}}
-							defaultPicture={require("assets/images/default-avatar.png")}
-							imageStyle={{width:100, height:100,}}
-							iconSize={40}
-							/>
+						<View style={{ width: "50%" }}>
+							<ProfilePictureInput onTakePhoto={setProfilePicture} profilePicture={profilePicture} />
 						</View>
 					</View>
 

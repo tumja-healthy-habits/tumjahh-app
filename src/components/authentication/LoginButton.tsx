@@ -4,15 +4,13 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 type LoginButtonProps = {
 	label: string;
 	onPress: () => void;
-	color?: string;
-	style?: any
 };
 
-export default function LoginButton({ label, onPress, color, style}: LoginButtonProps) {
+export default function LoginButton({ label, onPress }: LoginButtonProps) {
 	return (
 		<Pressable
 			onPress={onPress}
-			style={({ pressed }) => [{backgroundColor: color ? color : '#FFF4EC'}, styles.container, pressed && { opacity: 0.3 }, style,]}>
+			style={({ pressed }) => [styles.container, pressed && { opacity: 0.3 }]}>
 			<Text style={styles.text}>
 				{label}
 			</Text>
@@ -22,6 +20,7 @@ export default function LoginButton({ label, onPress, color, style}: LoginButton
 
 const styles = StyleSheet.create({
 	container: {
+		backgroundColor: '#FFF4EC',
 		padding: 20,
 		borderRadius: 10,
 		width: '90%',
