@@ -1,6 +1,6 @@
 import UserBar from "components/feed/UserBar";
 import { useEffect, useState } from 'react';
-import { FlatList, Image, ListRenderItemInfo, StyleSheet, View, Dimensions } from "react-native";
+import { FlatList, Image, ListRenderItemInfo, StyleSheet, View } from "react-native";
 import { pb } from "src/pocketbaseService";
 import { PhotosRecord, UserRecord } from "types";
 
@@ -31,11 +31,10 @@ export default function FriendCard({ user }: FriendCardProps) {
         return (
             <Image
                 source={{ uri: imgURL }}
-                style={{ width: Dimensions.get("window").width, height: undefined, aspectRatio: 1}} 
-                resizeMode="cover"
+                style={{ width: undefined, height: '100%', aspectRatio: item.width / item.height, marginRight: 5 }}
+                resizeMode="contain"
             />
         );
-        //item.width / item.height, 
     }
 
     return (
@@ -51,9 +50,6 @@ export default function FriendCard({ user }: FriendCardProps) {
                     showsHorizontalScrollIndicator={true}
                     keyExtractor={(photo: PhotosRecord) => photo.id}
                     renderItem={renderPhoto}
-                    snapToAlignment="center"
-                    decelerationRate={"fast"} 
-                    snapToInterval={Dimensions.get("window").width} 
                 />
             </View>
         </View>
@@ -65,7 +61,7 @@ export default function FriendCard({ user }: FriendCardProps) {
 const styles = StyleSheet.create({
     horizontalScroll: {
         width: '100%',
-        height: Dimensions.get("window").width,
+        height: 200,
         justifyContent: 'center',
     },
 

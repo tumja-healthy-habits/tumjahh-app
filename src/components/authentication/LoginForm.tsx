@@ -29,7 +29,15 @@ export default function LoginForm() {
                 AsyncStorage.setItem(VAR_USERNAME, username)
                 AsyncStorage.setItem(VAR_PASSWORD, password)
             })
-            .catch(() => Alert.alert("Something went wrong while trying to log in.\n Please try again"))
+            .catch((error) => {
+                console.log(error.message)
+                if (error.message === "Failed to authenticate.") {
+                    Alert.alert("Wrong username or password. \n Please try again")
+                }
+                else {
+                    Alert.alert("Something went wrong while trying to log in.\n Please try again")
+                }
+            })
     }
 
     async function handleForgotPassword(): Promise<void> {
