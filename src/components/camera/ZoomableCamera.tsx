@@ -2,7 +2,7 @@ import Colors from "constants/colors";
 import { Camera, CameraType } from "expo-camera";
 import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Dimensions } from "react-native";
 import { Gesture, GestureDetector, GestureHandlerRootView, GestureStateChangeEvent, GestureUpdateEvent, PinchGesture, PinchGestureHandlerEventPayload } from "react-native-gesture-handler";
 import { FixedDimensionImage } from "types";
 import IconButton from "../misc/IconButton";
@@ -57,33 +57,38 @@ export default function ZoomableCamera({ onTakePhoto }: ZoomableCameraProps) {
     })
 
     return (
-        <GestureHandlerRootView style={styles.container}>
-            <GestureDetector gesture={pinchGesture}>
-                <Camera style={styles.camera} type={type} ref={cameraRef} zoom={ZOOM_SPEED * (scale - 1)}>
-                    <View style={styles.upwardsContainer}>
-                        <View style={styles.buttonContainer}>
-                            <IconButton icon="image-outline" color="white" onPress={openMediaLibrary} size={40} style={styles.button} />
-                            <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
-                            <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
-                        </View>
-                    </View>
-                </Camera>
-            </GestureDetector>
-        </GestureHandlerRootView>
+        <View style={styles.outerContainer}>
+            <GestureHandlerRootView style={styles.innerContainer}>
+                <GestureDetector gesture={pinchGesture}>
+                    <Camera style={styles.camera} type={type} ref={cameraRef} zoom={ZOOM_SPEED * (scale - 1)} />
+                </GestureDetector>
+            </GestureHandlerRootView>
+            <View style={styles.upwardsContainer}>
+                <View style={styles.buttonContainer}>
+                    <IconButton icon="image-outline" color="white" onPress={openMediaLibrary} size={40} style={styles.button} />
+                    <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
+                    <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
+                </View>
+            </View>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
+    outerContainer: {
         flex: 1,
-        justifyContent: 'center',
-        backgroundColor: Colors.background,
+        justifyContent: 'space-evenly',
+        backgroundColor: "black",
+    },
+    innerContainer: {
+        height: Dimensions.get("window").width,
+        marginVertical: 20 
     },
     camera: {
         flex: 1,
     },
     upwardsContainer: {
-        flex: 1,
+        //flex: 1,
         flexDirection: "column-reverse",
     },
     buttonContainer: {
