@@ -25,7 +25,6 @@ export default function TakePhotoScreen() {
         navigation.setOptions({
             title: params.challengeName,
         })
-        console.log("In take photo screen")
     }, [])
 
     if (params === undefined || !isFocused) return <View />
