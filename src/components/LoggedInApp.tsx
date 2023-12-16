@@ -36,8 +36,6 @@ const navigatorOptions: BottomTabNavigationOptions = {
     tabBarInactiveBackgroundColor: "white",
 }
 
-
-
 export default function LoggedInApp() {
     useEffect(() => {
         AppState.addEventListener("change", (state: string) => {
@@ -67,11 +65,11 @@ export default function LoggedInApp() {
             <DailyChallengesProvider>
                 <PaperProvider>
                     <Tab.Navigator initialRouteName='Feed' screenOptions={navigatorOptions}>
-                        <Tab.Screen name="Challenges" component={ChallengeScreen} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
-                        }} />
                         <Tab.Screen name="Feed" component={FriendsScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
+                        }} />
+                        <Tab.Screen name="Challenges" component={ChallengeScreen} options={{
+                            tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
                         }} />
                         <Tab.Screen name="Home" component={HomeScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
@@ -79,11 +77,11 @@ export default function LoggedInApp() {
                         {/* <Tab.Screen name="Friends" component={FriendsScreen} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
                               }} /> */}
-                        <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
-                        }} />
                         <Tab.Screen name="Profile" component={ProfileNavigator} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
+                        }} />
+                        <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
+                            tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
                         }} />
                     </Tab.Navigator>
                 </PaperProvider>

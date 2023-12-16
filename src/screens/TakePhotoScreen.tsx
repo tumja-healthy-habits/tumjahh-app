@@ -25,6 +25,7 @@ export default function TakePhotoScreen() {
         navigation.setOptions({
             title: params.challengeName,
         })
+        console.log("In take photo screen")
     }, [])
 
     if (params === undefined || !isFocused) return <View />
@@ -95,9 +96,9 @@ export default function TakePhotoScreen() {
                 <Image source={{ uri: photo.uri }} style={[styles.image, { aspectRatio: photo.width / photo.height }]} />
             </View>
             <View style={styles.buttonContainer} >
-                <Button color={Colors.accent} title="Maybe later" onPress={handleSkipPhoto} />
-                <Button color={Colors.accent} title="Take another photo" onPress={() => setPhoto(undefined)} />
-                <Button color={Colors.accent} title="Use photo" onPress={handleUsePhoto} />
+                <Button color={Colors.accent} title={"Maybe \n later"} onPress={handleSkipPhoto} />
+                <Button color={Colors.accent} title={"Take\n another\n photo"} onPress={() => setPhoto(undefined)} />
+                <Button color={Colors.accent} title={"Use \nphoto"} onPress={handleUsePhoto} />
             </View>
         </View>
     ) : (
