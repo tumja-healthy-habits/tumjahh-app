@@ -135,7 +135,7 @@ export function ProfilePictureInput({ onTakePhoto, profilePicture }: ProfilePict
 			<Text style={{ fontSize: 16 }}>Profile Picture</Text>
 			<View style={styles.profilePictureContainer}>
 				<Image
-					source={profilePicture ? { uri: profilePicture!.uri } : require("assets/images/default-avatar.jpeg")}
+					source={profilePicture ? { uri: profilePicture!.uri } : require("assets/images/default-avatar.png")}
 					style={{ width: 100, height: 100, opacity: 0.8, borderRadius: 8 }}
 				/>
 				<View style={styles.overlay}>
