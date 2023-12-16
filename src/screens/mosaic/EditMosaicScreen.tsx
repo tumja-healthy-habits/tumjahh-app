@@ -38,8 +38,6 @@ export default function EditMosaicScreen() {
     const { params } = useRoute<RouteProp<MosaicParamList, "EditMosaic">>()
     
     useEffect(() => {
-        console.log("USEEFFECT 1")
-
         pb.collection("mosaics").getOne<MosaicRecord>(params.mosaicId).then(
             (mosaic:MosaicRecord) => {
                 setMosaicRecord(mosaic);
@@ -48,14 +46,10 @@ export default function EditMosaicScreen() {
             })
         
         pb.collection("mosaic_members").getFullList<MosaicMembersRecord>({filter: `mosaic_id = "${params.mosaicId}"`, expand: "user_id"})
-        .then((records:MosaicMembersRecord[]) => {setMembers(records.map(getMember)); setOldMembers(records.map(getMember))})
-
-        console.log(friends)
-            
+        .then((records:MosaicMembersRecord[]) => {setMembers(records.map(getMember)); setOldMembers(records.map(getMember))})            
     }, [])
     
     useEffect(() => {
-        console.log("USEEFFECT 2")
         submitSearch()
     }, [searchText])
     
@@ -72,7 +66,6 @@ export default function EditMosaicScreen() {
         if (currentUser === null) {
             return
         }
-        console.log(friends)
         setSearchResults(friends.filter((friend:UserRecord) => {return (friend.username.startsWith(searchText) || friend.name.startsWith(searchText))}))
     }
 
@@ -125,12 +118,10 @@ export default function EditMosaicScreen() {
         formData.append("user_id", user.id)
         formData.append("mosaic_id", mosaicRecord!.id)
         const mosaicMemberRecord = await pb.collection("mosaic_members").create<MosaicMembersRecord>(formData)
-        console.log(mosaicMemberRecord)
     }
 
     async function deleteMosaicMemberRecord(user: UserRecord) {
         var record = await pb.collection("mosaic_members").getFirstListItem<MosaicMembersRecord>(`mosaic_id = "${mosaicRecord!.id}" && user_id = "${user.id}"`)
-        console.log(record)
         if (record === undefined) {
             console.log("ERROR, no record for this mosaic and this user")
             return

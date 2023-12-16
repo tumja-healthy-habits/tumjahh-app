@@ -26,7 +26,6 @@ export default function () {
 
     useEffect(() => {
         // load all mosaics that the user is a member of
-        console.log("Inside useEffect")
         pb.collection("mosaics").getFullList<MosaicRecord>({sort: "-updated"}).then(setMosaics).catch(console.error)
     }, [])
 
