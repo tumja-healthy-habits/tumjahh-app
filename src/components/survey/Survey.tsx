@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { pb } from "src/pocketbaseService";
-import CustomButton from "../authentication/CustomButton";
+import LoginButton from "../authentication/LoginButton";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { globalStyles } from "src/styles";
 import Colors from "constants/colors";
@@ -74,7 +74,7 @@ export default function Survey() {
                             </View>
                         )}
 
-                        <CustomButton label={currentPage == params.challenges.length - 1 ? "See results" : "Next"} onPress={answerChallenge} />
+                        <LoginButton label={currentPage == params.challenges.length - 1 ? "See results" : "Next"} onPress={answerChallenge} spacing={styles.buttonSpacing}/>
                     </View>
                 </View>
             </ScrollView>
@@ -96,4 +96,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         margin: 15,
     },
+    buttonSpacing: {
+        marginVertical: 10
+    }
 })

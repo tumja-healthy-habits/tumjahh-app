@@ -1,14 +1,18 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Alert, Pressable, StyleSheet, Text, Vibration, View } from "react-native";
 import { pb } from "src/pocketbaseService";
-import CustomButton from "../authentication/CustomButton";
+import LoginButton from "../authentication/LoginButton";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { globalStyles } from "src/styles";
 import Colors from "constants/colors";
-import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SurveyParamList } from "./SurveyNavigator";
-import Slider from "@react-native-community/slider";
-import { ScrollView } from "react-native-gesture-handler";
+import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+import { RadioButton } from "react-native-paper";
+import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
+import InputField from "components/authentication/InputField";
+import { Ionicons } from '@expo/vector-icons';
 import { UserRecord } from "types";
 
 export default function InitialSurvey() {
@@ -19,52 +23,79 @@ export default function InitialSurvey() {
         return <View />;
     }
 
-    const [transport_bike_public, set_transport_bike_public] = useState<string>();
-    const [transport_walk, set_transport_walk] = useState<boolean>();
-    const [transport_means, set_transport_means] = useState<string>();
+    const [transport_bike_public, set_transport_bike_public] = useState<string>("");
+    const [transport_walk, set_transport_walk] = useState<string>("bool");
+    const [transport_means, set_transport_means] = useState<string[]>(["Walking", "Biking", "Public transport", "Car", "Others"]);
 
-    const [exercise_frequency, set_exercise_frequency] = useState<number>();
-    const [exercise_ambition, set_exercise_ambition] = useState<boolean>();
-    const [exercise_satisfaction, set_exercise_satisfaction] = useState<boolean>();
-    const [exercise_sports, set_exercise_sports] = useState<string>();
+    const [exercise_frequency, set_exercise_frequency] = useState<number>(NaN);
+    const [exercise_ambition, set_exercise_ambition] = useState<string>("bool");
+    const [exercise_satisfaction, set_exercise_satisfaction] = useState<string>("bool");
+    const [exercise_sports, set_exercise_sports] = useState<string>("");
 
-    const [diet_type, set_diet_type] = useState<string>();
-    const [diet_reasons, set_diet_reasons] = useState<string[]>();
-    const [diet_criteria, set_diet_criteria] = useState<string[]>();
+    const [diet_type, set_diet_type] = useState<string>("");
+    const [diet_reasons, set_diet_reasons] = useState<string[]>(new Array());
+    const [diet_criteria, set_diet_criteria] = useState<string[]>(new Array());
 
-    const [sleep_hours, set_sleep_hours] = useState<number>();
-    const [sleep_variance, set_sleep_variance] = useState<number>();
-    const [sleep_peace, set_sleep_peace] = useState<boolean>();
+    const [sleep_hours, set_sleep_hours] = useState<number>(NaN);
+    const [sleep_variance, set_sleep_variance] = useState<number>(NaN);
+    const [sleep_peace, set_sleep_peace] = useState<string>("bool");
 
-    const [mental_screentime, set_mental_screentime] = useState<number>();
-    const [mental_thankfulness, set_mental_thankfulness] = useState<boolean>();
-    const [mental_stress, set_mental_stress] = useState<boolean>();
+    const [mental_screentime, set_mental_screentime] = useState<number>(NaN);
+    const [mental_thankfulness, set_mental_thankfulness] = useState<string>("bool");
+    const [mental_stress, set_mental_stress] = useState<string>("bool");
 
     async function answer() {
-        pb.collection("initial_survey").create({
-            user: currentUser!.id,
+        if (transport_bike_public == "" ||
+            transport_walk == "bool" ||
 
-            transport_bike_public: transport_bike_public,
-            transport_walk: transport_walk,
-            transport_means: transport_means,
+            Number.isNaN(exercise_frequency) ||
+            exercise_ambition == "bool" ||
+            exercise_satisfaction == "bool" ||
+            exercise_sports == "" ||
 
-            exercise_frequency: exercise_frequency,
-            exercise_ambition: exercise_ambition,
-            exercise_satisfaction: exercise_satisfaction,
-            exercise_sports: exercise_sports,
+            diet_type == "" ||
+            (["Vegetarian", "Vegan"].indexOf(diet_type) >= 0 && diet_reasons.length == 0) ||
+            diet_criteria.length == 0 ||
 
-            diet_type: diet_type,
-            diet_reasons: diet_reasons,
-            diet_criteria: diet_criteria,
+            Number.isNaN(sleep_hours) ||
+            Number.isNaN(sleep_variance) ||
+            sleep_peace == "bool" ||
 
-            sleep_hours: sleep_hours,
-            sleep_variance: sleep_variance,
-            sleep_peace: sleep_peace,
+            Number.isNaN(mental_screentime) ||
+            mental_thankfulness == "bool" ||
+            mental_stress == "bool") {
+            Alert.alert("Please reply to every question")
+        } else {
+            pb.collection("initial_survey").create({
+                user: currentUser!.id,
 
-            mental_screentime: mental_screentime,
-            mental_thankfulness: mental_thankfulness,
-            mental_stress: mental_stress,
-        })
+                transport_bike_public: transport_bike_public,
+                transport_walk: transport_walk == "Yes",
+                transport_means: transport_means,
+
+                exercise_frequency: exercise_frequency,
+                exercise_ambition: exercise_ambition == "Yes",
+                exercise_satisfaction: exercise_satisfaction == "Yes",
+                exercise_sports: exercise_sports,
+
+                diet_type: diet_type,
+                diet_reasons: (["Vegetarian", "Vegan"].indexOf(diet_type) >= 0 ? diet_reasons : new Array()),
+                diet_criteria: diet_criteria,
+
+                sleep_hours: sleep_hours,
+                sleep_variance: sleep_variance,
+                sleep_peace: sleep_peace == "Yes",
+
+                mental_screentime: mental_screentime,
+                mental_thankfulness: mental_thankfulness == "Yes",
+                mental_stress: mental_stress == "Yes",
+            })
+
+            const lastSurveyUpdate: FormData = new FormData(); lastSurveyUpdate.append("lastSurvey", currentUser!.created)
+            pb.collection("users").update<UserRecord>(currentUser!.id, lastSurveyUpdate)
+
+            goBack()
+        }
     }
 
     return (
@@ -73,36 +104,204 @@ export default function InitialSurvey() {
                 <View style={{ width: "90%" }}>
                     <Text style={styles.formTitle}>About youself</Text>
 
-                    <Text style={styles.questionTitle}>Transportation</Text>
-                    <Text>Whenever you could travel a distance by bike or public transport, which one would you rather choose?</Text>
-                    <Text>Do you enjoy going for a walk?</Text>
-                    <Text>What is your most common means of transport?</Text>
+                    <View>
+                        <Text style={styles.questionTitle}>Transportation</Text>
 
-                    <Text style={styles.questionTitle}>Exercise</Text>
-                    <Text>How often do you exercise per week?</Text>
-                    <Text>Would you want to be more active in your daily life?/Are you happy with the amount of sports you do?</Text>
-                    <Text>Do you feel happy with your body?</Text>
-                    <Text>What ḱind of sports do you practice?</Text>
+                        <Text style={styles.questionText}>Whenever you could travel a distance by bike or public transport, which one would you rather choose?</Text>
+                        {dropdown_question(set_transport_bike_public, transport_bike_public, transport_bike_public_options)}
 
-                    <Text style={styles.questionTitle}>Nutrition</Text>
-                    <Text>What is your primary diet?</Text>
-                    <Text>If you eat vegetarian/vegan what are your main reasons for it?</Text>
-                    <Text>When you buy groceries do you pay attention to</Text>
+                        <Text style={styles.questionText}>Do you enjoy going for a walk?</Text>
+                        {yes_no_question(set_transport_walk, transport_walk)}
 
-                    <Text style={styles.questionTitle}>Sleeping habits</Text>
-                    <Text>How many hours do you sleep on average per night?</Text>
-                    <Text>By how many hours does your bedtime vary throughout the week (i.e. between weekdays and weekend)?</Text>
-                    <Text>Do you feel it is hard shutting of after you wanted to finish your work at the end of the day?</Text>
+                        <Text style={styles.questionText}>Order the following means of transport by how commonly you use them</Text>
+                        <GestureHandlerRootView>
+                            <DraggableFlatList
+                                data={transport_means}
+                                onDragEnd={(data) => set_transport_means(data.data)}
+                                keyExtractor={(item) => item}
+                                renderItem={({ item, drag, isActive }) => {
+                                    return (
+                                        <Pressable style={[styles.radioButton, {
+                                            flex: 1, flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 7,
+                                            borderColor: !isActive ? "#FFF4EC" : Colors.pastelViolet
+                                        }]}
+                                            onLongPress={() => {
+                                                Vibration.vibrate([0, 50])
+                                                drag()
+                                            }}
+                                            delayLongPress={200}>
+                                            <Ionicons name={"reorder-three-outline"} size={20} color="#666" style={{ alignSelf: 'center', marginRight: 5 }} />
+                                            <Text style={styles.questionText}>{item}</Text>
+                                            <Text style={{ flex: 1, alignSelf: 'center', textAlign: 'right' }}>
+                                                {!isActive ?
+                                                    (transport_means.indexOf(item) == 0 ? "(most common)" :
+                                                        (transport_means.indexOf(item) == transport_means.length - 1 ?
+                                                            "(least common)" : "")) : ""}
+                                            </Text>
+                                        </Pressable>
+                                    )
+                                }}>
 
-                    <Text style={styles.questionTitle}>Mental health</Text>
-                    <Text>What is your average daily screen time on your phone?</Text>
-                    <Text>Do you feel thankful for the positive aspects in life lately?</Text>
-                    <Text>Do you feel stressed by other peoples achievements?</Text>
+                            </DraggableFlatList>
+                        </GestureHandlerRootView>
+                    </View>
 
-                    <CustomButton label={"Done"} onPress={(answer)} />
+                    <View>
+                        <Text style={styles.questionTitle}>Exercise</Text>
+
+                        <Text style={styles.questionText}>How often do you exercise per week?</Text>
+                        <InputField
+                            value={Number.isNaN(exercise_frequency) ? "" : exercise_frequency.toString()}
+                            label={"Frequency in times/week"}
+                            keyboardType='numeric'
+                            onChangeText={(value) => set_exercise_frequency(parseInt(value))}
+                            additionalProps={{ marginBottom: 0 }}
+                        />
+
+                        <Text style={styles.questionText}>Would you want to be more active in your daily life?</Text>
+                        {yes_no_question(set_exercise_ambition, exercise_ambition)}
+
+                        <Text style={styles.questionText}>Do you feel happy with your body?</Text>
+                        {yes_no_question(set_exercise_satisfaction, exercise_satisfaction)}
+
+                        <Text style={styles.questionText}>What ḱind of sports do you practice?</Text>
+                        <InputField
+                            value={exercise_sports}
+                            label={"e.g. running, football, dance, ..."}
+                            onChangeText={(value) => set_exercise_sports(value)}
+                            additionalProps={{ marginBottom: 0 }}
+                        />
+                    </View>
+
+                    <View>
+                        <Text style={styles.questionTitle}>Nutrition</Text>
+
+                        <Text style={styles.questionText}>What is your primary diet?</Text>
+                        {dropdown_question(set_diet_type, diet_type, diet_type_options)}
+
+                        {["Vegetarian", "Vegan"].indexOf(diet_type) >= 0 &&
+                            <View>
+                                <Text style={styles.questionText}>What are your main reasons for a v{diet_type.substring(1)} diet?</Text>
+                                {dropdown_multi_question(set_diet_reasons, diet_reasons, diet_reasons_options)}
+                            </View>
+                        }
+
+                        <Text style={styles.questionText}>What do you pay attention to when buying groceries?</Text>
+                        {dropdown_multi_question(set_diet_criteria, diet_criteria, diet_criteria_options)}
+                    </View>
+
+                    <View>
+                        <Text style={styles.questionTitle}>Sleeping habits</Text>
+
+                        <Text style={styles.questionText}>How many hours do you sleep on average per night?</Text>
+                        <InputField
+                            value={Number.isNaN(sleep_hours) ? "" : sleep_hours.toString()}
+                            label={"Amount in hours/day"}
+                            keyboardType='numeric'
+                            onChangeText={(value) => set_sleep_hours(parseInt(value))}
+                            additionalProps={{ marginBottom: 0 }}
+                        />
+
+                        <Text style={styles.questionText}>By how many hours does your bedtime vary throughout the week (i.e. between weekdays and weekend)?</Text>
+                        <InputField
+                            value={Number.isNaN(sleep_variance) ? "" : sleep_variance.toString()}
+                            label={"Amount in hours/day"}
+                            keyboardType='numeric'
+                            onChangeText={(value) => set_sleep_variance(parseInt(value))}
+                            additionalProps={{ marginBottom: 0 }}
+                        />
+
+                        <Text style={styles.questionText}>Do you feel it is hard shutting of after you wanted to finish your work at the end of the day?</Text>
+                        {yes_no_question(set_sleep_peace, sleep_peace)}
+                    </View>
+
+                    <View>
+                        <Text style={styles.questionTitle}>Mental health</Text>
+
+                        <Text style={styles.questionText}>What is your average daily screen time on your phone?</Text>
+                        <InputField
+                            value={Number.isNaN(mental_screentime) ? "" : mental_screentime.toString()}
+                            label={"Amount in hours/day"}
+                            keyboardType='numeric'
+                            onChangeText={(value) => set_mental_screentime(parseInt(value))}
+                            additionalProps={{ marginBottom: 0 }}
+                        />
+
+                        <Text style={styles.questionText}>Do you feel thankful for the positive aspects in life lately?</Text>
+                        {yes_no_question(set_mental_thankfulness, mental_thankfulness)}
+
+                        <Text style={styles.questionText}>Do you feel stressed by other peoples achievements?</Text>
+                        {yes_no_question(set_mental_stress, mental_stress)}
+                    </View>
+
+                    <View style={styles.formTitle}>
+                        <LoginButton label={"Done"} onPress={(answer)} />
+                    </View>
                 </View>
             </View>
         </ScrollView>
+    )
+}
+
+const transport_bike_public_options = [{ o: 'Bike' }, { o: 'Public transport' }, { o: 'Depends' }, { o: 'Neither' }];
+
+const diet_type_options = [{ o: 'Omnivore' }, { o: 'Vegetarian' }, { o: 'Vegan' }, { o: 'Others' }]
+
+const diet_reasons_options = [{ o: 'Sustainability' }, { o: 'Animal cruelty' }, { o: 'Health' }, { o: 'Taste' }, { o: 'Others' }]
+
+const diet_criteria_options = [{ o: 'Local food' }, { o: 'Organic food' }, { o: 'Ingridients' }, { o: 'Others' }]
+
+function dropdown_question(setter: React.Dispatch<React.SetStateAction<any>>, state: any, options: { 'o': string }[]) {
+    return (
+        <Dropdown
+            style={styles.dropdown}
+            maxHeight={300}
+            containerStyle={{ borderRadius: 8 }}
+            placeholderStyle={styles.questionTextDd}
+            placeholder={'Please select an answer'}
+            selectedTextStyle={styles.questionTextDd}
+            data={options}
+            labelField='o'
+            valueField='o'
+            value={state}
+            onChange={(item) => setter(item.o)}
+        />
+    )
+}
+
+function yes_no_question(setter: React.Dispatch<React.SetStateAction<any>>, state: any) {
+    return (
+        <RadioButton.Group
+            onValueChange={(value) => setter(value)}
+            value={state}
+        >
+            <RadioButton.Item label="Yes" value="Yes"
+                style={styles.radioButton}
+                color='#FFF4EC' />
+            <RadioButton.Item label="No" value="No"
+                style={styles.radioButton}
+                color='#FFF4EC' />
+        </RadioButton.Group>
+    )
+}
+
+function dropdown_multi_question(setter: React.Dispatch<React.SetStateAction<any>>, state: any, options: { 'o': string }[]) {
+    return (
+        <MultiSelect
+            style={styles.dropdown}
+            maxHeight={300}
+            containerStyle={{ borderRadius: 8 }}
+            placeholderStyle={styles.questionTextDd}
+            placeholder={state.length == 0 ? 'Please select all answers that apply' : state.join(", ")}
+            selectedTextStyle={styles.questionTextDd}
+            data={options}
+            labelField='o'
+            valueField='o'
+            value={state}
+            onChange={(item) => setter(item)}
+            activeColor={Colors.pastelViolet}
+            visibleSelectedItem={false}
+        />
     )
 }
 
@@ -114,11 +313,32 @@ const styles = StyleSheet.create({
         color: Colors.accent,
         fontSize: 30,
         margin: 15,
-        marginBottom: 20,
     },
     questionTitle: {
         color: Colors.accent,
         fontSize: 20,
         marginVertical: 15,
     },
+    questionText: {
+        fontSize: 16,
+        marginVertical: 10,
+    },
+    questionTextDd: {
+        fontSize: 16,
+    },
+    dropdown: {
+        borderColor: '#FFF4EC',
+        borderRadius: 8,
+        borderWidth: 1,
+        paddingHorizontal: 8,
+    },
+    radioButton: {
+        borderColor: '#FFF4EC',
+        borderRadius: 8,
+        borderWidth: 1,
+        marginVertical: 5,
+        paddingVertical: 0,
+        paddingLeft: 7,
+        paddingRight: 0,
+    }
 })

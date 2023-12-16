@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 import React from 'react';
-import { Image, KeyboardTypeOptions, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, KeyboardTypeOptions, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ViewProps } from 'react-native';
 import { FixedDimensionImage } from 'types';
 import IconButton from "../misc/IconButton";
 
@@ -31,6 +31,7 @@ type InputFieldProps = {
 	fieldButtonFunction?: () => void;
 	onChangeText?: (text: string) => void;
 	value?: string;
+	additionalProps?: any;
 };
 
 export default function InputField({
@@ -41,10 +42,11 @@ export default function InputField({
 	fieldButtonLabel,
 	fieldButtonFunction,
 	onChangeText,
-	value
+	value,
+	additionalProps,
 }: InputFieldProps) {
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, additionalProps]}>
 			{icon}
 			<TextInput
 				placeholder={label}
