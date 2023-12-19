@@ -6,6 +6,8 @@ import { Chip } from "react-native-paper";
 import { MosaicParamList } from "screens/mosaic/MosaicNavigator";
 import { pb } from "src/pocketbaseService";
 import { ContainsRecord, MosaicRecord } from "types";
+import IconButton from "components/misc/IconButton";
+
 
 type MosaicPreviewProps = {
     record: MosaicRecord,
@@ -14,7 +16,7 @@ type MosaicPreviewProps = {
 export default function MosaicPreview({ record }: MosaicPreviewProps) {
     const { navigate } = useNavigation<NavigationProp<MosaicParamList, "List">>()
     const [numPhotos, setNumPhotos] = useState<number>()
-
+    
     useEffect(() => {
         pb.collection("contains").getFullList<ContainsRecord>({
             filter: `mosaic_id = "${record.id}"`,
@@ -27,16 +29,20 @@ export default function MosaicPreview({ record }: MosaicPreviewProps) {
         navigate("SingleMosaic", { mosaicId: record.id })
     }
 
+
     return (
-        <Pressable style={({ pressed }) => [styles.container, pressed && styles.pressed]} onPress={handlePress}>
-            {({ pressed }) =>
-            (<>{record.thumbnail === "" ? <View style={styles.image} /> : <Image source={{ uri: pb.getFileUrl(record, record.thumbnail) }} style={styles.image} />}
-                <View style={[styles.innerContainer, pressed && { backgroundColor: Colors.pastelOrange }]}>
-                    <Text style={[styles.title, pressed && { color: Colors.white }]}>{record.name}</Text>
-                    {numPhotos !== undefined && <Chip>{numPhotos}</Chip>}
-                </View></>)
-            }
-        </Pressable>
+        <View>
+            <Pressable style={({ pressed }) => [styles.container, pressed && styles.pressed]} onPress={handlePress}>
+                {({ pressed }) =>
+                (<>{record.thumbnail === "" ? <View style={styles.image} /> : <Image source={{ uri: pb.getFileUrl(record, record.thumbnail) }} style={styles.image} />}
+                    <View style={[styles.innerContainer, pressed && { backgroundColor: Colors.pastelOrange }]}>
+                        {numPhotos !== undefined && <Chip>{numPhotos}</Chip>}
+                        <Text style={[styles.title, pressed && { color: Colors.white }]}>{record.name}</Text>
+                        <IconButton icon="create-outline" color="black" size={30} onPress={() => navigate("EditMosaic", {mosaicId: record.id})} />
+                    </View></>)
+                }
+            </Pressable>
+        </View>
     )
 }
 
@@ -63,6 +69,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: Colors.primaryDark,
         flex: 1,
+        marginLeft:10
     },
     image: {
         width: "100%",
@@ -83,5 +90,12 @@ const styles = StyleSheet.create({
     },
     pressed: {
         backgroundColor: Colors.pastelGreen,
-    }
+    },
+    overlay: {
+		...StyleSheet.absoluteFillObject,
+        //position:"absolute",
+		//top:10,
+        marginTop:15,
+        marginLeft:"86%",     
+	},
 })

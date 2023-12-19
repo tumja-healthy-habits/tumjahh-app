@@ -13,7 +13,6 @@ import MosaicNavigator from 'screens/mosaic/MosaicNavigator';
 import ProfileNavigator from "screens/profile/ProfileNavigator";
 import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
 import MosaicDataProvider from "src/store/MosaicDataProvider";
-import SurveyPopup from './survey/SurveyPopup';
 
 const VAR_REMINDER_NOTIFICATION_ID: string = "BeHealthyReminderNotificationId"
 const DAYS_UNTIL_REMINDER: number = 3
@@ -80,16 +79,13 @@ export default function LoggedInApp() {
                         {/* <Tab.Screen name="Friends" component={FriendsScreen} options={{
                                 tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
                               }} /> */}
-                        <Tab.Screen name="Profile" component={ProfileNavigator} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
-                        }} />
                         <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
                         }} />
+                        <Tab.Screen name="Profile" component={ProfileNavigator} options={{
+                            tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
+                        }} />
                     </Tab.Navigator>
-
-                    <SurveyPopup/>
-
                 </PaperProvider>
             </DailyChallengesProvider>
         </MosaicDataProvider>
