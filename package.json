@@ -38,15 +38,10 @@
     "react-native-contacts": "^7.0.7",
     "react-native-counters": "^1.2.0",
     "react-native-date-picker": "^4.3.3",
-<<<<<<< HEAD
     "react-native-design-system": "^2.0.5",
     "react-native-draggable-flatlist": "^4.0.1",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-element-dropdown": "^2.10.1",
-=======
-    "react-native-dropdown-picker": "^5.4.6",
-    "react-native-element-dropdown": "^2.10.0",
->>>>>>> 07ffbac6a428fa7ecbcdc6913c1d0815fd262d45
     "react-native-gesture-handler": "~2.9.0",
     "react-native-multiple-select": "^0.5.12",
     "react-native-paper": "^5.11.3",
