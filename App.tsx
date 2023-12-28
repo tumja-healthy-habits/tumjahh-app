@@ -3,8 +3,8 @@ import LoggedInApp, { AppParamList } from 'components/LoggedInApp';
 import LoginNavigator from 'components/authentication/LoginNavigator';
 import { createURL } from "expo-linking";
 import { setNotificationHandler } from 'expo-notifications';
-import { StatusBar } from 'expo-status-bar';
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import EventSource from "react-native-sse";
 import { AuthenticatedUserContext, AuthenticatedUserProvider } from 'src/store/AuthenticatedUserProvider';
 
@@ -43,15 +43,16 @@ global.EventSource = EventSource as any
 
 export default function App() {
   return (
-    <View style={{ flex: 1 }}>
-      <StatusBar style="dark" />
-      <NavigationContainer linking={linking} >
-        <AuthenticatedUserProvider>
-          <AuthenticatedUserContext.Consumer>
-            {({ currentUser }) => currentUser ? <LoggedInApp /> : <LoginNavigator />}
-          </AuthenticatedUserContext.Consumer>
-        </AuthenticatedUserProvider>
-      </NavigationContainer>
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1 }}>
+        <NavigationContainer linking={linking} >
+          <AuthenticatedUserProvider>
+            <AuthenticatedUserContext.Consumer>
+              {({ currentUser }) => currentUser ? <LoggedInApp /> : <LoginNavigator />}
+            </AuthenticatedUserContext.Consumer>
+          </AuthenticatedUserProvider>
+        </NavigationContainer>
+      </SafeAreaView >
+    </SafeAreaProvider>
   );
 }
