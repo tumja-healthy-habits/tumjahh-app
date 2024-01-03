@@ -3,7 +3,7 @@ import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { pb } from "src/pocketbaseService";
 import LoginButton from "../authentication/LoginButton";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { SurveyAnswerRecord, UserRecord } from "types";
+import { SurveyAnswerRecord } from "types";
 import { globalStyles } from "src/styles";
 import Colors from "constants/colors";
 import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
