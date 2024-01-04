@@ -1,22 +1,25 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 type LoginButtonProps = {
 	label: string;
 	onPress: () => void;
 	color?: string;
-	style?: any
+	style?: any;
+	spacing?: any
 };
 
-export default function LoginButton({ label, onPress, color, style}: LoginButtonProps) {
+export default function LoginButton({ label, onPress, color, style, spacing }: LoginButtonProps) {
 	return (
-		<Pressable
-			onPress={onPress}
-			style={({ pressed }) => [{backgroundColor: color ? color : '#FFF4EC'}, styles.container, pressed && { opacity: 0.3 }, style,]}>
-			<Text style={styles.text}>
-				{label}
-			</Text>
-		</Pressable>
+		<View style={spacing}>
+			<Pressable
+				onPress={onPress}
+				style={({ pressed }) => [{ backgroundColor: color ? color : '#FFF4EC' }, styles.container, pressed && { opacity: 0.3 }, style,]}>
+				<Text style={styles.text}>
+					{label}
+				</Text>
+			</Pressable>
+		</View>
 	);
 }
 
