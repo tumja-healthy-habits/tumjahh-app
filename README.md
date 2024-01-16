@@ -23,4 +23,4 @@ In the terminal in which you started the server, type 'a' or 'i' to run the andr
 
 
 Your **Team Healthy Habits**
-*Inspired by [TUM Junge Akademie](ja.tum.de)*
+*Inspired by [TUM Junge Akademie](https://ja.tum.de)*
