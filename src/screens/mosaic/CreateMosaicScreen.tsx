@@ -49,7 +49,7 @@ export default function CreateMosaicScreen() {
         if (currentUser === null) {
             return
         }
-        setSearchResults(friends.filter((friend:UserRecord) => {return (friend.username.startsWith(searchText) || friend.name.startsWith(searchText))}))
+        setSearchResults(friends.filter((friend:UserRecord) => {return (friend.username.toLowerCase().startsWith(searchText.toLowerCase()) || friend.name.toLowerCase().startsWith(searchText.toLowerCase()))}))
     }
 
     function renderMember({ item }: ListRenderItemInfo<UserRecord>) {
@@ -133,6 +133,7 @@ export default function CreateMosaicScreen() {
 
     return (
         <SafeAreaView style={styles.outerContainer}>
+            <IconButton icon="chevron-back-outline" onPress={goBack} color="#666" size={30} style={{alignSelf:"flex-start"}}/>
             <Text style={styles.formTitle}>Create Mosaic</Text>
             <View style={styles.innerContainer}>
 
@@ -190,7 +191,8 @@ export default function CreateMosaicScreen() {
                     extraData={updateSearch}
                 />
                 </View>    
-                <LoginButton label={"Create Mosaic"} onPress={handleCreateMosaic} color="white" style={{position:"absolute", bottom:20}}/>
+                <LoginButton label={"Create Mosaic"} onPress={handleCreateMosaic} color="white" /> 
+                {/* style={{position:"absolute", bottom:20}}/> */}
                 
             </View>
         </SafeAreaView>
@@ -218,7 +220,7 @@ const styles = StyleSheet.create({
     formTitle: {
         color: Colors.accent,
         fontSize: 30,
-        marginTop:30,
+        marginTop:10,
         //marginBottom: 10,
         marginLeft:20,
         alignSelf:'flex-start'

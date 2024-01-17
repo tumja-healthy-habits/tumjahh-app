@@ -1,8 +1,8 @@
-import {View, Image, Text, StyleSheet, ImageSourcePropType} from "react-native"
+import {View, Image, Text, StyleSheet,} from "react-native"
 import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 import IconButton from "./IconButton";
 import { FixedDimensionImage } from 'types';
-
+import { ImageSourcePropType } from "deprecated-react-native-prop-types";
 
 
 

@@ -1,4 +1,4 @@
-import {Alert, SafeAreaView, StyleSheet, Text, View, FlatList, ListRenderItemInfo,  ImageSourcePropType, TouchableOpacity} from "react-native";
+import {Alert, SafeAreaView, StyleSheet, Text, View, FlatList, ListRenderItemInfo, TouchableOpacity} from "react-native";
 import React, { useState, useRef, useEffect} from 'react';
 import Colors from "constants/colors";
 import PictureInput from "components/misc/PictureInput";
@@ -38,7 +38,6 @@ export default function EditMosaicScreen() {
     const { params } = useRoute<RouteProp<MosaicParamList, "EditMosaic">>()
     
     useEffect(() => {
-        console.log("USEEFFECT 1")
 
         pb.collection("mosaics").getOne<MosaicRecord>(params.mosaicId).then(
             (mosaic:MosaicRecord) => {
@@ -49,13 +48,10 @@ export default function EditMosaicScreen() {
         
         pb.collection("mosaic_members").getFullList<MosaicMembersRecord>({filter: `mosaic_id = "${params.mosaicId}"`, expand: "user_id"})
         .then((records:MosaicMembersRecord[]) => {setMembers(records.map(getMember)); setOldMembers(records.map(getMember))})
-
-        console.log(friends)
             
     }, [])
     
     useEffect(() => {
-        console.log("USEEFFECT 2")
         submitSearch()
     }, [searchText])
     
@@ -72,8 +68,7 @@ export default function EditMosaicScreen() {
         if (currentUser === null) {
             return
         }
-        console.log(friends)
-        setSearchResults(friends.filter((friend:UserRecord) => {return (friend.username.startsWith(searchText) || friend.name.startsWith(searchText))}))
+        setSearchResults(friends.filter((friend:UserRecord) => {return (friend.username.toLowerCase().startsWith(searchText.toLowerCase()) || friend.name.toLowerCase().startsWith(searchText.toLowerCase()))}))
     }
 
     function renderMember({ item }: ListRenderItemInfo<UserRecord>) {
@@ -125,12 +120,10 @@ export default function EditMosaicScreen() {
         formData.append("user_id", user.id)
         formData.append("mosaic_id", mosaicRecord!.id)
         const mosaicMemberRecord = await pb.collection("mosaic_members").create<MosaicMembersRecord>(formData)
-        console.log(mosaicMemberRecord)
     }
 
     async function deleteMosaicMemberRecord(user: UserRecord) {
         var record = await pb.collection("mosaic_members").getFirstListItem<MosaicMembersRecord>(`mosaic_id = "${mosaicRecord!.id}" && user_id = "${user.id}"`)
-        console.log(record)
         if (record === undefined) {
             console.log("ERROR, no record for this mosaic and this user")
             return
@@ -181,6 +174,7 @@ export default function EditMosaicScreen() {
 
     return (
         <SafeAreaView style={styles.outerContainer}>
+            <IconButton icon="chevron-back-outline" onPress={goBack} color="#666" size={30} style={{alignSelf:"flex-start"}}/>
             <Text style={styles.formTitle}>Edit Mosaic</Text>
             <View style={styles.innerContainer}>
 
@@ -239,7 +233,8 @@ export default function EditMosaicScreen() {
                     />
                 </View>    
                 
-                <LoginButton label={"Save changes"} onPress={handleSaveChanges} color="white" style={{position:"absolute", bottom:45}}/>
+                <LoginButton label={"Save changes"} onPress={handleSaveChanges} color="white"/>  
+                {/* style={{position:"absolute", bottom:1}}/> */}
                 
                 <TouchableOpacity onPress={handleLeaveMosaic} style={{position:"absolute", bottom:12, alignSelf:"center"}}>
                     <Text style={{fontSize:16, color:"#F56E6E", fontWeight:"500"}}>Leave Mosaic</Text>
@@ -271,7 +266,7 @@ const styles = StyleSheet.create({
     formTitle: {
         color: Colors.accent,
         fontSize: 30,
-        marginTop:30,
+        marginTop:10,
         //marginBottom: 10,
         marginLeft:20,
         alignSelf:'flex-start'

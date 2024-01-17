@@ -8,7 +8,7 @@ type UserBarProps = {
 }
 
 export default function UserBar({ user }: UserBarProps) {
-	const profilePictureSource: ImageSourcePropType = user.avatar ? { uri: pb.getFileUrl(user, user.avatar) } : require("assets/images/default-avatar.jpeg")
+	const profilePictureSource: ImageSourcePropType = user.avatar ? { uri: pb.getFileUrl(user, user.avatar) } : require("assets/images/default-avatar.png")
 	//const colorScheme = Appearance.getColorScheme()
 
 	return (
