@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, Vibration, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { pb } from "src/pocketbaseService";
 import LoginButton from "../authentication/LoginButton";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
@@ -7,10 +7,10 @@ import { globalStyles } from "src/styles";
 import Colors from "constants/colors";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SurveyParamList } from "./SurveyNavigator";
-import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 import { RadioButton } from "react-native-paper";
-import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
+import { NestableDraggableFlatList, NestableScrollContainer } from "react-native-draggable-flatlist";
 import InputField from "components/authentication/InputField";
 import { Ionicons } from '@expo/vector-icons';
 import { UserRecord } from "types";
@@ -26,6 +26,7 @@ export default function InitialSurvey() {
     const [transport_bike_public, set_transport_bike_public] = useState<string>("");
     const [transport_walk, set_transport_walk] = useState<string>("bool");
     const [transport_means, set_transport_means] = useState<string[]>(["Walking", "Biking", "Public transport", "Car", "Others"]);
+    const [transport_draggableColor, set_transport_draggableColor] = useState<string>("#FFF4EC");
 
     const [exercise_frequency, set_exercise_frequency] = useState<number>(NaN);
     const [exercise_ambition, set_exercise_ambition] = useState<string>("bool");
@@ -99,56 +100,58 @@ export default function InitialSurvey() {
     }
 
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <NestableScrollContainer contentContainerStyle={{ flexGrow: 1 }}>
             <View style={[globalStyles.container, styles.outerContainer]}>
                 <View style={{ width: "90%" }}>
-                    <Text style={styles.formTitle}>About youself</Text>
+                    <Text style={styles.title}>About yourself</Text>
 
-                    <View>
-                        <Text style={styles.questionTitle}>Transportation</Text>
+                    <Text style={styles.sectionTitle}>Transportation</Text>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>Whenever you could travel a distance by bike or public transport, which one would you rather choose?</Text>
                         {dropdown_question(set_transport_bike_public, transport_bike_public, transport_bike_public_options)}
+                    </View>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>Do you enjoy going for a walk?</Text>
                         {yes_no_question(set_transport_walk, transport_walk)}
+                    </View>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>Order the following means of transport by how commonly you use them</Text>
                         <GestureHandlerRootView>
-                            <DraggableFlatList
+                            <NestableDraggableFlatList
                                 data={transport_means}
                                 onDragEnd={(data) => set_transport_means(data.data)}
                                 keyExtractor={(item) => item}
                                 renderItem={({ item, drag, isActive }) => {
                                     return (
-                                        <Pressable style={[styles.radioButton, {
-                                            flex: 1, flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 7,
-                                            borderColor: !isActive ? "#FFF4EC" : Colors.pastelViolet
-                                        }]}
-                                            onLongPress={() => {
-                                                Vibration.vibrate([0, 50])
-                                                drag()
-                                            }}
-                                            delayLongPress={200}>
-                                            <Ionicons name={"reorder-three-outline"} size={20} color="#666" style={{ alignSelf: 'center', marginRight: 5 }} />
-                                            <Text style={styles.questionText}>{item}</Text>
+                                        <View style={[styles.radioButton, {
+                                            flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 7,
+                                            borderColor: isActive ? transport_draggableColor : "#FFF4EC"
+                                        }]}>
+                                            <Pressable style={{ flexDirection: 'row' }}
+                                                onPressIn={drag}>
+                                                <Ionicons name={"reorder-three-outline"} size={30} color="#666" style={{ alignSelf: "center", marginRight: 5 }} />
+                                                <Text style={styles.questionText}>{item}</Text>
+                                            </Pressable>
                                             <Text style={{ flex: 1, alignSelf: 'center', textAlign: 'right' }}>
                                                 {!isActive ?
                                                     (transport_means.indexOf(item) == 0 ? "(most common)" :
                                                         (transport_means.indexOf(item) == transport_means.length - 1 ?
                                                             "(least common)" : "")) : ""}
                                             </Text>
-                                        </Pressable>
+                                        </View>
                                     )
                                 }}>
 
-                            </DraggableFlatList>
+                            </NestableDraggableFlatList>
                         </GestureHandlerRootView>
                     </View>
 
-                    <View>
-                        <Text style={styles.questionTitle}>Exercise</Text>
+                    <Text style={styles.sectionTitle}>Exercise</Text>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>How often do you exercise per week?</Text>
                         <InputField
                             value={Number.isNaN(exercise_frequency) ? "" : exercise_frequency.toString()}
@@ -157,13 +160,19 @@ export default function InitialSurvey() {
                             onChangeText={(value) => set_exercise_frequency(parseInt(value))}
                             additionalProps={{ marginBottom: 0 }}
                         />
+                    </View>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>Would you want to be more active in your daily life?</Text>
                         {yes_no_question(set_exercise_ambition, exercise_ambition)}
+                    </View>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>Do you feel happy with your body?</Text>
                         {yes_no_question(set_exercise_satisfaction, exercise_satisfaction)}
+                    </View>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>What ḱind of sports do you practice?</Text>
                         <InputField
                             value={exercise_sports}
@@ -173,26 +182,28 @@ export default function InitialSurvey() {
                         />
                     </View>
 
-                    <View>
-                        <Text style={styles.questionTitle}>Nutrition</Text>
+                    <Text style={styles.sectionTitle}>Nutrition</Text>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>What is your primary diet?</Text>
                         {dropdown_question(set_diet_type, diet_type, diet_type_options)}
+                    </View>
 
-                        {["Vegetarian", "Vegan"].indexOf(diet_type) >= 0 &&
-                            <View>
-                                <Text style={styles.questionText}>What are your main reasons for a v{diet_type.substring(1)} diet?</Text>
-                                {dropdown_multi_question(set_diet_reasons, diet_reasons, diet_reasons_options)}
-                            </View>
-                        }
+                    {["Vegetarian", "Vegan"].indexOf(diet_type) >= 0 &&
+                        <View style={styles.questionBlock}>
+                            <Text style={styles.questionText}>What are your main reasons for a v{diet_type.substring(1)} diet?</Text>
+                            {dropdown_multi_question(set_diet_reasons, diet_reasons, diet_reasons_options)}
+                        </View>
+                    }
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>What do you pay attention to when buying groceries?</Text>
                         {dropdown_multi_question(set_diet_criteria, diet_criteria, diet_criteria_options)}
                     </View>
 
-                    <View>
-                        <Text style={styles.questionTitle}>Sleeping habits</Text>
+                    <Text style={styles.sectionTitle}>Sleeping habits</Text>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>How many hours do you sleep on average per night?</Text>
                         <InputField
                             value={Number.isNaN(sleep_hours) ? "" : sleep_hours.toString()}
@@ -201,7 +212,9 @@ export default function InitialSurvey() {
                             onChangeText={(value) => set_sleep_hours(parseInt(value))}
                             additionalProps={{ marginBottom: 0 }}
                         />
+                    </View>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>By how many hours does your bedtime vary throughout the week (i.e. between weekdays and weekend)?</Text>
                         <InputField
                             value={Number.isNaN(sleep_variance) ? "" : sleep_variance.toString()}
@@ -210,14 +223,16 @@ export default function InitialSurvey() {
                             onChangeText={(value) => set_sleep_variance(parseInt(value))}
                             additionalProps={{ marginBottom: 0 }}
                         />
+                    </View>
 
-                        <Text style={styles.questionText}>Do you feel it is hard shutting of after you wanted to finish your work at the end of the day?</Text>
+                    <View style={styles.questionBlock}>
+                        <Text style={styles.questionText}>Do you feel it is hard shutting off after you wanted to finish your work at the end of the day?</Text>
                         {yes_no_question(set_sleep_peace, sleep_peace)}
                     </View>
 
-                    <View>
-                        <Text style={styles.questionTitle}>Mental health</Text>
+                    <Text style={styles.sectionTitle}>Mental health</Text>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>What is your average daily screen time on your phone?</Text>
                         <InputField
                             value={Number.isNaN(mental_screentime) ? "" : mental_screentime.toString()}
@@ -226,20 +241,24 @@ export default function InitialSurvey() {
                             onChangeText={(value) => set_mental_screentime(parseInt(value))}
                             additionalProps={{ marginBottom: 0 }}
                         />
+                    </View>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>Do you feel thankful for the positive aspects in life lately?</Text>
                         {yes_no_question(set_mental_thankfulness, mental_thankfulness)}
+                    </View>
 
+                    <View style={styles.questionBlock}>
                         <Text style={styles.questionText}>Do you feel stressed by other peoples achievements?</Text>
                         {yes_no_question(set_mental_stress, mental_stress)}
                     </View>
 
-                    <View style={styles.formTitle}>
+                    <View style={styles.title}>
                         <LoginButton label={"Done"} onPress={(answer)} />
                     </View>
-                </View>
-            </View>
-        </ScrollView>
+                </View >
+            </View >
+        </NestableScrollContainer >
     )
 }
 
@@ -257,9 +276,9 @@ function dropdown_question(setter: React.Dispatch<React.SetStateAction<any>>, st
             style={styles.dropdown}
             maxHeight={300}
             containerStyle={{ borderRadius: 8 }}
-            placeholderStyle={styles.questionTextDd}
+            placeholderStyle={styles.questionTextDropdown}
             placeholder={'Please select an answer'}
-            selectedTextStyle={styles.questionTextDd}
+            selectedTextStyle={styles.questionTextDropdown}
             data={options}
             labelField='o'
             valueField='o'
@@ -291,9 +310,9 @@ function dropdown_multi_question(setter: React.Dispatch<React.SetStateAction<any
             style={styles.dropdown}
             maxHeight={300}
             containerStyle={{ borderRadius: 8 }}
-            placeholderStyle={styles.questionTextDd}
+            placeholderStyle={styles.questionTextDropdown}
             placeholder={state.length == 0 ? 'Please select all answers that apply' : state.join(", ")}
-            selectedTextStyle={styles.questionTextDd}
+            selectedTextStyle={styles.questionTextDropdown}
             data={options}
             labelField='o'
             valueField='o'
@@ -309,21 +328,24 @@ const styles = StyleSheet.create({
     outerContainer: {
         backgroundColor: '#d7c3de',
     },
-    formTitle: {
-        color: Colors.accent,
+    title: {
+        color: '#FFF4EC',
         fontSize: 30,
         margin: 15,
     },
-    questionTitle: {
-        color: Colors.accent,
+    sectionTitle: {
+        color: '#FFF4EC',
         fontSize: 20,
-        marginVertical: 15,
+        marginVertical: 10,
+    },
+    questionBlock: {
+        marginBottom: 20,
     },
     questionText: {
         fontSize: 16,
         marginVertical: 10,
     },
-    questionTextDd: {
+    questionTextDropdown: {
         fontSize: 16,
     },
     dropdown: {

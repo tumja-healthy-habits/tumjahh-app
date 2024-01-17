@@ -68,7 +68,7 @@ export default function SurveyPopup() {
                         {"Did you know the BeHealthy App was created as part of a research project about habit formation?\n" +
                             "Help us and yourself to track your progress and achievements by regularly filling out this survey about the habits you formed by using BeHealthy.\n" +
                             "Don't worry! Your data will be saved anonymously and not used for any purpose other than our research.\n\n" +
-                            "This survey is due since: " + (daysSinceLastSurvey - surveyInterval) + " days"}
+                            "This survey has been due for: " + (daysSinceLastSurvey - surveyInterval) + " days"}
                     </Text>
                     <LoginButton label="Fill out now!" onPress={fillSurvey} spacing={styles.buttonSpacing}/>
                     <LoginButton label="Remind me later" onPress={() => setDismissed(2)} spacing={styles.buttonSpacing}/>
