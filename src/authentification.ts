@@ -33,7 +33,7 @@ export async function signup(username: string, name: string, email: string, pw: 
     formData.append("isStudent", isStudent.toString())
     
     const formDataMosaic = new FormData()
-    formDataMosaic.append("name", "Your first mosaic")
+    formDataMosaic.append("name", `${username}'s Mosaic`)
     if (profilePicture !== undefined) formDataMosaic.append('thumbnail', {
         uri: profilePicture.uri,
         name: profilePicture.uri,
