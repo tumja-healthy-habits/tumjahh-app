@@ -1,35 +1,28 @@
 import { Ionicons } from "@expo/vector-icons";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Colors from "constants/colors";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { ProgressBar } from "react-native-paper";
-import { HomeStackNavigatorParamList } from "screens/HomeScreen";
-import { pb } from "src/pocketbaseService";
-import { DailyChallenge } from "src/store/DailyChallengesProvider";
-import { AppParamList } from "../LoggedInApp";
+import { ChallengesRecord, WeeklyChallengesRecord } from "types";
 
 const OPEN_CAMERA_DELAY: number = 300 // in milliseconds
 
-type DailyChallengeProps = {
-    dailyChallenge: DailyChallenge,
-    openCamera: (challengeName: string) => void,
+type weeklyChallengeProps = {
+    weeklyChallenge: WeeklyChallengesRecord,
+    openCamera: () => void,
 }
 
-export default function DailyChallengeButton({ dailyChallenge, openCamera }: DailyChallengeProps) {
-    const navigation = useNavigation<NavigationProp<HomeStackNavigatorParamList, "Challenges">>()
-    const appNavigation = useNavigation<NavigationProp<AppParamList>>()
-    const { name } = dailyChallenge.challengeEntry.record
-    const [tickedOff, setTickedOff] = useState<boolean>(false)
+export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: weeklyChallengeProps) {
+    const [tickedOff, setTickedOff] = useState<boolean>(new Date(weeklyChallenge.last_completed).getDay() == new Date().getDay())
     const [showCameraIcon, setShowCameraIcon] = useState<boolean>(false)
 
+    const challenge: ChallengesRecord = weeklyChallenge.expand.challenge_id
+
     function tickOffChallenge(): void {
-        if (dailyChallenge.photo === null) {
-            setTimeout(() => openCamera(name), OPEN_CAMERA_DELAY)
-            setTimeout(() => setShowCameraIcon(true), OPEN_CAMERA_DELAY + 1000)
-        }
+        setTimeout(() => openCamera(), OPEN_CAMERA_DELAY)
+        setTimeout(() => setShowCameraIcon(true), OPEN_CAMERA_DELAY + 1000)
     }
 
     function handleClickCheckbox(pressed: boolean): void {
@@ -38,56 +31,27 @@ export default function DailyChallengeButton({ dailyChallenge, openCamera }: Dai
         if (pressed) tickOffChallenge()
     }
 
-    function openMosaic(): void {
-        if (dailyChallenge.photo === null) return
-        appNavigation.navigate("Mosaic", {
-            imageUri: dailyChallenge.photo.photo,
-        })
-    }
-
-    if (dailyChallenge.photo === null) return (
-        <Pressable
-            style={({ pressed }) => [styles.outerContainer, pressed && { backgroundColor: Colors.anotherPeachColor }]}
-            onPress={() => { }}
-        >
-            {({ pressed }) => <>
-                <View style={styles.nameAndButtonsContainer}>
-                    <Text style={[styles.buttonText, pressed && { color: Colors.white }]}>
-                        {name}
-                    </Text>
-                    <View style={styles.rightContainer}>
-                        <BouncyCheckbox
-                            size={35}
-                            isChecked={tickedOff}
-                            onPress={handleClickCheckbox}
-                            fillColor={Colors.anotherPeachColor}
-                            disabled={tickedOff} />
-                        {showCameraIcon && <Ionicons style={styles.icon} name="camera-outline" color={pressed ? Colors.white : Colors.black} />}
-                    </View>
-                </View>
-                <View style={styles.progressContainer}>
-                    <ProgressBar progress={0.6} color={Colors.anotherPeachColor} style={styles.progressBar} />
-                    <Text style={styles.buttonText}>2/3</Text>
-                </View>
-            </>}
-        </Pressable>
-    )
-
-    const uri: string = pb.getFileUrl(dailyChallenge.photo, dailyChallenge.photo.photo)
-
     return (
-        <Pressable
-            style={({ pressed }) => [styles.outerContainer, pressed && { backgroundColor: Colors.anotherPeachColor }]}
-            onPress={openMosaic}
-        >
-            {({ pressed }) => (<View>
-                <View style={styles.nameAndButtonsContainer}>
-                    <Text style={[styles.buttonText, pressed && { color: Colors.white }]}>{name}</Text>
-                    <Ionicons style={styles.icon} name="grid-outline" color={pressed ? Colors.white : Colors.black} />
+        <View style={styles.outerContainer}>
+            <View style={styles.nameAndButtonsContainer}>
+                <Text style={styles.buttonText}>
+                    {challenge.name}
+                </Text>
+                <View style={styles.rightContainer}>
+                    <BouncyCheckbox
+                        size={35}
+                        onPress={handleClickCheckbox}
+                        fillColor={Colors.anotherPeachColor}
+                        isChecked={tickedOff}
+                        disabled={tickedOff} />
+                    {showCameraIcon && <Ionicons style={styles.icon} name="camera-outline" color={Colors.black} />}
                 </View>
-                <Image source={{ uri: uri }} style={styles.image} />
-            </View>)}
-        </Pressable>
+            </View>
+            <View style={styles.progressContainer}>
+                <ProgressBar progress={Math.min(weeklyChallenge.amount_accomplished / weeklyChallenge.amount_planned)} color={Colors.anotherPeachColor} style={styles.progressBar} />
+                <Text style={styles.buttonText}>{weeklyChallenge.amount_accomplished}/{weeklyChallenge.amount_planned}</Text>
+            </View>
+        </View>
     )
 }
 

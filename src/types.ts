@@ -109,6 +109,19 @@ export interface InitialSurveyRecord extends Record {
     mental_stress: boolean;
 }
 
+export interface WeeklyChallengesRecord extends Record {
+    user_id: string,
+    challenge_id: string,
+    amount_planned: number,
+    amount_accomplished: number,
+    amount_photos: number,
+    start_date: string,
+    last_completed: string,
+    expand: {
+        challenge_id: ChallengesRecord;
+    }
+}
+
 export interface LocalStorageChallengeEntry {
     record: ChallengesRecord;
     repetitionsGoal: number;
