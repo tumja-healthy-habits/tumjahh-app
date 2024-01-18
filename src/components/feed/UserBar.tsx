@@ -5,14 +5,15 @@ import { UserRecord } from "types";
 
 type UserBarProps = {
 	user: UserRecord,
+	style?: any
 }
 
-export default function UserBar({ user }: UserBarProps) {
+export default function UserBar({ user, style }: UserBarProps) {
 	const profilePictureSource: ImageSourcePropType = user.avatar ? { uri: pb.getFileUrl(user, user.avatar) } : require("assets/images/default-avatar.png")
 	//const colorScheme = Appearance.getColorScheme()
 
 	return (
-		<View style={styles.outerContainer}>
+		<View style={[style, styles.outerContainer]}>
 			<View style={styles.innerContainer}>
 				<Image
 					source={profilePictureSource}
@@ -28,7 +29,8 @@ const styles = StyleSheet.create({
 	outerContainer: {
 		height: 60,
 		justifyContent: 'center',
-		borderWidth: 1,
+		paddingLeft:10
+		// borderWidth: 1,
 	},
 	innerContainer: {
 		flexDirection: 'row',

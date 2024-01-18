@@ -12,6 +12,7 @@ import { pb } from "src/pocketbaseService";
 import { MosaicRecord } from "types";
 import { MosaicParamList } from "./MosaicNavigator";
 import IconButton from "components/misc/IconButton";
+import Colors from "constants/colors";
 
 export default function NewMosaicScreen() {
     const { params } = useRoute<RouteProp<MosaicParamList, "SingleMosaic">>()
@@ -82,6 +83,7 @@ export default function NewMosaicScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: Colors.backgroundProfile
     },
     title: {
         fontSize: 30,
