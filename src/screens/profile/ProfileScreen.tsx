@@ -51,6 +51,13 @@ export default function ProfileScreenAlt() {
         setEditMode(false)
     }
 
+    function handleTapLogout() {
+        Alert.alert('Logout', 'Are you sure you want to log out?', [
+            {text: 'Cancel', onPress: () => {}, style: 'cancel',},
+            {text: 'Logout', style:"destructive", onPress: logout},
+          ]);
+    }
+
     async function updateUser() {
         if (currentUser === null) return
         const updateData: FormData = new FormData()
@@ -133,7 +140,7 @@ export default function ProfileScreenAlt() {
                         <Ionicons name="create-outline" size={40} />
                         <Text style={styles.buttonText}>Edit</Text>
                     </Pressable>
-                    <Pressable style={styles.button} onPress={logout}>
+                    <Pressable style={styles.button} onPress={handleTapLogout}>
                         <Ionicons name="log-out-outline" size={40} />
                         <Text style={styles.buttonText}>Log out</Text>
                     </Pressable>
