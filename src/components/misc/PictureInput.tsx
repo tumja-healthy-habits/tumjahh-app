@@ -25,7 +25,7 @@ export default function PictureInput({onTakePhoto, picture, defaultPicture, imag
         launchImageLibraryAsync({
             mediaTypes: MediaTypeOptions.Images,
             allowsEditing: true,
-            quality: 1,
+            quality: 0.2,
             allowsMultipleSelection: false,
 			aspect: [1, 1] //for android, on ios the crop rectangle is always a square
         }).then((result: ImagePickerResult) => {

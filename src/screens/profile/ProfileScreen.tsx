@@ -30,18 +30,12 @@ export default function ProfileScreenAlt() {
     const [name, setName] = useState<string>(currentUser.name)
     const [photoUri, setPhotoUri] = useState<string | undefined>(currentUser.avatar ? pb.getFileUrl(currentUser, currentUser.avatar) : undefined)
     const [editMode, setEditMode] = useState<boolean>(false)
-    // const [profilePicture, setProfilePicture] = useState<FixedDimensionImage>(
-    //     "uri": {currentUser.avatar ? pb.getFileUrl(currentUser, currentUser.avatar) : undefined},
-    //     "height":100,
-    //     "width":100
-    // )
-
 
     async function handleTapProfilePicture(): Promise<void> {
         launchImageLibraryAsync({
             mediaTypes: MediaTypeOptions.Images,
             allowsEditing: true,
-            quality: 1,
+            quality: 0.2,
             allowsMultipleSelection: false,
             aspect: [1, 1],
         }).then((result: ImagePickerResult) => {
@@ -62,6 +56,9 @@ export default function ProfileScreenAlt() {
         const updateData: FormData = new FormData()
         updateData.append("name", name)
         if (photoUri != currentUser.avatar) {
+            console.log("before compressing image")
+            //const compressedImageUrl = await compressedImage(photoUri!, 0.7)
+            //console.log(compressedImageUrl)
             updateData.append("avatar", {
                 uri: photoUri,
                 name: photoUri,

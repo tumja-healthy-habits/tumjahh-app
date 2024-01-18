@@ -11,7 +11,7 @@ type ZoomableCameraProps = {
     onTakePhoto: (photo: FixedDimensionImage) => void,
 }
 
-const IMAGE_QUALITY: number = 0.9 // from 0 lowest to 1 highest quality
+const IMAGE_QUALITY: number = 0.2 // from 0 lowest to 1 highest quality
 const ZOOM_SPEED: number = 0.003 // the smaller the slower
 const MAX_ZOOM_CAMERA: number = 0.2
 
@@ -30,7 +30,7 @@ export default function ZoomableCamera({ onTakePhoto }: ZoomableCameraProps) {
             mediaTypes: MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1], //for android, on ios the crop rectangle is always a square
-            quality: 1,
+            quality: IMAGE_QUALITY,
             allowsMultipleSelection: false,
         }).then((result: ImagePickerResult) => {
             if (result.canceled) return

@@ -1,11 +1,10 @@
 {
   "name": "healthy-habits-app",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web"
   },
   "dependencies": {
@@ -21,7 +20,7 @@
     "@types/react-native": "^0.72.2",
     "@types/react-navigation": "^3.4.0",
     "deprecated-react-native-prop-types": "^5.0.0",
-    "expo": "^48.0.0",
+    "expo": "~48.0.21",
     "expo-blur": "~12.2.2",
     "expo-camera": "~13.2.1",
     "expo-checkbox": "~2.3.1",
@@ -31,6 +30,7 @@
     "expo-linking": "~4.0.1",
     "expo-media-library": "~15.2.3",
     "expo-notifications": "~0.18.1",
+    "expo-splash-screen": "~0.18.2",
     "expo-status-bar": "~1.4.4",
     "pocketbase": "^0.12.1",
     "react": "18.2.0",
@@ -40,7 +40,6 @@
     "react-native-counters": "^1.2.0",
     "react-native-date-picker": "^4.3.3",
     "react-native-draggable-flatlist": "^4.0.1",
-    "react-native-dropdown-picker": "^5.4.6",
     "react-native-element-dropdown": "^2.10.0",
     "react-native-gesture-handler": "~2.9.0",
     "react-native-paper": "^5.11.3",
