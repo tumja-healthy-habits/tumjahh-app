@@ -31,13 +31,20 @@ export async function signup(username: string, name: string, email: string, pw: 
     formData.append("gender", gender)
     formData.append("birthdate", birthdate.toISOString())
     formData.append("isStudent", isStudent.toString())
+    
+    const formDataMosaic = new FormData()
+    formDataMosaic.append("name", "Your first mosaic")
+    if (profilePicture !== undefined) formDataMosaic.append('thumbnail', {
+        uri: profilePicture.uri,
+        name: profilePicture.uri,
+        type: "image/jpg"
+    } as any)
+    
     return pb.collection("users").create<UserRecord>(formData)
         .then((user: UserRecord) => {
             login(username, pw).then(() => {
-                pb.collection("mosaics").create<MosaicRecord>({
-                    name: `${name}'s Mosaic`,
-                    thumbnail: profilePicture && profilePicture.uri,
-                }).then((mosaic: MosaicRecord) =>
+                pb.collection("mosaics").create<MosaicRecord>(formDataMosaic)
+                .then((mosaic: MosaicRecord) =>
                     pb.collection("mosaic_members").create<MosaicMembersRecord>({
                         mosaic_id: mosaic.id,
                         user_id: user.id,
