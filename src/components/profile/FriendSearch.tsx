@@ -1,13 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "constants/colors";
 import { Contact, Fields as ContactFields, PermissionStatus, PhoneNumber, getContactsAsync, requestPermissionsAsync } from "expo-contacts";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, } from "react";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { FlatList, ListRenderItemInfo, Text, View } from "react-native";
 import { Divider, TextInput, Tooltip } from "react-native-paper";
-import { pb } from "src/pocketbaseService";
+import { pb, useRealTimeCollection } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { globalStyles } from "src/styles";
-import { UserRecord } from "types";
+import { UserRecord, FriendsWithRecord, FriendRequestsRecord } from "types";
 import FriendSearchResult from "./FriendSearchResult";
 
 type FriendSearchProps = {
@@ -19,21 +20,22 @@ type FriendSearchProps = {
 export default function FriendSearch({ showQRCode, searchText, setSearchText }: FriendSearchProps) {
     const [searchResults, setSearchResults] = useState<UserRecord[]>([]);
     const [showResults, setShowResults] = useState<boolean>(false)
+    const [updateFlag, setUpdateFlag] = useState<boolean>(false)
 
     const { currentUser } = useAuthenticatedUser()
 
     useEffect(() => {
         submitSearch()
-    }, [searchText])
+    }, [searchText, updateFlag])
 
     async function submitSearch() {
-        if (searchText.length === 0 || currentUser === null) {
+        if (currentUser === null || searchText.length === 0) {
             setShowResults(false)
             setSearchResults([])
             return
         }
-        // USERS
         setShowResults(true)
+        
         const foundByUsername: UserRecord[] = (await pb.collection("users").getFullList<UserRecord>({
             filter: `username ~ "${searchText}" && id != "${currentUser.id}"`,
             expand: "friend_requests(from).to, friend_requests(to).from, friends_with(user2).user1, friends_with(user1)"
@@ -84,6 +86,9 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
                 setSearchResults(foundByUsername.concat(records))
             }).catch(console.error)
         }
+        else {
+            setSearchResults(foundByUsername)
+        }
     }
 
     function updateSearchResult(user: UserRecord): void {
@@ -97,13 +102,14 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
                 return result
             }))
         }).catch(console.error)
+        setUpdateFlag(!updateFlag)
     }
 
     function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
         return <FriendSearchResult user={item} updateSearchResult={updateSearchResult} />
     }
 
-    return <View style={{ backgroundColor: Colors.pastelGreen }
+    return <View style={{ backgroundColor: Colors.backgroundProfile, paddingBottom:50 }
     }>
         <TextInput value={searchText}
             placeholder="Search for your friend's username"
@@ -111,8 +117,8 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
             autoCapitalize="none"
             autoCorrect={false}
             left={<TextInput.Icon icon={() => <Ionicons name="search-outline" size={24} color="black" />} />}
-            right={<TextInput.Icon icon={() => <Tooltip title="Show QR code"><Ionicons name="qr-code-outline" size={24} color="black" onPress={showQRCode} /></Tooltip>} />}
-            style={{ backgroundColor: Colors.pastelGreen, marginHorizontal: 10 }}
+            // right={<TextInput.Icon icon={() => <Tooltip title="Show QR code"><Ionicons name="qr-code-outline" size={24} color="black" onPress={showQRCode} /></Tooltip>} />}
+            style={{ backgroundColor: "transparent", marginHorizontal: 10 }}
 
         />
         {showResults ? (<FlatList
@@ -120,6 +126,8 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
             keyExtractor={(user: UserRecord) => user.id}
             renderItem={renderFriend}
             ItemSeparatorComponent={() => <Divider bold horizontalInset />}
+            extraData={updateFlag}
+            style={{marginBottom:40}}
         />) : searchText.length > 0 ?
             (<Text style={globalStyles.textfieldText}>No results</Text>
             ) : null}

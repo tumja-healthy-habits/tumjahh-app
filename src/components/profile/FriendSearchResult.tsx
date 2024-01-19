@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import Colors from "constants/colors";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { Button } from "react-native-paper";
 import { pb } from 'src/pocketbaseService';
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider';
@@ -47,6 +47,13 @@ export default function FriendSearchResult({ user, updateSearchResult }: FriendS
         updateSearchResult(user)
     }
 
+    function handleTapFriend() {
+        Alert.alert('Remove friend', 'Are you sure you want to remove ' + user.name + " from your friends?", [
+            {text: 'Cancel', onPress: () => {}, style: 'cancel',},
+            {text: 'Remove friend', style:"destructive", onPress: removeFriend},
+          ]);
+    }
+
     function removeFriend(): void {
         if (user.expand["friends_with(user1)"] !== undefined) {
             user.expand["friends_with(user1)"].forEach((record: FriendsWithRecord) => {
@@ -65,6 +72,11 @@ export default function FriendSearchResult({ user, updateSearchResult }: FriendS
     const friendRequestSent: boolean = user.expand["friend_requests(to)"] !== undefined
     const friendRequestReceived: boolean = user.expand["friend_requests(from)"] !== undefined
 
+    // console.log(user.username)
+    // console.log(alreadyFriends)
+    // console.log(friendRequestSent)
+    // console.log(friendRequestReceived)
+
     return <View style={styles.container}>
         <ProfilePicture userRecord={user} style={styles.image} />
         <View style={styles.innerContainer}>
@@ -73,7 +85,7 @@ export default function FriendSearchResult({ user, updateSearchResult }: FriendS
         </View>
         <Button
             mode="outlined"
-            onPress={alreadyFriends ? removeFriend : friendRequestSent ? cancelFriendRequest : friendRequestReceived ? acceptFriendRequest : sendRequest}
+            onPress={alreadyFriends ? handleTapFriend : friendRequestSent ? cancelFriendRequest : friendRequestReceived ? acceptFriendRequest : sendRequest}
             buttonColor={Colors.pastelGreen}
             labelStyle={{ fontSize: 16 }}
             icon={() => <Ionicons name={alreadyFriends ? "people-outline" :
@@ -88,8 +100,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         borderRadius: 25,
-        padding: 10,
-        margin: 10,
+        padding: 2,
+        margin: 2,
     },
     innerContainer: {
         flex: 1,
@@ -99,15 +111,15 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     name: {
-        fontSize: 24,
+        fontSize: 18,
         fontWeight: "bold",
     },
     username: {
-        fontSize: 16,
+        fontSize: 14,
     },
     image: {
-        width: 80,
-        height: 80,
+        width: 50,
+        height: 50,
         borderRadius: 8,
         borderWidth: 2,
     }

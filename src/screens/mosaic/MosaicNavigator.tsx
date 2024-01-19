@@ -20,6 +20,10 @@ export type MosaicParamList = {
 
 const navigatorOptions = {
     headerShown: false,
+    //title: "",
+    //headerBackVisible: true,
+    //headerBackTitleVisible: false,
+    //headerTransparent: true
 }
 
 const MosaicStack = createStackNavigator<MosaicParamList>()

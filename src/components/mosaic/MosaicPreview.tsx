@@ -36,9 +36,8 @@ export default function MosaicPreview({ record }: MosaicPreviewProps) {
                 {({ pressed }) =>
                 (<>{record.thumbnail === "" ? <View style={styles.image} /> : <Image source={{ uri: pb.getFileUrl(record, record.thumbnail) }} style={styles.image} />}
                     <View style={[styles.innerContainer, pressed && { backgroundColor: Colors.pastelOrange }]}>
-                        {numPhotos !== undefined && <Chip>{numPhotos}</Chip>}
                         <Text style={[styles.title, pressed && { color: Colors.white }]}>{record.name}</Text>
-                        <IconButton icon="create-outline" color="black" size={30} onPress={() => navigate("EditMosaic", {mosaicId: record.id})} />
+                        {numPhotos !== undefined && <Chip>{numPhotos}</Chip>}
                     </View></>)
                 }
             </Pressable>

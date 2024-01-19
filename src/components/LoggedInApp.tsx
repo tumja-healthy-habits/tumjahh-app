@@ -67,19 +67,16 @@ export default function LoggedInApp() {
         <MosaicDataProvider>
             <DailyChallengesProvider>
                 <PaperProvider>
-                    <Tab.Navigator initialRouteName='Feed' screenOptions={navigatorOptions}>
+                    <Tab.Navigator initialRouteName='Challenges' screenOptions={navigatorOptions}>
                         <Tab.Screen name="Challenges" component={ChallengeScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
                         }} />
                         <Tab.Screen name="Feed" component={FriendsScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
                         }} />
-                        <Tab.Screen name="Home" component={HomeScreen} options={{
+                        {/* <Tab.Screen name="Home" component={HomeScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
-                        }} />
-                        {/* <Tab.Screen name="Friends" component={FriendsScreen} options={{
-                                tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
-                              }} /> */}
+                        }} /> */}
                         <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
                         }} />

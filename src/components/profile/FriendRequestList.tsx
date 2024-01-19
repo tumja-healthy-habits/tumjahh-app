@@ -17,7 +17,7 @@ export default function FriendRequestList() {
     }
 
     return <>
-        <Text style={{ textAlign: "center", fontSize: 18, fontWeight: "bold", margin: 20 }}>These persons want to be your friends:</Text>
+        <Text style={{ textAlign: "center", fontSize: 18, fontWeight: "bold", margin: 20 }}>Open friend requests:</Text>
         <Divider />
         <FlatList data={friendRequests}
             keyExtractor={(request: FriendRequestsRecord) => request.id}

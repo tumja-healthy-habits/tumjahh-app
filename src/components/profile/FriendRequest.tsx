@@ -61,6 +61,7 @@ type RequestActionButtonProps = {
 function RequestActionButton({ onPress, label, iconName }: RequestActionButtonProps) {
     return <Button
         mode="outlined"
+        style={{borderRadius:25}}
         onPress={onPress}
         buttonColor={Colors.pastelGreen}
         labelStyle={{ fontSize: 14 }}
@@ -72,8 +73,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         borderRadius: 25,
-        padding: 10,
-        margin: 10,
+        padding: 2,
+        margin: 2,
     },
     innerContainer: {
         flex: 1,
@@ -87,12 +88,12 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     username: {
-        fontSize: 16,
+        fontSize: 14,
     },
     image: {
-        width: 80,
-        height: 80,
-        borderRadius: 25,
+        width: 50,
+        height: 50,
+        borderRadius: 8,
         borderWidth: 2,
     }
 })

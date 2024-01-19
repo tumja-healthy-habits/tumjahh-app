@@ -8,15 +8,17 @@ import Colors from "constants/colors";
 import { useState } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { ProfileParamList } from "./ProfileNavigator";
+import IconButton from "components/misc/IconButton";
 
 export default function SearchFriendScreen() {
     const { params } = useRoute<RouteProp<ProfileParamList, 'SearchFriend'>>()
     const [showQRCode, setShowQRCode] = useState<boolean>(false)
     const [searchText, setSearchText] = useState<string>("")
 
-    const { setParams } = useNavigation<NavigationProp<ProfileParamList, 'SearchFriend'>>()
+    const { setParams, goBack } = useNavigation<NavigationProp<ProfileParamList, 'SearchFriend'>>()
 
     return <SafeAreaView style={styles.container}>
+        <IconButton icon="chevron-back-outline" onPress={goBack} color="#666" size={30} style={{alignSelf:"flex-start", marginLeft:5}}/>
         <BlurModal visible={showQRCode} onClose={() => setShowQRCode(false)}>
             <UserQRCode />
         </BlurModal>
@@ -32,7 +34,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-start',
-        backgroundColor: Colors.pastelViolet,
+        backgroundColor: Colors.backgroundProfile,
     },
     image: {
         flex: 1,

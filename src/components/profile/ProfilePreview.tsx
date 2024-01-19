@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Image, ImageSourcePropType, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
+import { ImageSourcePropType } from "deprecated-react-native-prop-types";
 import { ActivityIndicator } from "react-native-paper";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { pb } from "src/pocketbaseService";

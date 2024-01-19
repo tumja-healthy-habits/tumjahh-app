@@ -2,12 +2,16 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Colors from "constants/colors";
 import { saveToLibraryAsync } from "expo-media-library";
 import { useState } from "react";
-import { Button, Image, Modal, SafeAreaView, StyleSheet, View } from "react-native";
+import { TouchableOpacity, Image, Modal, SafeAreaView, StyleSheet, View, Text } from "react-native";
+// import { Button } from "react-native-paper"
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { FixedDimensionImage, PhotosRecord, WeeklyChallengesRecord } from "types";
 import { AppParamList } from "../LoggedInApp";
 import ZoomableCamera from "./ZoomableCamera";
+import { Ionicons } from "@expo/vector-icons";
+import IconButton from "components/misc/IconButton";
+
 
 type CameraModalProps = {
     weeklyChallenge?: WeeklyChallengesRecord,
@@ -66,8 +70,9 @@ export default function CameraModal({ weeklyChallenge, onClose }: CameraModalPro
             <View style={{
                 flex: 1,
                 justifyContent: 'center',
-                backgroundColor: Colors.pastelViolet,
+                backgroundColor: Colors.black,
             }}>
+                <IconButton icon="chevron-back-outline" onPress={handleSkipPhoto} color="#666" size={30} style={{alignSelf:"flex-start", marginTop:50, marginLeft:20}}/>
                 <ZoomableCamera onTakePhoto={setPhoto} />
             </View>
         ) : (
@@ -76,9 +81,27 @@ export default function CameraModal({ weeklyChallenge, onClose }: CameraModalPro
                     <Image source={{ uri: photo.uri }} style={[styles.image, { aspectRatio: photo.width / photo.height }]} />
                 </View>
                 <View style={styles.buttonContainer} >
-                    <Button color={Colors.white} title={"Maybe\n later"} onPress={handleSkipPhoto} />
-                    <Button color={Colors.white} title={"Try\n again"} onPress={() => setPhoto(undefined)} />
-                    <Button color={Colors.white} title={"Use\n photo"} onPress={handleUsePhoto} />
+                    <TouchableOpacity 
+                        onPress={handleSkipPhoto} 
+                        style={styles.button}
+                    >
+                        <Ionicons name="close-outline" size={60} color="white"/>
+                        <Text style={styles.buttonText}>{"Maybe \n later"}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => setPhoto(undefined)} 
+                        style={styles.button}
+                    >
+                        <Ionicons name="reload-outline" size={50} color="white"/>
+                        <Text style={styles.buttonText}>{"Try \n again"}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleUsePhoto} 
+                        style={styles.button}
+                    >
+                        <Ionicons name="checkmark-outline" size={60} color="white"/>
+                        <Text style={styles.buttonText}>{"Use \n photo"}</Text>
+                    </TouchableOpacity>
                 </View>
             </SafeAreaView>
         )}
@@ -105,4 +128,19 @@ const styles = StyleSheet.create({
         justifyContent: "space-evenly",
         marginBottom: 20,
     },
+    button: {
+        //borderWidth:1,
+        //borderColor:"white",
+        alignItems: 'center',
+        justifyContent: 'center',
+        //backgroundColor:"white", 
+        padding:15,
+        borderRadius:10,
+        width:"25%"
+    },
+    buttonText: {
+        color:"white",
+        fontSize:20,
+        textAlign:"center"
+    }
 })

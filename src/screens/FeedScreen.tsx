@@ -3,10 +3,14 @@ import { FlatList, ListRenderItemInfo, SafeAreaView, Text } from 'react-native'
 import { useRealTimeCollection } from 'src/pocketbaseService'
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider'
 import { globalStyles } from "src/styles"
-import { FriendsWithRecord, UserRecord } from 'types'
+import { FriendsWithRecord, PhotosRecord, UserRecord } from 'types'
+import { pb } from 'src/pocketbaseService'
+import { useState, useEffect } from 'react'
+import { getOneDayAgo } from 'components/feed/FriendCard'
 
 export default function FriendsScreen() {
     const { currentUser } = useAuthenticatedUser()
+    const [photoExists, setPhotoExists] = useState<boolean>(false)
 
     const friends: UserRecord[] = useRealTimeCollection<FriendsWithRecord>("friends_with", [], { expand: "user1, user2" })
         .map(getFriend)
@@ -16,13 +20,29 @@ export default function FriendsScreen() {
         return record.user1 === currentUser.id ? record.expand.user2 : record.expand.user1
     }
 
+    useEffect(() =>
+    {
+        setPhotoExists(false)
+        friends.map(checkPhotoExists);
+    }, [])
+
+    async function checkPhotoExists(user:UserRecord) {
+        let oneDayAgo = getOneDayAgo()
+        let photos = await pb.collection("photos").getFullList({filter: `user_id="${user.id}" && created >= "${oneDayAgo}"`})
+        if (photos.length > 0) {
+            setPhotoExists(true)
+            //console.log("Photo exists for " + user.username)
+        }
+    }
+
     function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
         return <FriendCard user={item} />
     }
 
     return (
         <SafeAreaView style={[globalStyles.container, { alignItems: 'stretch' }]}>
-            {friends.length === 0 && <Text style={globalStyles.textfieldText}>You haven't added any friends yet</Text>}
+            {friends.length === 0 && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>You haven't added any friends yet</Text>}
+            {(!photoExists && friends.length > 0) && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>Your friends haven't posted anything yet</Text>}
             <FlatList
                 data={friends}
                 keyExtractor={(user: UserRecord) => user.id}

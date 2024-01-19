@@ -1,4 +1,4 @@
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute, useNavigation, NavigationProp } from "@react-navigation/native";
 import InputField from "components/authentication/InputField";
 import BlurModal from "components/misc/BlurModal";
 import MosaicMemberList from "components/mosaic/MosaicMemberList";
@@ -11,9 +11,12 @@ import { ActivityIndicator, Divider } from "react-native-paper";
 import { pb } from "src/pocketbaseService";
 import { MosaicRecord } from "types";
 import { MosaicParamList } from "./MosaicNavigator";
+import IconButton from "components/misc/IconButton";
+import Colors from "constants/colors";
 
 export default function NewMosaicScreen() {
     const { params } = useRoute<RouteProp<MosaicParamList, "SingleMosaic">>()
+    const { navigate, goBack } = useNavigation<NavigationProp<MosaicParamList, "SingleMosaic">>()
     const [mosaicRecord, setMosaicRecord] = useState<MosaicRecord>()
     const [showModal, setShowModal] = useState<boolean>(false)
     const [name, setName] = useState<string>(mosaicRecord ? mosaicRecord.name : "")
@@ -46,8 +49,9 @@ export default function NewMosaicScreen() {
 
     return <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
+            <IconButton icon="chevron-back-outline" onPress={goBack} color="#666" size={30} style={styles.backButton}/>
             <Text style={styles.title}>{mosaicRecord && mosaicRecord.name}</Text>
-            <View style={styles.button}><Button onPress={() => setShowModal(true)} title="Edit" /></View>
+            <IconButton icon="create-outline" color="#666" size={30} onPress={() => navigate("EditMosaic", {mosaicId: params.mosaicId})} style={styles.editButton} />
         </View>
         <Divider />
         {mosaicRecord ? (
@@ -79,6 +83,7 @@ export default function NewMosaicScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: Colors.backgroundProfile
     },
     title: {
         fontSize: 30,
@@ -90,7 +95,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     },
-    button: {
+    backButton: {
+        position:"absolute",
+        left:0,
+        margin:10
+    },
+    editButton: {
         position: "absolute",
         right: 0,
         margin: 10,
