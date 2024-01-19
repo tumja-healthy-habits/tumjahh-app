@@ -147,14 +147,23 @@ export default function EditMosaicScreen() {
             type: "image/jpg"
         } as any) : {}
 
-        await pb.collection("mosaics").update(mosaicRecord.id, formData).catch((error) => {console.log(error.message)})
+        try{
+            await pb.collection("mosaics").update(mosaicRecord.id, formData)
+        } catch(error:any) {
+            console.log(error.response)
+                if ("name" in error.response.data) {
+                    if (error.response.data.name.code == "validation_not_unique") {
+                        Alert.alert("Mosaic name already exists. \n Please choose a different one")
+                        return
+                    }
+                }
+        }
         
         //add new members
         members.map((user) => {!oldMembers.includes(user) ? createMosaicMemberRecord(user) : {}})
         
         //delete members
         oldMembers.map((user) => {!members.includes(user) ? deleteMosaicMemberRecord(user) : {}})
-
         goBack()
     }
 
