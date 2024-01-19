@@ -1,8 +1,8 @@
 import Colors from "constants/colors";
-import { Camera, CameraType } from "expo-camera";
+import { Camera, CameraType, requestCameraPermissionsAsync } from "expo-camera";
 import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, View, Dimensions } from "react-native";
+import { StyleSheet, View, Dimensions, Text } from "react-native";
 import { Gesture, GestureDetector, GestureHandlerRootView, GestureStateChangeEvent, GestureUpdateEvent, PinchGesture, PinchGestureHandlerEventPayload } from "react-native-gesture-handler";
 import { FixedDimensionImage } from "types";
 import IconButton from "../misc/IconButton";
@@ -20,10 +20,19 @@ export default function ZoomableCamera({ onTakePhoto }: ZoomableCameraProps) {
     const cameraRef = useRef<Camera>(null)
     const [scale, setScale] = useState<number>(1)
     const [savedScale, setSavedScale] = useState<number>(1)
+    const [cameraPermission, setCameraPermission] = useState<boolean>(false)
 
     useEffect(() => {
         setScale(1)
+        if (!cameraPermission) {
+            getPermission()
+        }
     }, [type])
+
+    async function getPermission() {
+        const permission = await requestCameraPermissionsAsync()
+        setCameraPermission(permission.status === 'granted');
+    }
 
     async function openMediaLibrary(): Promise<void> {
         launchImageLibraryAsync({
@@ -37,6 +46,7 @@ export default function ZoomableCamera({ onTakePhoto }: ZoomableCameraProps) {
             onTakePhoto(result.assets[0])
         })
     }
+
 
     function toggleCameraType() {
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
@@ -56,22 +66,35 @@ export default function ZoomableCamera({ onTakePhoto }: ZoomableCameraProps) {
         setSavedScale(scale)
     })
 
-    return (
-        <View style={styles.outerContainer}>
-            <GestureHandlerRootView style={styles.innerContainer}>
-                <GestureDetector gesture={pinchGesture}>
-                    <Camera style={styles.camera} type={type} ref={cameraRef} zoom={ZOOM_SPEED * (scale - 1)} />
-                </GestureDetector>
-            </GestureHandlerRootView>
-            <View style={styles.upwardsContainer}>
-                <View style={styles.buttonContainer}>
-                    <IconButton icon="image-outline" color="white" onPress={openMediaLibrary} size={40} style={styles.button} />
-                    <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
-                    <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
+    if (cameraPermission) {
+        return (
+            <View style={styles.outerContainer}>
+                <GestureHandlerRootView style={styles.innerContainer}>
+                    <GestureDetector gesture={pinchGesture}>
+                        <Camera style={styles.camera} type={type} ref={cameraRef} zoom={ZOOM_SPEED * (scale - 1)} />
+                    </GestureDetector>
+                </GestureHandlerRootView>
+                <View style={styles.upwardsContainer}>
+                    <View style={styles.buttonContainer}>
+                        <IconButton icon="image-outline" color="white" onPress={openMediaLibrary} size={40} style={styles.button} />
+                        <IconButton icon="camera-outline" color="white" onPress={takePhoto} size={50} style={styles.button} />
+                        <IconButton icon="camera-reverse-outline" color="white" onPress={toggleCameraType} size={32} style={styles.button} />
+                    </View>
                 </View>
+            </View> 
+        )
+    }
+    else {
+        return (
+            <View style={styles.outerContainer}>
+                <Text>Camera not available. Please change camera permission in your settings.</Text>
             </View>
-        </View>
-    )
+        )
+    }
+
+    
+    
+    
 }
 
 const styles = StyleSheet.create({
