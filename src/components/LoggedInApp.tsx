@@ -6,9 +6,8 @@ import { cancelScheduledNotificationAsync, scheduleNotificationAsync } from 'exp
 import React, { useEffect } from "react";
 import { AppState } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
-import ChallengeScreen from "screens/ChallengeScreen";
+import DailyChallengesScreen from 'screens/DailyChallengesScreen';
 import FriendsScreen from 'screens/FeedScreen';
-import HomeScreen from 'screens/HomeScreen';
 import MosaicNavigator from 'screens/mosaic/MosaicNavigator';
 import ProfileNavigator from "screens/profile/ProfileNavigator";
 import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
@@ -68,7 +67,7 @@ export default function LoggedInApp() {
             <DailyChallengesProvider>
                 <PaperProvider>
                     <Tab.Navigator initialRouteName='Challenges' screenOptions={navigatorOptions}>
-                        <Tab.Screen name="Challenges" component={ChallengeScreen} options={{
+                        <Tab.Screen name="Challenges" component={DailyChallengesScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
                         }} />
                         <Tab.Screen name="Feed" component={FriendsScreen} options={{

@@ -21,9 +21,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
 
     const { currentUser } = useAuthenticatedUser()
 
-    const challenges: ChallengesRecord[] = useCollection<ChallengesRecord>("challenges", [], {
-        expand: "user_challenges(challenge_id)",
-    })
+    const challenges: ChallengesRecord[] = useCollection<ChallengesRecord>("challenges", [])
 
     function renderChallenge({ item }: ListRenderItemInfo<ChallengesRecord>) {
         return (
@@ -100,7 +98,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
             onRequestClose={onClose}
         >
             <SafeAreaView style={[globalStyles.container, { flex: 1 }]}>
-                <FlatList
+                {/* <FlatList
                     data={data}
                     keyExtractor={(item, index) => item.title + index}
                     renderItem={renderHabit}
@@ -109,7 +107,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
                     ListEmptyComponent={ListEmpty}
                     ListHeaderComponent={ListHeader}
                     stickyHeaderIndices={[0]}
-                />
+                /> */}
             </SafeAreaView>
         </Modal>
     )
