@@ -26,7 +26,7 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
 
     useEffect(() => {
         submitSearch()
-    }, [searchText])
+    }, [searchText, updateFlag])
 
     async function submitSearch() {
         if (currentUser === null || searchText.length === 0) {
@@ -127,6 +127,7 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
             renderItem={renderFriend}
             ItemSeparatorComponent={() => <Divider bold horizontalInset />}
             extraData={updateFlag}
+            style={{marginBottom:40}}
         />) : searchText.length > 0 ?
             (<Text style={globalStyles.textfieldText}>No results</Text>
             ) : null}
