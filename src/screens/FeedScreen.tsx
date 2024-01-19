@@ -31,6 +31,7 @@ export default function FriendsScreen() {
         let photos = await pb.collection("photos").getFullList({filter: `user_id="${user.id}" && created >= "${oneDayAgo}"`})
         if (photos.length > 0) {
             setPhotoExists(true)
+            //console.log("Photo exists for " + user.username)
         }
     }
 
@@ -41,7 +42,7 @@ export default function FriendsScreen() {
     return (
         <SafeAreaView style={[globalStyles.container, { alignItems: 'stretch' }]}>
             {friends.length === 0 && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>You haven't added any friends yet</Text>}
-            {!photoExists && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>Your friends haven't posted anything yet</Text>}
+            {(!photoExists && friends.length > 0) && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>Your friends haven't posted anything yet</Text>}
             <FlatList
                 data={friends}
                 keyExtractor={(user: UserRecord) => user.id}
