@@ -1,4 +1,6 @@
-import { Image, ImageSourcePropType, ImageStyle, StyleProp } from "react-native";
+import { Image, ImageStyle, StyleProp } from "react-native";
+import { ImageSourcePropType } from "deprecated-react-native-prop-types";
+import { ActivityIndicator } from "react-native-paper";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { UserRecord } from "types";

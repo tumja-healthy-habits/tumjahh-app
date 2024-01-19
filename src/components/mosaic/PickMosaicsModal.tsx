@@ -70,6 +70,9 @@ export default function PickMosaicsModal({ visible, photoId, onClose }: PickMosa
                 <Button onPress={handleSubmit}>
                     Add your photo
                 </Button>
+                <Button onPress={onClose}>
+                    Skip
+                </Button>
             </SafeAreaView>
         </Modal>
     )

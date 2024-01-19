@@ -47,11 +47,17 @@ const styles = StyleSheet.create({
     memberContainer: {
         alignItems: "center",
     },
+    // profilePicture: {
+    //     height: 40,
+    //     width: 40,
+    //     borderRadius: 20,
+    //     borderWidth: 1,
+    // },
     profilePicture: {
-        height: 40,
-        width: 40,
-        borderRadius: 20,
-        borderWidth: 1,
+        width:60, 
+        height:60,
+        borderRadius:8,
+        borderWidth:1
     },
     memberName: {
         fontSize: 14,

@@ -2,6 +2,7 @@ import { StackNavigationOptions, createStackNavigator } from "@react-navigation/
 import AddFriendScreen from "./AddFriendScreen";
 import ProfileScreenAlt from "./ProfileScreen";
 import SearchFriendScreen from "./SearchFriendScreen";
+import FriendScreen from "./FriendScreen";
 
 export type ProfileParamList = {
     "ProfilePage": undefined;

@@ -2,7 +2,7 @@ import Colors, { opacity } from "constants/colors"
 import { createURL } from "expo-linking"
 import { useState } from "react"
 import { Image, StyleSheet, Text, View } from "react-native"
-import QRCode from "react-native-qrcode-svg"
+//import QRCode from "react-native-qrcode-svg"
 import { pb } from "src/pocketbaseService"
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
 
@@ -25,7 +25,7 @@ export default function UserQRCode() {
                     style={[styles.profilePicture, loaded && { borderWidth: 2 }]}
                     onLoad={() => setLoaded(true)} />
             </View>
-            <QRCode
+            {/* <QRCode
                 value={friendUrl}
                 size={220}
                 logo={require("assets/images/behealthy-icon.png")}
@@ -33,7 +33,7 @@ export default function UserQRCode() {
                 backgroundColor="transparent"
                 color={Colors.white}
                 logoBorderRadius={200}
-            />
+            /> */}
             <Text style={styles.nameText}>{currentUser.name}</Text>
         </View>
     )
