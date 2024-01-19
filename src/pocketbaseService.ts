@@ -85,3 +85,14 @@ export function useRealTimeCollection<RecordType extends Record>(collection: str
 
     return records
 }
+
+export function useCollection<RecordType extends Record>(collection: string, dependencies: DependencyList, params?: RecordFullListQueryParams): RecordType[] {
+    const [records, setRecords] = useState<RecordType[]>([])
+
+    useEffect(() => {
+        pb.collection(collection).getFullList<RecordType>(params)
+            .then(setRecords).catch(console.error)
+    }, dependencies)
+
+    return records
+}

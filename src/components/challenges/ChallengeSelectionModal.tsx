@@ -1,9 +1,10 @@
 import Colors from "constants/colors"
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { ActivityIndicator, FlatList, ListRenderItemInfo, Modal, SafeAreaView, Text, View } from "react-native"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
-import { pb } from "src/pocketbaseService"
-import { DailyChallenge, useDailyChallenges } from "src/store/DailyChallengesProvider"
+import { useCollection } from "src/pocketbaseService"
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
+import { DailyChallenge } from "src/store/DailyChallengesProvider"
 import { globalStyles } from "src/styles"
 import { ChallengesRecord, HabitsRecord } from "types"
 import ActionButton from "../misc/ActionButton"
@@ -18,28 +19,11 @@ type ChallengeSelectionModalProps = {
 
 export default function ChallengeSelectionModal({ visible, onClose }: ChallengeSelectionModalProps) {
 
-    const { challenges: dailyChallenges, addChallenge, removeChallenge } = useDailyChallenges()
+    const { currentUser } = useAuthenticatedUser()
 
-    const [habits, setHabits] = useState<HabitsRecord[]>([])
-    const [challenges, setChallenges] = useState<ChallengesRecord[]>([])
-
-    const data: any = habits.map(habit => ({
-        title: habit.name,
-        challenges: challenges.filter(({ habit_id }) => habit_id === habit.id),
-    }))
-
-    useEffect(() => {
-        Promise.all([pb.collection("habits").getFullList<HabitsRecord>(), pb.collection("challenges").getFullList<ChallengesRecord>()])
-            .then(([habits, challenges]) => {
-                setHabits(habits)
-                setChallenges(challenges)
-            })
-            .catch(() => {
-                // only for testing without pocketbase
-                setHabits(dummyHabits)
-                setChallenges(dummyChallenges)
-            })
-    }, [])
+    const challenges: ChallengesRecord[] = useCollection<ChallengesRecord>("challenges", [], {
+        expand: "user_challenges(challenge_id)",
+    })
 
     function renderChallenge({ item }: ListRenderItemInfo<ChallengesRecord>) {
         return (
