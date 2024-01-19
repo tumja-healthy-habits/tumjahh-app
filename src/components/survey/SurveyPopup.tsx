@@ -37,7 +37,7 @@ export default function SurveyPopup() {
         setDismissed(2)
     }
 
-    return (<BlurModal visible={dismissed < 2 && (daysSinceLastSurvey >= surveyInterval || currentUser.lastSurvey == "")}
+    return (<BlurModal visible={(dismissed < 1 && currentUser.lastSurvey == "") || (dismissed < 2 && daysSinceLastSurvey >= surveyInterval)}
         onClose={() => setDismissed(dismissed == 0 && currentUser.lastSurvey == "" ? 1 : 2)}>
         <View style={styles.modalContainer} >
             {dismissed == 0 && currentUser.lastSurvey == "" ?
