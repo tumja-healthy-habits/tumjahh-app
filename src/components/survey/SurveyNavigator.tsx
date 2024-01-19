@@ -8,10 +8,10 @@ export type SurveyParamList = {
     "SurveyPopup": undefined;
     "InitialSurvey": undefined;
     "Survey": {
-        challenges: { id: string, name: string }[],
+        categories: string[],
     }
     "SurveyResults": {
-        challenges: { id: string, name: string }[],
+        categories: string[],
     }
 }
 

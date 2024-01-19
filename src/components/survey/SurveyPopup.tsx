@@ -21,6 +21,7 @@ export default function SurveyPopup() {
 
     const [daysSinceLastSurvey, setDaysSinceLastSurvey] = useState<number>(0)
     const [dismissed, setDismissed] = useState<number>(0)
+    const [categories, setCategories] = useState<string[]>([])
 
     async function updateDaysSinceLastSurvey(date: string) {
         setDaysSinceLastSurvey(Math.floor((Date.now() - new Date(date)) / (1000 * 60 * 60 * 24)))
@@ -28,14 +29,28 @@ export default function SurveyPopup() {
 
     useEffect(() => { updateDaysSinceLastSurvey(currentUser.lastSurvey != "" ? currentUser.lastSurvey : currentUser.created) }, [])
 
+    async function getCategory(challengeId:string) {
+        await pb.collection("challenges").getOne<ChallengesRecord>(challengeId)
+            .then((record:ChallengesRecord) => { 
+                if (!categories.includes(record.category)) {
+                    categories.push(record.category)
+                    // console.log("inside if categories ", categories)
+                }
+            })
+        // console.log("after pb categories ", categories)
+    }
+
     async function fillSurvey() {
-        const challenges: { id: string, name: string }[] = (await pb.collection("user_challenges").getFullList<ChallengesRecord>({
-            filter: `user_id = "${currentUser!.id}"`,
-            expand: `challenge_id`
-        }))[0].expand.challenge_id.map((e: ChallengesRecord) => { return { id: e.id, name: e.name } })
-        navigate("Survey", { challenges: challenges })
+        console.log("categories: ", categories)
+        // const challenges: { id: string, name: string }[] = (await pb.collection("user").getFullList<ChallengesRecord>({
+        //     filter: `user_id = "${currentUser!.id}"`,
+        //     expand: `selected`
+        // }))[0].expand.challenge_id.map((e: ChallengesRecord) => { return { id: e.id, name: e.name } })
+        navigate("Survey", { categories: categories })
         setDismissed(2)
     }
+
+    currentUser!.selectedChallenges.map(getCategory)
 
     return (<BlurModal visible={(dismissed < 1 && currentUser.lastSurvey == "") || (dismissed < 2 && daysSinceLastSurvey >= surveyInterval)}
         onClose={() => setDismissed(dismissed == 0 && currentUser.lastSurvey == "" ? 1 : 2)}>

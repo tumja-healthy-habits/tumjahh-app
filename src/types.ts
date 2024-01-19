@@ -43,7 +43,7 @@ export interface ChallengesRecord extends Record {
     name: string;
     description: string;
     explanation: string;
-    habit_id: string;
+    category: string;
 }
 
 export interface MosaicRecord extends Record {
@@ -78,7 +78,7 @@ export interface FriendRequestsRecord extends Record {
 
 export interface SurveyAnswerRecord extends Record {
     user: UserRecord;
-    challenge: ChallengesRecord;
+    category: string;
     answer1: number;
     answer2: number;
     answer3: number;

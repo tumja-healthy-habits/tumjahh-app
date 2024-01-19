@@ -24,18 +24,19 @@ export default function SurveyResults() {
     const [allAnswers, setAllAnswers] = useState<number[][][]>(new Array())
 
     useEffect(() => {
-        for (var i = 0; i < params.challenges.length; i++) {
+        for (var i = 0; i < params.categories.length; i++) {
             pb.collection("survey_answers").getFullList<SurveyAnswerRecord>({
-                filter: `user = "${currentUser.id}" && challenge = "${params.challenges[i].id}"`,
+                filter: `user = "${currentUser.id}" && category = "${params.categories[i]}"`,
                 sort: '+created'
             }).then(answer => allAnswers.push(
                 answer.map(a => [a.answer1, a.answer2, a.answer3, a.answer4])
             ))
         }
+        console.log("useEffect ", allAnswers)
     }, [])
 
     const colors = [Colors.pastelGreen, Colors.pastelOrange, Colors.pastelOrangeDribble, Colors.pastelViolet]
-    const questions = ["... automatically", "... without having to consciously remember", "... before you realize you're doing it", "... without thinking"];
+    const questions = ["... automatically", "... without having to consciously remember", "... before you realize you're doing them", "... without thinking"];
 
     const insetTB = { top: 10, bottom: 10 }
     const svg = { fontSize: 12, fill: 'grey' }
@@ -46,9 +47,9 @@ export default function SurveyResults() {
                 <View style={{ width: '90%' }}>
                     <Text style={styles.formTitle}>Your progress</Text>
 
-                    {[...Array(params.challenges.length).keys()].map((i) =>
+                    {[...Array(params.categories.length).keys()].map((i) =>
                         <View style={{ marginBottom: 20 }}>
-                            <Text style={styles.questionTitle}>Your progress in doing the "{params.challenges[i].name}" challenge ...</Text>
+                            <Text style={styles.questionTitle}>Your progress in doing the challenges of the "{params.categories[i]}" category ...</Text>
                             <View style={{ height: 200, flexDirection: 'row', marginBottom: 10 }}>
                                 <YAxis
                                     data={[1, 10]}

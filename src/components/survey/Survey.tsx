@@ -21,7 +21,7 @@ export default function Survey() {
     }
 
     const [currentPage, setPage] = useState<number>(0)
-    const questions = ["... automatically", "... without having to consciously remember", "... before I realize I'm doing it", "... without thinking"];
+    const questions = ["... automatically", "... without having to consciously remember", "... before I realize I'm doing them", "... without thinking"];
     const answers: { get: number, set: React.Dispatch<React.SetStateAction<number>> }[] = new Array(4);
     for (var i = 0; i < answers.length; i++) {
         const [answer, setAnswer] = useState<number>(1)
@@ -29,27 +29,35 @@ export default function Survey() {
     }
     const [allAnswers, setAllAnswers] = useState<number[][]>(new Array())
 
+    console.log(params.categories)
+    console.log("answers: ", answers)
+
     async function answerChallenge() {
         allAnswers.push(answers.map(a => a.get))
+        console.log(allAnswers)
         for (var i = 0; i < answers.length; i++) {
             answers[i].set(1)
         }
-        if (currentPage == params.challenges.length - 1) {
+        if (currentPage == params.categories.length - 1) {
             for (var i = 0; i < allAnswers.length; i++) {
-                pb.collection("survey_answers").create({
+                const record = await pb.collection("survey_answers").create({
                     user: currentUser!.id,
-                    challenge: params.challenges[i].id,
+                    category: params.categories[i],
                     answer1: allAnswers[i][0],
                     answer2: allAnswers[i][1],
                     answer3: allAnswers[i][2],
                     answer4: allAnswers[i][3],
                 })
+                console.log(record)
             }
+
+
+            console.log("after creation")
 
             const lastSurveyUpdate: FormData = new FormData(); lastSurveyUpdate.append("lastSurvey", (new Date()).toISOString())
             pb.collection("users").update<UserRecord>(currentUser!.id, lastSurveyUpdate)
 
-            navigate("SurveyResults", { challenges: params.challenges })
+            navigate("SurveyResults", { categories: params.categories })
         } else {
             setPage(currentPage + 1)
         }
@@ -59,7 +67,7 @@ export default function Survey() {
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={[globalStyles.container, styles.outerContainer]}>
                     <View style={{ width: "90%" }}>
-                        <Text style={styles.formTitle}>The "{params.challenges[currentPage].name}" challenge is something I do ...</Text>
+                        <Text style={styles.formTitle}>I am doing the challenges of category "{params.categories[currentPage]}" ...</Text>
 
                         {[...Array(questions.length).keys()].map((n) =>
                             <View>
@@ -74,7 +82,7 @@ export default function Survey() {
                             </View>
                         )}
 
-                        <LoginButton label={currentPage == params.challenges.length - 1 ? "See results" : "Next"} onPress={answerChallenge} spacing={styles.buttonSpacing}/>
+                        <LoginButton label={currentPage == params.categories.length - 1 ? "See results" : "Next"} onPress={answerChallenge} spacing={styles.buttonSpacing}/>
                     </View>
                 </View>
             </ScrollView>
