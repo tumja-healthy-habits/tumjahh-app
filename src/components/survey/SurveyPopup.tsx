@@ -37,7 +37,7 @@ export default function SurveyPopup() {
         setDismissed(2)
     }
 
-    return (<BlurModal visible={dismissed < 2 && (daysSinceLastSurvey >= surveyInterval || currentUser.lastSurvey == "")}
+    return (<BlurModal visible={(dismissed < 1 && currentUser.lastSurvey == "") || (dismissed < 2 && daysSinceLastSurvey >= surveyInterval)}
         onClose={() => setDismissed(dismissed == 0 && currentUser.lastSurvey == "" ? 1 : 2)}>
         <View style={styles.modalContainer} >
             {dismissed == 0 && currentUser.lastSurvey == "" ?
@@ -74,7 +74,7 @@ export default function SurveyPopup() {
                     <LoginButton label="Remind me later" onPress={() => setDismissed(2)} spacing={styles.buttonSpacing}/>
                 </View>}
             <Text>{"If you want to find out more regarding our research project, feel free to reach out to us via "}
-                <Text style={{ color: Colors.pastelViolet }} onPress={() => Linking.openURL('mailto:habits@ja.tum.de')}>habits@ja.tum.de</Text>.
+                <Text style={{ color: '#FFF4EC' }} onPress={() => Linking.openURL('mailto:habits@ja.tum.de')}>habits@ja.tum.de</Text>.
             </Text>
         </View>
     </BlurModal >)
