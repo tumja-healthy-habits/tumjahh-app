@@ -20,6 +20,8 @@ export default function FriendsScreen() {
         return record.user1 === currentUser.id ? record.expand.user2 : record.expand.user1
     }
 
+    friends.map(checkPhotoExists)
+
     useEffect(() =>
     {
         setPhotoExists(false)
@@ -27,13 +29,15 @@ export default function FriendsScreen() {
     }, [])
 
     async function checkPhotoExists(user:UserRecord) {
+        console.log("inside checkExists")
         let oneDayAgo = getOneDayAgo()
         let photos = await pb.collection("photos").getFullList({filter: `user_id="${user.id}" && created >= "${oneDayAgo}"`})
         if (photos.length > 0) {
             setPhotoExists(true)
-            //console.log("Photo exists for " + user.username)
+            console.log("Photo exists for " + user.username)
         }
     }
+
 
     function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
         return <FriendCard user={item} />
