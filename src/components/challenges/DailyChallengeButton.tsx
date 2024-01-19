@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "constants/colors";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { ProgressBar } from "react-native-paper";
 import { ChallengesRecord, WeeklyChallengesRecord } from "types";
@@ -97,8 +97,8 @@ const styles = StyleSheet.create({
     progressBar: {
         height: 5,
         borderRadius: 5,
-        marginHorizontal: 20,
-        width: 250,
+        marginRight: 20,
+        width: Dimensions.get("window").width * 0.65,
     },
     progressContainer: {
         flexDirection: "row",

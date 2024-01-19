@@ -14,6 +14,7 @@ export interface UserRecord extends Record {
         "friends_with(user2)": FriendsWithRecord[];
         "friend_requests(from)": FriendRequestsRecord[];
         "friend_requests(to)": FriendRequestsRecord[];
+        "selectedChallenges": ChallengesRecord[];
     };
     selectedChallenges: string[];
 }
