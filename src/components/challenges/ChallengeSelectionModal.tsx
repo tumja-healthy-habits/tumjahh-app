@@ -29,8 +29,9 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
 
     function renderChallenge({ item }: ListRenderItemInfo<ChallengesRecord>) {
         function checked(wChallenges: WeeklyChallengesRecord[]): boolean {
-            return wChallenges.some((weeklyChallenge: WeeklyChallengesRecord) => weeklyChallenge.id === item.id)
+            return wChallenges.some((weeklyChallenge: WeeklyChallengesRecord) => weeklyChallenge.challenge_id === item.id)
         }
+
         return <ChallengeCard
             challenge={item}
             isChecked={checked(weeklyChallenges)}
