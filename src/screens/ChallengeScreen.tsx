@@ -1,6 +1,6 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { AppParamList } from "components/LoggedInApp";
-import ChallengeCard from "components/challenges/ChallengeCard";
+import ChallengeCard from "components/challenges/ChallengeGoalCard";
 import ChallengeSelectionModal from "components/challenges/ChallengeSelectionModal";
 import ActionButton from "components/misc/ActionButton";
 import Colors from "constants/colors";

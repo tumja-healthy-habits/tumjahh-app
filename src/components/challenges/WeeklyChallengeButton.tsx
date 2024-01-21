@@ -1,10 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
+import IconButton from "components/misc/IconButton";
 import Colors from "constants/colors";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { ProgressBar } from "react-native-paper";
+import { pb } from "src/pocketbaseService";
 import { ChallengesRecord, WeeklyChallengesRecord } from "types";
 
 const OPEN_CAMERA_DELAY: number = 300 // in milliseconds
@@ -31,7 +33,11 @@ export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: w
         if (pressed) tickOffChallenge()
     }
 
-    return (
+    function deleteChallenge(): void {
+        pb.collection("weekly_challenges").delete(weeklyChallenge.id).catch(error => console.error("An error occurred while trying to delete a challenge: ", error))
+    }
+
+    return (<View style={{ flexDirection: "row", alignItems: "center" }}>
         <View style={styles.outerContainer}>
             <View style={styles.nameAndButtonsContainer}>
                 <Text style={styles.buttonText}>
@@ -48,10 +54,12 @@ export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: w
                 </View>
             </View>
             <View style={styles.progressContainer}>
-                <ProgressBar progress={Math.min(weeklyChallenge.amount_accomplished / weeklyChallenge.amount_planned)} color={Colors.anotherPeachColor} style={styles.progressBar} />
+                <ProgressBar progress={weeklyChallenge.amount_planned === 0 ? 1 : Math.min(weeklyChallenge.amount_accomplished / weeklyChallenge.amount_planned)} color={Colors.anotherPeachColor} style={styles.progressBar} />
                 <Text style={styles.buttonText}>{weeklyChallenge.amount_accomplished}/{weeklyChallenge.amount_planned}</Text>
             </View>
         </View>
+        <IconButton icon="trash-outline" color={Colors.anotherPeachColor} size={30} onPress={deleteChallenge} />
+    </View>
     )
 }
 
@@ -82,13 +90,6 @@ const styles = StyleSheet.create({
     },
     icon: {
         fontSize: 34,
-    },
-    image: {
-        width: "100%",
-        height: 250,
-        resizeMode: "cover",
-        borderBottomLeftRadius: 10,
-        borderBottomRightRadius: 10,
     },
     rightContainer: {
         flexDirection: "row",
