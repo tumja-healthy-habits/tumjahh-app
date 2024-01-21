@@ -108,7 +108,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
             animationType="slide"
             style={styles.modalContainer}
         >
-            <SafeAreaView >
+            <SafeAreaView style={styles.modalContainer} >
                 <FlatList
                     data={challenges}
                     keyExtractor={(item) => item.id}
@@ -117,7 +117,6 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
                     ListEmptyComponent={ListEmpty}
                     ListHeaderComponent={ListHeader}
                     stickyHeaderIndices={[0]}
-                    style={{ backgroundColor: Colors.pastelOrange }}
                 />
                 <FAB
                     onPress={handleConfirm}
@@ -138,6 +137,5 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
 const styles = StyleSheet.create({
     modalContainer: {
         backgroundColor: Colors.pastelOrange,
-        borderRadius: 20,
     },
 })

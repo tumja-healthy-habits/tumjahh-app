@@ -1,9 +1,9 @@
 import Colors from "constants/colors";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { ProgressBar } from "react-native-paper";
+import { Icon, ProgressBar } from "react-native-paper";
 import { ChallengesRecord, WeeklyChallengesRecord } from "types";
 
 const OPEN_CAMERA_DELAY: number = 300 // in milliseconds
@@ -15,6 +15,7 @@ type weeklyChallengeProps = {
 
 export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: weeklyChallengeProps) {
     const [tickedOff, setTickedOff] = useState<boolean>(new Date(weeklyChallenge.last_completed).getDay() == new Date().getDay())
+    const [showDescription, setShowDescription] = useState<boolean>(false)
 
     const challenge: ChallengesRecord = weeklyChallenge.expand.challenge_id
 
@@ -28,32 +29,15 @@ export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: w
         if (pressed) tickOffChallenge()
     }
 
-    return (<View style={{ flexDirection: "row", alignItems: "center" }}>
+    return (<Pressable style={{ flexDirection: "row", alignItems: "center" }} onPress={() => setShowDescription(true)}>
         <View style={[styles.outerContainer, { flexDirection: "row" }]}>
-            {/* <View style={styles.nameAndButtonsContainer}>
-                <Text style={styles.buttonText}>
-                    {challenge.name}
-                </Text>
-                <BouncyCheckbox
-                    size={40}
-                    iconImageStyle={{
-                        width: 20,
-                        height: 20,
-                    }}
-                    onPress={handleClickCheckbox}
-                    fillColor={Colors.anotherPeachColor}
-                    isChecked={tickedOff}
-                    disabled={tickedOff}
-                    style={styles.checkbox} />
-            </View>
-            <View style={styles.progressContainer}>
-                <ProgressBar progress={weeklyChallenge.amount_planned === 0 ? 1 : Math.min(weeklyChallenge.amount_accomplished / weeklyChallenge.amount_planned)} color={Colors.anotherPeachColor} style={styles.progressBar} />
-                <Text style={styles.buttonText}>{weeklyChallenge.amount_accomplished}/{weeklyChallenge.amount_planned}</Text>
-            </View> */}
             <View style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
-                <Text style={styles.buttonText}>
-                    {challenge.name}
-                </Text>
+                <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.buttonText}>
+                        {challenge.name}
+                    </Text>
+                </View>
+                <Icon source="dots-horizontal" size={30} color="grey" />
                 <ProgressBar progress={weeklyChallenge.amount_planned === 0 ? 1 : Math.min(weeklyChallenge.amount_accomplished / weeklyChallenge.amount_planned)} color={Colors.anotherPeachColor} style={styles.progressBar} />
             </View>
             <View style={{ justifyContent: "space-between", alignItems: "center" }}>
@@ -71,7 +55,7 @@ export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: w
                 <Text style={[styles.buttonText, { marginTop: 10, bottom: -12 }]}>{weeklyChallenge.amount_accomplished}/{weeklyChallenge.amount_planned}</Text>
             </View>
         </View>
-    </View>
+    </Pressable>
     )
 }
 

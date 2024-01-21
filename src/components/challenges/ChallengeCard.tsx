@@ -13,7 +13,7 @@ export default function ChallengeCard({ challenge, isChecked, onPress }: Challen
     const TextComponent = () => (
         <View style={{ flexDirection: "column", marginVertical: 10, marginStart: 25 }}>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>{challenge.name}</Text>
-            <Text style={{ fontSize: 15, }}>{challenge.description}</Text>
+            <Text style={{ fontSize: 15, flexWrap: "wrap" }}>{challenge.description}</Text>
         </View>
     )
     return (
