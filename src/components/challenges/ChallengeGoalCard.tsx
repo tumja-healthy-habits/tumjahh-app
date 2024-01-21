@@ -20,19 +20,21 @@ export default function ChallengeGoalCard({ weeklyChallenge }: ChallengeGoalCard
             amount_planned: count,
         })
             .then(() => setGoal(count))
-            .catch(console.error)
+            .catch(error => console.error("An error occurred while trying to update a challenge: ", error))
     }
 
     function deleteChallenge(): void {
-        pb.collection("weekly_challenges").delete(weeklyChallenge.id).catch(console.error)
+        pb.collection("weekly_challenges").delete(weeklyChallenge.id)
+            .catch(error => console.error("An error occurred while trying to delete a challenge: ", error))
     }
 
     return (
-        <View>
-            <IconButton icon="trash-outline" color={Colors.anotherPeachColor} size={30} onPress={deleteChallenge} />
-            <ContentBox style={[goal === 0 && { opacity: 0.8 }, { borderRadius: 10, flex: 1, flexDirection: "row" }]} >
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "90%" }}>
-                    <Text style={[globalStyles.textfieldText, goal === 0 && { opacity: 0.5 }, { marginBottom: 15 }]}>{weeklyChallenge.expand.challenge_id.name}</Text>
+        <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
+            <ContentBox style={[goal === 0 && { opacity: 0.8 }, { borderRadius: 10, flex: 9, flexDirection: "row" }]} >
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "90%", paddingVertical: 5 }}>
+                    <Text style={[globalStyles.textfieldText, goal === 0 && { opacity: 0.5 }]}>
+                        {weeklyChallenge.expand.challenge_id.name}
+                    </Text>
                     <Counter
                         start={weeklyChallenge.amount_planned}
                         onChange={updateChallenge}
@@ -49,6 +51,7 @@ export default function ChallengeGoalCard({ weeklyChallenge }: ChallengeGoalCard
                     />
                 </View>
             </ContentBox >
+            <IconButton icon="trash-outline" color={Colors.anotherPeachColor} size={30} onPress={deleteChallenge} />
         </View>
     )
 }

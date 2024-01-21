@@ -1,5 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
-import IconButton from "components/misc/IconButton";
 import Colors from "constants/colors";
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
@@ -45,12 +43,16 @@ export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: w
                 </Text>
                 <View style={styles.rightContainer}>
                     <BouncyCheckbox
-                        size={35}
+                        size={40}
+                        iconImageStyle={{
+                            width: 20,
+                            height: 20,
+                        }}
                         onPress={handleClickCheckbox}
                         fillColor={Colors.anotherPeachColor}
                         isChecked={tickedOff}
                         disabled={tickedOff} />
-                    {showCameraIcon && <Ionicons style={styles.icon} name="camera-outline" color={Colors.black} />}
+                    {/* {showCameraIcon && <Ionicons style={styles.icon} name="camera-outline" color={Colors.black} />} */}
                 </View>
             </View>
             <View style={styles.progressContainer}>
@@ -58,7 +60,6 @@ export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: w
                 <Text style={styles.buttonText}>{weeklyChallenge.amount_accomplished}/{weeklyChallenge.amount_planned}</Text>
             </View>
         </View>
-        <IconButton icon="trash-outline" color={Colors.anotherPeachColor} size={30} onPress={deleteChallenge} />
     </View>
     )
 }
@@ -66,7 +67,7 @@ export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: w
 const styles = StyleSheet.create({
     outerContainer: {
         borderRadius: 10,
-        margin: 15,
+        margin: 10,
         padding: 25,
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 0 },

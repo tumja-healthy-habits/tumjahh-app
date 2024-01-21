@@ -48,12 +48,13 @@ export default function WeeklyChallengeModal({ visible, onClose }: WeeklyChallen
                         borderRadius: 10,
                         elevation: 5,
                     }}
+                    style={{ flex: 1, width: "90%", marginTop: 10 }}
                 />
                 <FAB
                     onPress={onClose}
                     icon="check"
                     style={styles.removeButton}
-                    label="Save your new goals"
+                    label="Save your goals"
                 />
                 <ChallengeSelectionModal visible={showChallengesModal} onClose={() => setShowChallengesModal(false)} />
             </SafeAreaView>

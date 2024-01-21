@@ -38,7 +38,7 @@ export default function DailyChallengesScreen() {
 
 
     return (
-        <SafeAreaView style={[globalStyles.container, { justifyContent: "flex-start", backgroundColor: Colors.pastelViolet, paddingTop: 10, width: "100%" }]}>
+        <SafeAreaView style={[globalStyles.container, { justifyContent: "flex-start", backgroundColor: Colors.pastelViolet }]}>
             <Text style={globalStyles.textfieldTitle}>Hi, {currentUser.name}.</Text>
             {weeklyChallenges.length === 0 ? <Button onPress={() => setShowChallengesModal(true)} color={Colors.accent}>Select some challenges here :)</Button>
                 :
@@ -46,15 +46,19 @@ export default function DailyChallengesScreen() {
                     data={weeklyChallenges}
                     keyExtractor={(challenge, index) => challenge.id + index}
                     renderItem={renderChallenge}
-                    ListFooterComponent={ListFooter}
                 />
             }
             <FAB
+                onPress={() => setShowTestModal(true)}
                 icon="plus"
-                style={{ margin: 16 }}
-                onPress={() => setShowChallengesModal(true)}
+                style={{
+                    alignSelf: "center",
+                    backgroundColor: Colors.white,
+                    position: "absolute",
+                    bottom: 45,
+                }}
+                label="Edit your challenges"
             />
-            <Button onPress={() => setShowTestModal(true)}>Test modal</Button>
             <WeeklyChallengeModal visible={showTestModal} onClose={() => setShowTestModal(false)} />
             <ChallengeSelectionModal visible={showChallengesModal} onClose={() => setShowChallengesModal(false)} />
             <CameraModal weeklyChallenge={cameraModalChallenge} onClose={() => setCameraModalChallenge(undefined)} />

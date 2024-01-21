@@ -32,9 +32,6 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
         }
     }, [currentUser])
 
-    console.log("toadd: ", challengesToAdd)
-    console.log("toremove: ", challengesToRemove)
-
     if (currentUser === null) return null
 
     useEffect(() => {

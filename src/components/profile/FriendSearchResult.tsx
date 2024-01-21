@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import Colors from "constants/colors";
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { pb } from 'src/pocketbaseService';
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider';
@@ -49,9 +49,9 @@ export default function FriendSearchResult({ user, updateSearchResult }: FriendS
 
     function handleTapFriend() {
         Alert.alert('Remove friend', 'Are you sure you want to remove ' + user.name + " from your friends?", [
-            {text: 'Cancel', onPress: () => {}, style: 'cancel',},
-            {text: 'Remove friend', style:"destructive", onPress: removeFriend},
-          ]);
+            { text: 'Cancel', onPress: () => { }, style: 'cancel', },
+            { text: 'Remove friend', style: "destructive", onPress: removeFriend },
+        ]);
     }
 
     function removeFriend(): void {
@@ -72,11 +72,6 @@ export default function FriendSearchResult({ user, updateSearchResult }: FriendS
     const friendRequestSent: boolean = user.expand["friend_requests(to)"] !== undefined
     const friendRequestReceived: boolean = user.expand["friend_requests(from)"] !== undefined
 
-    // console.log(user.username)
-    // console.log(alreadyFriends)
-    // console.log(friendRequestSent)
-    // console.log(friendRequestReceived)
-
     return <View style={styles.container}>
         <ProfilePicture userRecord={user} style={styles.image} />
         <View style={styles.innerContainer}>
@@ -88,6 +83,7 @@ export default function FriendSearchResult({ user, updateSearchResult }: FriendS
             onPress={alreadyFriends ? handleTapFriend : friendRequestSent ? cancelFriendRequest : friendRequestReceived ? acceptFriendRequest : sendRequest}
             buttonColor={Colors.pastelGreen}
             labelStyle={{ fontSize: 16 }}
+            style={{ marginRight: 10 }}
             icon={() => <Ionicons name={alreadyFriends ? "people-outline" :
                 "person-add-outline"} size={20} />}
         >{alreadyFriends ? "Friends" : friendRequestSent ? "Request sent" : friendRequestReceived ? "Accept" : "Add"}
