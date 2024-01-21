@@ -3,7 +3,6 @@ import { useState } from "react";
 import { FlatList, ListRenderItemInfo, Modal, SafeAreaView, StyleSheet } from "react-native";
 import { Button, FAB } from "react-native-paper";
 import { useRealTimeCollection } from "src/pocketbaseService";
-import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { oneWeekAgo } from "src/utils";
 import { WeeklyChallengesRecord } from "types";
 import ChallengeGoalCard from "./ChallengeGoalCard";
@@ -15,9 +14,6 @@ type WeeklyChallengeModalProps = {
 }
 
 export default function WeeklyChallengeModal({ visible, onClose }: WeeklyChallengeModalProps) {
-
-    const { currentUser } = useAuthenticatedUser()
-    if (currentUser === null) return null
 
     const [showChallengesModal, setShowChallengesModal] = useState<boolean>(false)
 

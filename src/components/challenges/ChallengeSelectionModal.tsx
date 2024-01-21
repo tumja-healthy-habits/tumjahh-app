@@ -1,12 +1,12 @@
 import Colors from "constants/colors"
-import React, { useEffect } from "react"
+import React from "react"
 import { ActivityIndicator, FlatList, ListRenderItemInfo, Modal, SafeAreaView, StyleSheet, Text, View } from "react-native"
 import { Divider, FAB } from "react-native-paper"
-import { pb, useCollection, useRealTimeSubscription } from "src/pocketbaseService"
+import { pb, useCollection, useRealTimeCollection } from "src/pocketbaseService"
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
 import { globalStyles } from "src/styles"
 import { oneWeekAgo } from "src/utils"
-import { ChallengesRecord, UserRecord, WeeklyChallengesRecord } from "types"
+import { ChallengesRecord, WeeklyChallengesRecord } from "types"
 import ChallengeCard from "./ChallengeCard"
 
 export const VAR_CHALLENGES: string = "BeHealthyChallenges"
@@ -19,42 +19,30 @@ type ChallengeSelectionModalProps = {
 export default function ChallengeSelectionModal({ visible, onClose }: ChallengeSelectionModalProps) {
 
     const { currentUser } = useAuthenticatedUser()
-    const [selectedChallenges, setSelectedChallenges] = React.useState<ChallengesRecord[]>([])
     const [challengesToAdd, setChallengesToAdd] = React.useState<ChallengesRecord[]>([])
     const [challengesToRemove, setChallengesToRemove] = React.useState<ChallengesRecord[]>([])
     const challenges: ChallengesRecord[] = useCollection<ChallengesRecord>("challenges", [])
-
-    useRealTimeSubscription<WeeklyChallengesRecord>("weekly_challenges", {
-        onDelete: (record: WeeklyChallengesRecord) => {
-            if (record.user_id === currentUser!.id) {
-                setSelectedChallenges((oldChallenges: ChallengesRecord[]) => oldChallenges.filter((challenge: ChallengesRecord) => challenge.id !== record.challenge_id))
-            }
-        }
-    }, [currentUser])
-
-    if (currentUser === null) return null
-
-    useEffect(() => {
-        pb.collection("users").getOne<UserRecord>(currentUser.id, {
-            expand: "selectedChallenges",
-        }).then((user: UserRecord) => {
-            setSelectedChallenges(user.expand.selectedChallenges || [])
-        }).catch(console.error)
-    }, [currentUser])
+    const weeklyChallenges: WeeklyChallengesRecord[] = useRealTimeCollection<WeeklyChallengesRecord>("weekly_challenges", [], {
+        expand: "challenge_id",
+        filter: `created > "${oneWeekAgo()}"`,
+    })
 
     function renderChallenge({ item }: ListRenderItemInfo<ChallengesRecord>) {
+        function checked(wChallenges: WeeklyChallengesRecord[]): boolean {
+            return wChallenges.some((weeklyChallenge: WeeklyChallengesRecord) => weeklyChallenge.id === item.id)
+        }
         return <ChallengeCard
             challenge={item}
-            isChecked={selectedChallenges && selectedChallenges.some((challenge: ChallengesRecord) => challenge.id === item.id)}
+            isChecked={checked(weeklyChallenges)}
             onPress={(isChecked: boolean) => {
                 if (isChecked) {
-                    if (selectedChallenges.some((challenge: ChallengesRecord) => challenge.id === item.id)) {
+                    if (checked(weeklyChallenges)) {
                         setChallengesToRemove((oldChallenges: ChallengesRecord[]) => oldChallenges.filter((challenge: ChallengesRecord) => challenge.id !== item.id))
                     } else {
                         setChallengesToAdd((oldChallenges: ChallengesRecord[]) => [...oldChallenges, item])
                     }
                 } else {
-                    if (!selectedChallenges.some((challenge: ChallengesRecord) => challenge.id === item.id)) {
+                    if (!checked(weeklyChallenges)) {
                         setChallengesToAdd((oldChallenges: ChallengesRecord[]) => oldChallenges.filter((challenge: ChallengesRecord) => challenge.id !== item.id))
                     } else {
                         setChallengesToRemove((oldChallenges: ChallengesRecord[]) => [...oldChallenges, item])
@@ -70,7 +58,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
             challenge_id: challenge.id,
             amount_accomplished: 0,
             amount_photos: 0,
-            amount_planned: 0,
+            amount_planned: 1,
             last_completed: "1970-01-01 00:00:00",
             start_date: new Date().toISOString().replace("T", " "),
         })))
@@ -89,9 +77,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
 
     function handleConfirm(): void {
         if (currentUser === null) return
-        Promise.all([addMissingChallenges(), deleteUnwantedChallenges(), pb.collection("users").update<UserRecord>(currentUser.id, {
-            selectedChallenges: [...selectedChallenges, ...challengesToAdd].filter((challenge: ChallengesRecord) => !challengesToRemove.some((toRemove: ChallengesRecord) => toRemove.id === challenge.id)).map((challenge: ChallengesRecord) => challenge.id),
-        })]).then(() => {
+        Promise.all([addMissingChallenges(), deleteUnwantedChallenges()]).then(() => {
             if (onClose) {
                 onClose()
             }
@@ -101,12 +87,6 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
                 setChallengesToRemove([])
             })
     }
-
-    // rendered at the end of the list
-    const ListFooter = () => //<ActionButton title="Confirm selection" onPress={handleConfirm} />
-    (
-        null
-    )
 
     // rendered between the challenge cards
     const ItemSeparator = () => <View style={{ padding: 10 }} />
@@ -132,7 +112,6 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
                     data={challenges}
                     keyExtractor={(item) => item.id}
                     renderItem={renderChallenge}
-                    ListFooterComponent={ListFooter}
                     ItemSeparatorComponent={ItemSeparator}
                     ListEmptyComponent={ListEmpty}
                     ListHeaderComponent={ListHeader}

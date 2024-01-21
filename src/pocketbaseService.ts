@@ -78,7 +78,7 @@ export function useRealTimeCollection<RecordType extends Record>(collection: str
     } : {
         onCreate: addRecord,
         onDelete: deleteRecord,
-        onUpdate: updateRecord
+        onUpdate: updateRecord,
     }
 
     useRealTimeSubscription<RecordType>(collection, actions, dependencies)

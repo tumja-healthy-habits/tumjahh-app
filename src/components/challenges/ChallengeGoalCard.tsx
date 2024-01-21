@@ -30,13 +30,15 @@ export default function ChallengeGoalCard({ weeklyChallenge }: ChallengeGoalCard
 
     return (
         <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
-            <ContentBox style={[goal === 0 && { opacity: 0.8 }, { borderRadius: 10, flex: 9, flexDirection: "row" }]} >
+            <ContentBox style={[goal === 0 && { opacity: 0.8 }, { borderRadius: 10, flex: 9, flexDirection: "row", marginRight: 10 }]} >
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "90%", paddingVertical: 5 }}>
                     <Text style={[globalStyles.textfieldText, goal === 0 && { opacity: 0.5 }]}>
                         {weeklyChallenge.expand.challenge_id.name}
                     </Text>
                     <Counter
                         start={weeklyChallenge.amount_planned}
+                        min={1}
+                        max={21}
                         onChange={updateChallenge}
                         buttonStyle={{
                             borderColor: Colors.anotherPeachColor,
