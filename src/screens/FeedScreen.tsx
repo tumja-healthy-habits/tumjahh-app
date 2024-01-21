@@ -46,7 +46,7 @@ export default function FriendsScreen() {
     return (
         <SafeAreaView style={[globalStyles.container, { alignItems: 'stretch' }]}>
             {friends.length === 0 && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>You haven't added any friends yet</Text>}
-            {(!photoExists && friends.length > 0) && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>Your friends haven't posted anything yet</Text>}
+            {(!photoExists && friends.length > 0) && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>Your friends haven't posted {"\n"} anything in the last 24 hours</Text>}
             <FlatList
                 data={friends}
                 keyExtractor={(user: UserRecord) => user.id}
