@@ -1,5 +1,5 @@
 import Colors from "constants/colors";
-import { Text, View } from "react-native";
+import { Dimensions, Text, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { ChallengesRecord } from "types";
 
@@ -11,7 +11,7 @@ type ChallengeCardProps = {
 
 export default function ChallengeCard({ challenge, isChecked, onPress }: ChallengeCardProps) {
     const TextComponent = () => (
-        <View style={{ flexDirection: "column", marginVertical: 10, marginStart: 25 }}>
+        <View style={{ flexDirection: "column", marginVertical: 10, marginStart: 25, width: Dimensions.get("window").width * 0.75 }}>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>{challenge.name}</Text>
             <Text style={{ fontSize: 15, flexWrap: "wrap" }}>{challenge.description}</Text>
         </View>

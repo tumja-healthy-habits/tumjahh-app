@@ -34,9 +34,6 @@ export default function DailyChallengesScreen() {
         return <WeeklyChallengeButton weeklyChallenge={item} openCamera={() => setCameraModalChallenge(item)} />
     }
 
-    const ListFooter = () => <Button icon="plus" onPress={() => setShowChallengesModal(true)} style={styles.addButton}>Add new challenge</Button>
-
-
     return (
         <SafeAreaView style={[globalStyles.container, { justifyContent: "flex-start", backgroundColor: Colors.pastelViolet }]}>
             <Text style={globalStyles.textfieldTitle}>Hi, {currentUser.name}.</Text>
