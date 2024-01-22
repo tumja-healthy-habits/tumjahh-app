@@ -10,8 +10,8 @@ import DailyChallengesScreen from 'screens/DailyChallengesScreen';
 import FriendsScreen from 'screens/FeedScreen';
 import MosaicNavigator from 'screens/mosaic/MosaicNavigator';
 import ProfileNavigator from "screens/profile/ProfileNavigator";
-import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
 import MosaicDataProvider from "src/store/MosaicDataProvider";
+import WeeklyChallengesProvider from 'src/store/WeeklyChallengesProvider';
 import SurveyPopup from './survey/SurveyPopup';
 
 const VAR_REMINDER_NOTIFICATION_ID: string = "BeHealthyReminderNotificationId"
@@ -64,7 +64,7 @@ export default function LoggedInApp() {
     }, [])
     return (
         <MosaicDataProvider>
-            <DailyChallengesProvider>
+            <WeeklyChallengesProvider>
                 <PaperProvider>
                     <Tab.Navigator initialRouteName='Challenges' screenOptions={navigatorOptions}>
                         <Tab.Screen name="Challenges" component={DailyChallengesScreen} options={{
@@ -85,7 +85,7 @@ export default function LoggedInApp() {
                     </Tab.Navigator>
                     <SurveyPopup />
                 </PaperProvider>
-            </DailyChallengesProvider>
+            </WeeklyChallengesProvider>
         </MosaicDataProvider>
     )
 }
