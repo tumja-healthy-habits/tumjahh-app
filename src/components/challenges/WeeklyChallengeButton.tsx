@@ -29,15 +29,18 @@ export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: w
         if (pressed) tickOffChallenge()
     }
 
-    return (<Pressable style={{ flexDirection: "row", alignItems: "center" }} onPress={() => setShowDescription(true)}>
+    return (<Pressable style={{ flexDirection: "row", alignItems: "center" }} onPress={() => setShowDescription((oldState: boolean) => !oldState)}>
         <View style={[styles.outerContainer, { flexDirection: "row" }]}>
             <View style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
                 <View style={{ flexDirection: "row" }}>
                     <Text style={styles.buttonText}>
                         {challenge.name}
                     </Text>
+                    <View style={{ marginLeft: 15, alignSelf: "center" }}>
+                        <Icon source="information-outline" size={20} />
+                    </View>
                 </View>
-                <Icon source="dots-horizontal" size={30} color="grey" />
+                {showDescription && <Text style={styles.description}>{weeklyChallenge.expand.challenge_id.description}</Text>}
                 <ProgressBar progress={weeklyChallenge.amount_planned === 0 ? 1 : Math.min(weeklyChallenge.amount_accomplished / weeklyChallenge.amount_planned)} color={Colors.anotherPeachColor} style={styles.progressBar} />
             </View>
             <View style={{ justifyContent: "space-between", alignItems: "center" }}>
@@ -100,5 +103,12 @@ const styles = StyleSheet.create({
     },
     checkbox: {
         left: 8,
-    }
+    },
+    description: {
+        fontSize: 18,
+        flexWrap: "wrap",
+        marginTop: 10,
+        marginBottom: 20,
+        width: Dimensions.get("window").width * 0.65,
+    },
 })

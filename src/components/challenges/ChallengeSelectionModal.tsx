@@ -2,10 +2,10 @@ import Colors from "constants/colors"
 import React from "react"
 import { ActivityIndicator, FlatList, ListRenderItemInfo, Modal, SafeAreaView, StyleSheet, Text, View } from "react-native"
 import { Divider, FAB } from "react-native-paper"
-import { pb, useCollection, useRealTimeCollection } from "src/pocketbaseService"
+import { pb, useCollection } from "src/pocketbaseService"
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
+import { useWeeklyChallenges } from "src/store/WeeklyChallengesProvider"
 import { globalStyles } from "src/styles"
-import { oneWeekAgo } from "src/utils"
 import { ChallengesRecord, WeeklyChallengesRecord } from "types"
 import ChallengeCard from "./ChallengeCard"
 
@@ -22,10 +22,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
     const [challengesToAdd, setChallengesToAdd] = React.useState<ChallengesRecord[]>([])
     const [challengesToRemove, setChallengesToRemove] = React.useState<ChallengesRecord[]>([])
     const challenges: ChallengesRecord[] = useCollection<ChallengesRecord>("challenges", [])
-    const weeklyChallenges: WeeklyChallengesRecord[] = useRealTimeCollection<WeeklyChallengesRecord>("weekly_challenges", [], {
-        expand: "challenge_id",
-        filter: `created > "${oneWeekAgo()}"`,
-    })
+    const weeklyChallenges: WeeklyChallengesRecord[] = useWeeklyChallenges()
 
     function renderChallenge({ item }: ListRenderItemInfo<ChallengesRecord>) {
         function checked(wChallenges: WeeklyChallengesRecord[]): boolean {
@@ -66,14 +63,9 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
     }
 
     function deleteUnwantedChallenges(): Promise<any> {
-        return pb.collection("weekly_challenges").getFullList<WeeklyChallengesRecord>({
-            filter: `created > "${oneWeekAgo()}"`,
-            expand: "challenge_id",
-        }).then((weeklyChallenges: WeeklyChallengesRecord[]) => {
-            const unwantedChallenges: WeeklyChallengesRecord[] = weeklyChallenges.filter((weeklyChallenge: WeeklyChallengesRecord) =>
-                challengesToRemove.some((challenge: ChallengesRecord) => challenge.id === weeklyChallenge.expand.challenge_id.id))
-            return Promise.all(unwantedChallenges.map((weeklyChallenge: WeeklyChallengesRecord) => pb.collection("weekly_challenges").delete(weeklyChallenge.id)))
-        }).catch(error => console.error("An error occurred while trying to get weekly challenges: ", error))
+        const unwantedChallenges: WeeklyChallengesRecord[] = weeklyChallenges.filter((weeklyChallenge: WeeklyChallengesRecord) =>
+            challengesToRemove.some((challenge: ChallengesRecord) => challenge.id === weeklyChallenge.expand.challenge_id.id))
+        return Promise.all(unwantedChallenges.map((weeklyChallenge: WeeklyChallengesRecord) => pb.collection("weekly_challenges").delete(weeklyChallenge.id)))
     }
 
     function handleConfirm(): void {

@@ -15,7 +15,7 @@ import MosaicDataProvider from "src/store/MosaicDataProvider";
 import SurveyPopup from './survey/SurveyPopup';
 
 const VAR_REMINDER_NOTIFICATION_ID: string = "BeHealthyReminderNotificationId"
-const DAYS_UNTIL_REMINDER: number = 3
+const DAYS_UNTIL_REMINDER: number = 2
 
 export type AppParamList = {
     Profile: undefined,

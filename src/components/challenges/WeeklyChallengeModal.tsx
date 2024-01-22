@@ -2,8 +2,7 @@ import Colors from "constants/colors";
 import { useState } from "react";
 import { FlatList, ListRenderItemInfo, Modal, SafeAreaView, StyleSheet } from "react-native";
 import { Button, FAB } from "react-native-paper";
-import { useRealTimeCollection } from "src/pocketbaseService";
-import { oneWeekAgo } from "src/utils";
+import { useWeeklyChallenges } from "src/store/WeeklyChallengesProvider";
 import { WeeklyChallengesRecord } from "types";
 import ChallengeGoalCard from "./ChallengeGoalCard";
 import ChallengeSelectionModal from "./ChallengeSelectionModal";
@@ -18,10 +17,7 @@ export default function WeeklyChallengeModal({ visible, onClose }: WeeklyChallen
     const [showChallengesModal, setShowChallengesModal] = useState<boolean>(false)
 
 
-    const weeklyChallenges: WeeklyChallengesRecord[] = useRealTimeCollection<WeeklyChallengesRecord>("weekly_challenges", [], {
-        expand: "challenge_id",
-        filter: `created > "${oneWeekAgo()}"`,
-    })
+    const weeklyChallenges: WeeklyChallengesRecord[] = useWeeklyChallenges()
 
     function renderChallengeGoal({ item }: ListRenderItemInfo<WeeklyChallengesRecord>) {
         return <ChallengeGoalCard weeklyChallenge={item} />
