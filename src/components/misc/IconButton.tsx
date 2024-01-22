@@ -1,11 +1,11 @@
-import { Pressable, Text } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import { Pressable } from "react-native";
 
 type IconButtonProps = {
     icon: any,
     color: string,
     size: number,
-    onPress: () => void,
+    onPress?: () => void,
     style?: {},
 }
 

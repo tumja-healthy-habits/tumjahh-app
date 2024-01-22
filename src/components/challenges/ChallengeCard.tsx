@@ -1,41 +1,37 @@
 import Colors from "constants/colors";
-import React from "react";
-import { Text } from "react-native";
-import Counter from "react-native-counters";
-import { useDailyChallenges } from "src/store/DailyChallengesProvider";
-import { globalStyles } from "src/styles";
-import { LocalStorageChallengeEntry } from "types";
-import ContentBox from "../misc/ContentBox";
+import { Dimensions, Text, View } from "react-native";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { ChallengesRecord } from "types";
 
 type ChallengeCardProps = {
-    challengeEntry: LocalStorageChallengeEntry,
+    challenge: ChallengesRecord,
+    isChecked: boolean,
+    onPress: (isChecked: boolean) => void,
 }
 
-export default function ChallengeCard({ challengeEntry }: ChallengeCardProps) {
-    const { record, repetitionsGoal } = challengeEntry
-    const { setRepetitionGoal } = useDailyChallenges()
-
-    function updateChallenge(count: number): void {
-        setRepetitionGoal(record.name, count)
-    }
-
+export default function ChallengeCard({ challenge, isChecked, onPress }: ChallengeCardProps) {
+    const TextComponent = () => (
+        <View style={{ flexDirection: "column", marginVertical: 10, marginStart: 25, width: Dimensions.get("window").width * 0.75 }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>{challenge.name}</Text>
+            <Text style={{ fontSize: 15, flexWrap: "wrap" }}>{challenge.description}</Text>
+        </View>
+    )
     return (
-        <ContentBox style={repetitionsGoal === 0 && { opacity: 0.8 }}>
-            <Text style={[globalStyles.textfieldText, repetitionsGoal === 0 && { opacity: 0.5 }, { marginBottom: 15 }]}>{record.name}</Text>
-            <Counter
-                start={repetitionsGoal}
-                onChange={updateChallenge}
-                buttonStyle={{
-                    borderColor: Colors.anotherPeachColor,
-                    backgroundColor: Colors.white,
-                }}
-                countTextStyle={{
-                    color: Colors.anotherPeachColor,
-                }}
-                buttonTextStyle={{
-                    color: Colors.anotherPeachColor,
-                }}
-            />
-        </ContentBox>
+        <BouncyCheckbox
+            size={40}
+            iconImageStyle={{
+                width: 25,
+                height: 25,
+            }}
+            isChecked={isChecked}
+            onPress={onPress}
+            textComponent={<TextComponent />}
+            iconStyle={{
+                marginStart: 25,
+            }}
+            fillColor={Colors.pastelViolet}
+            unfillColor={Colors.pastelViolet}
+            style={{ paddingTop: 2 }}
+        />
     )
 }

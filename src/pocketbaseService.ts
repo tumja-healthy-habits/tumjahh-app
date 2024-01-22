@@ -37,7 +37,7 @@ export function useRealTimeSubscription<RecordType extends Record>(collection: s
             cleanup = () => {
                 unsubscribe()
             }
-        }).catch(console.error)
+        }).catch(error => console.error("Failed to subscribe to realtime updates", error))
         return () => {
             if (cleanup) {
                 console.log(`Unsubscribed from realtime updates from collection "${collection}"`)
@@ -52,7 +52,7 @@ export function useRealTimeCollection<RecordType extends Record>(collection: str
 
     useEffect(() => {
         pb.collection(collection).getFullList<RecordType>(params)
-            .then(setRecords).catch(console.error)
+            .then(setRecords).catch(error => console.error("Failed to get full list", error))
     }, dependencies)
 
     function addRecord(record: RecordType) {
@@ -69,19 +69,30 @@ export function useRealTimeCollection<RecordType extends Record>(collection: str
 
     const actions: RecordActions<RecordType> = params && params.expand ? {
         onCreate: (record: RecordType) => {
-            pb.collection(collection).getOne<RecordType>(record.id, params).then(addRecord).catch(console.error)
+            pb.collection(collection).getOne<RecordType>(record.id, params).then(addRecord).catch(error => console.error("Failed to get record after creation", error))
         },
         onDelete: deleteRecord,
         onUpdate: (record: RecordType) => {
-            pb.collection(collection).getOne<RecordType>(record.id, params).then(updateRecord).catch(console.error)
+            pb.collection(collection).getOne<RecordType>(record.id, params).then(updateRecord).catch(error => console.error("Failed to get record after update", error))
         }
     } : {
         onCreate: addRecord,
         onDelete: deleteRecord,
-        onUpdate: updateRecord
+        onUpdate: updateRecord,
     }
 
     useRealTimeSubscription<RecordType>(collection, actions, dependencies)
+
+    return records
+}
+
+export function useCollection<RecordType extends Record>(collection: string, dependencies: DependencyList, params?: RecordFullListQueryParams): RecordType[] {
+    const [records, setRecords] = useState<RecordType[]>([])
+
+    useEffect(() => {
+        pb.collection(collection).getFullList<RecordType>(params)
+            .then(setRecords).catch(console.error)
+    }, dependencies)
 
     return records
 }

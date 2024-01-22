@@ -6,8 +6,7 @@ import { TouchableOpacity, Image, Modal, SafeAreaView, StyleSheet, View, Text } 
 // import { Button } from "react-native-paper"
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { useDailyChallenges } from "src/store/DailyChallengesProvider";
-import { FixedDimensionImage, PhotosRecord } from "types";
+import { FixedDimensionImage, PhotosRecord, WeeklyChallengesRecord } from "types";
 import { AppParamList } from "../LoggedInApp";
 import ZoomableCamera from "./ZoomableCamera";
 import { Ionicons } from "@expo/vector-icons";
@@ -15,28 +14,38 @@ import IconButton from "components/misc/IconButton";
 
 
 type CameraModalProps = {
-    challengeName?: string,
+    weeklyChallenge?: WeeklyChallengesRecord,
     onClose?: () => void,
 }
 
-export default function CameraModal({ challengeName, onClose }: CameraModalProps) {
+export default function CameraModal({ weeklyChallenge, onClose }: CameraModalProps) {
     const { currentUser } = useAuthenticatedUser()
-    const { completeChallenge } = useDailyChallenges()
 
     const appNavigation = useNavigation<NavigationProp<AppParamList>>()
 
     const [photo, setPhoto] = useState<FixedDimensionImage>()
 
+    function completeChallenge(usedPhoto: boolean): void {
+        if (weeklyChallenge === undefined) return
+        pb.collection("weekly_challenges").update<WeeklyChallengesRecord>(weeklyChallenge.id, {
+            last_completed: new Date(),
+            amount_accomplished: weeklyChallenge.amount_accomplished + 1,
+            amount_photos: weeklyChallenge.amount_photos + (usedPhoto ? 1 : 0),
+        }).then(() => {
+            if (onClose !== undefined) onClose()
+        })
+            .catch((error) => console.log("An error occurred while trying to complete a challenge: ", error))
+    }
+
     function handleSkipPhoto(): void {
-        if (onClose) onClose()
+        completeChallenge(false)
     }
 
     function handleUsePhoto(): void {
-        if (photo === undefined) return
+        if (photo === undefined || weeklyChallenge === undefined) return
         uploadChallengePhoto().then((photoRecord: PhotosRecord) => {
-            completeChallenge(challengeName!, photoRecord)
             saveToLibraryAsync(photo.uri) // We know that photo is not null at this point 
-            if (onClose) onClose()
+            completeChallenge(true)
             appNavigation.navigate("Mosaic", {
                 photoId: photoRecord.id,
             })
@@ -53,11 +62,10 @@ export default function CameraModal({ challengeName, onClose }: CameraModalProps
         formData.append("user_id", currentUser!.id)
         formData.append("width", photo!.width.toString())
         formData.append("height", photo!.height.toString())
-        formData.append("challenge_name", challengeName!) // We know that the challengeName can't be null at this point
         return pb.collection("photos").create<PhotosRecord>(formData)
     }
 
-    return <Modal visible={challengeName !== undefined} animationType="slide">
+    return <Modal visible={weeklyChallenge !== undefined} animationType="slide">
         {photo === undefined ? (
             <View style={{
                 flex: 1,

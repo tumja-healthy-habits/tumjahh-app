@@ -6,17 +6,16 @@ import { cancelScheduledNotificationAsync, scheduleNotificationAsync } from 'exp
 import React, { useEffect } from "react";
 import { AppState } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
-import ChallengeScreen from "screens/ChallengeScreen";
+import DailyChallengesScreen from 'screens/DailyChallengesScreen';
 import FriendsScreen from 'screens/FeedScreen';
-import HomeScreen from 'screens/HomeScreen';
 import MosaicNavigator from 'screens/mosaic/MosaicNavigator';
 import ProfileNavigator from "screens/profile/ProfileNavigator";
-import DailyChallengesProvider from 'src/store/DailyChallengesProvider';
 import MosaicDataProvider from "src/store/MosaicDataProvider";
+import WeeklyChallengesProvider from 'src/store/WeeklyChallengesProvider';
 import SurveyPopup from './survey/SurveyPopup';
 
 const VAR_REMINDER_NOTIFICATION_ID: string = "BeHealthyReminderNotificationId"
-const DAYS_UNTIL_REMINDER: number = 3
+const DAYS_UNTIL_REMINDER: number = 2
 
 export type AppParamList = {
     Profile: undefined,
@@ -65,10 +64,10 @@ export default function LoggedInApp() {
     }, [])
     return (
         <MosaicDataProvider>
-            <DailyChallengesProvider>
+            <WeeklyChallengesProvider>
                 <PaperProvider>
                     <Tab.Navigator initialRouteName='Challenges' screenOptions={navigatorOptions}>
-                        <Tab.Screen name="Challenges" component={ChallengeScreen} options={{
+                        <Tab.Screen name="Challenges" component={DailyChallengesScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
                         }} />
                         <Tab.Screen name="Feed" component={FriendsScreen} options={{
@@ -84,11 +83,9 @@ export default function LoggedInApp() {
                             tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                         }} />
                     </Tab.Navigator>
-
                     <SurveyPopup />
-
                 </PaperProvider>
-            </DailyChallengesProvider>
+            </WeeklyChallengesProvider>
         </MosaicDataProvider>
     )
 }

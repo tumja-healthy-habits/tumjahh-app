@@ -17,7 +17,10 @@ export default function PickMosaicsModal({ visible, photoId, onClose }: PickMosa
     const [selectedMosaics, setSelectedMosaics] = useState<MosaicRecord[]>([])
 
     useEffect(() => {
-        pb.collection("mosaics").getFullList<MosaicRecord>().then(setMosaics)
+        pb.collection("mosaics").getFullList<MosaicRecord>().then((mosaics: MosaicRecord[]) => {
+            setMosaics(mosaics)
+            setSelectedMosaics(mosaics)
+        })
     }, [])
 
     function renderMosaicOption({ item: mosaic }: ListRenderItemInfo<MosaicRecord>) {

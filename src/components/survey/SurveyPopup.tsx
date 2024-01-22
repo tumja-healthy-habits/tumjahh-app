@@ -1,13 +1,12 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { pb } from "src/pocketbaseService";
-import BlurModal from "../misc/BlurModal";
-import LoginButton from "../authentication/LoginButton";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { SurveyParamList } from "./SurveyNavigator";
 import { ChallengesRecord, UserRecord } from "types";
-import Colors from "constants/colors";
+import LoginButton from "../authentication/LoginButton";
+import BlurModal from "../misc/BlurModal";
+import { SurveyParamList } from "./SurveyNavigator";
 
 const surveyInterval: number = 14
 
@@ -23,7 +22,7 @@ export default function SurveyPopup() {
     const [dismissed, setDismissed] = useState<number>(0)
 
     async function updateDaysSinceLastSurvey(date: string) {
-        setDaysSinceLastSurvey(Math.floor((Date.now() - new Date(date)) / (1000 * 60 * 60 * 24)))
+        setDaysSinceLastSurvey(Math.floor((Date.now() - Date.parse(date)) / (1000 * 60 * 60 * 24)))
     }
 
     useEffect(() => { updateDaysSinceLastSurvey(currentUser.lastSurvey != "" ? currentUser.lastSurvey : currentUser.created) }, [])
@@ -70,8 +69,8 @@ export default function SurveyPopup() {
                             "Don't worry! Your data will be saved anonymously and not used for any purpose other than our research.\n\n" +
                             "This survey has been due for: " + (daysSinceLastSurvey - surveyInterval) + " days"}
                     </Text>
-                    <LoginButton label="Fill out now!" onPress={fillSurvey} spacing={styles.buttonSpacing}/>
-                    <LoginButton label="Remind me later" onPress={() => setDismissed(2)} spacing={styles.buttonSpacing}/>
+                    <LoginButton label="Fill out now!" onPress={fillSurvey} spacing={styles.buttonSpacing} />
+                    <LoginButton label="Remind me later" onPress={() => setDismissed(2)} spacing={styles.buttonSpacing} />
                 </View>}
             <Text>{"If you want to find out more regarding our research project, feel free to reach out to us via "}
                 <Text style={{ color: '#FFF4EC' }} onPress={() => Linking.openURL('mailto:habits@ja.tum.de')}>habits@ja.tum.de</Text>.
