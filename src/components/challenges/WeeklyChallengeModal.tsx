@@ -1,8 +1,9 @@
 import Colors from "constants/colors";
 import { useState } from "react";
-import { FlatList, ListRenderItemInfo, Modal, SafeAreaView, StyleSheet } from "react-native";
+import { FlatList, ListRenderItemInfo, Modal, SafeAreaView, StyleSheet, Text } from "react-native";
 import { Button, FAB } from "react-native-paper";
 import { useWeeklyChallenges } from "src/store/WeeklyChallengesProvider";
+import { globalStyles } from "src/styles";
 import { WeeklyChallengesRecord } from "types";
 import ChallengeGoalCard from "./ChallengeGoalCard";
 import ChallengeSelectionModal from "./ChallengeSelectionModal";
@@ -28,6 +29,7 @@ export default function WeeklyChallengeModal({ visible, onClose }: WeeklyChallen
     return (
         <Modal visible={visible} onDismiss={onClose} style={styles.modalContainer}>
             <SafeAreaView style={styles.innerContainer}>
+                <Text style={globalStyles.textfieldTitle}>Set your goals for the week</Text>
                 <FlatList
                     data={weeklyChallenges}
                     renderItem={renderChallengeGoal}
