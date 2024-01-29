@@ -1,5 +1,6 @@
 import PocketBase, { Record, RecordFullListQueryParams, RecordSubscription, UnsubscribeFunc } from 'pocketbase'
 import { DependencyList, useEffect, useState } from 'react'
+import { WeeklyChallengesRecord } from 'types'
 
 const PB_URL: string = "http://tuzvhja-habits.srv.mwn.de/"
 const pb: PocketBase = new PocketBase(PB_URL)
@@ -7,6 +8,18 @@ const pb: PocketBase = new PocketBase(PB_URL)
 pb.autoCancellation(false)
 
 export { pb }
+
+export function selectChallenge(challengeId: string, userId: string): Promise<WeeklyChallengesRecord | void> {
+    return pb.collection("weekly_challenges").create<WeeklyChallengesRecord>({
+        user_id: userId,
+        challenge_id: challengeId,
+        amount_accomplished: 0,
+        amount_photos: 0,
+        amount_planned: 1,
+        last_completed: "1970-01-01 00:00:00",
+        start_date: new Date().toISOString().replace("T", " "),
+    }).catch(console.error)
+}
 
 type RecordActions<RecordType extends Record> = {
     onCreate?: (record: RecordType) => void

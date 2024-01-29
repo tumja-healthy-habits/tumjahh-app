@@ -2,7 +2,7 @@ import Colors from "constants/colors"
 import React from "react"
 import { ActivityIndicator, FlatList, ListRenderItemInfo, Modal, SafeAreaView, StyleSheet, Text, View } from "react-native"
 import { Divider, FAB } from "react-native-paper"
-import { pb, useCollection } from "src/pocketbaseService"
+import { pb, selectChallenge, useCollection } from "src/pocketbaseService"
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
 import { useWeeklyChallenges } from "src/store/WeeklyChallengesProvider"
 import { globalStyles } from "src/styles"
@@ -51,15 +51,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
     }
 
     function addMissingChallenges(): Promise<any> {
-        return Promise.all(challengesToAdd.map((challenge: ChallengesRecord) => pb.collection("weekly_challenges").create<WeeklyChallengesRecord>({
-            user_id: currentUser!.id,
-            challenge_id: challenge.id,
-            amount_accomplished: 0,
-            amount_photos: 0,
-            amount_planned: 1,
-            last_completed: "1970-01-01 00:00:00",
-            start_date: new Date().toISOString().replace("T", " "),
-        })))
+        return Promise.all(challengesToAdd.map((challenge: ChallengesRecord) => selectChallenge(currentUser!.id, challenge.id)))
     }
 
     function deleteUnwantedChallenges(): Promise<any> {
