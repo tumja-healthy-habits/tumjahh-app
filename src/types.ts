@@ -39,11 +39,24 @@ export interface HabitsRecord extends Record {
     name: string;
 }
 
+export enum ChallengeCategory {
+    Nutrition = "Nutrition",
+    BeActive = "Be Active",
+    SleepMindfulness = "Sleep & Mindfulness",
+}
+
+// store the icons corresponding to the categories
+export const categoryIcons = {
+    [ChallengeCategory.Nutrition]: "food-apple",
+    [ChallengeCategory.BeActive]: "run",
+    [ChallengeCategory.SleepMindfulness]: "meditation",
+}
+
 export interface ChallengesRecord extends Record {
     name: string;
     description: string;
     explanation: string;
-    habit_id: string;
+    category: ChallengeCategory
 }
 
 export interface MosaicRecord extends Record {

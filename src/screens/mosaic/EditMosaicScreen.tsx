@@ -63,7 +63,7 @@ export default function EditMosaicScreen() {
         if (currentUser === null) {
             return
         }
-        setSearchResults(friends.filter((friend: UserRecord) => { return (friend.username.toLowerCase().startsWith(searchText.toLowerCase()) || friend.name.toLowerCase().startsWith(searchText.toLowerCase())) }))
+        setSearchResults(friends.filter((friend: UserRecord) => (friend.username.toLowerCase().startsWith(searchText.toLowerCase()) || friend.name.toLowerCase().startsWith(searchText.toLowerCase())) && !isMember(friend)))
     }
 
     function renderMember({ item }: ListRenderItemInfo<UserRecord>) {
@@ -97,33 +97,41 @@ export default function EditMosaicScreen() {
 
     function addMember(newMember: UserRecord) {
         if (!isMember(newMember)) {
-            setMembers(members.concat([newMember]))
+            setMembers((prevMembers: UserRecord[]) => [...prevMembers, newMember])
             setUpdateSearch(!updateSearch)
         }
     }
 
     function removeMember(toRemove: UserRecord) {
-        var temp = members
-        var index = temp.indexOf(toRemove)
-        temp.splice(index, 1);
-        setMembers(temp)
+        setMembers((prevMembers: UserRecord[]) => prevMembers.filter((member: UserRecord) => member.id != toRemove.id))
         setUpdateSearch(!updateSearch)
     }
 
-    async function createMosaicMemberRecord(user: UserRecord) {
-        const formData: FormData = new FormData()
-        formData.append("user_id", user.id)
-        formData.append("mosaic_id", mosaicRecord!.id)
-        const mosaicMemberRecord = await pb.collection("mosaic_members").create<MosaicMembersRecord>(formData)
-    }
-
-    async function deleteMosaicMemberRecord(user: UserRecord) {
-        var record = await pb.collection("mosaic_members").getFirstListItem<MosaicMembersRecord>(`mosaic_id = "${mosaicRecord!.id}" && user_id = "${user.id}"`)
-        if (record === undefined) {
-            console.log("ERROR, no record for this mosaic and this user")
+    function createMosaicMemberRecord(user: UserRecord) {
+        if (mosaicRecord === undefined) {
+            console.log("ERROR, mosaicRecord undefined")
             return
         }
-        await pb.collection("mosaic_members").delete(record.id)
+        pb.collection("mosaic_members").create<MosaicMembersRecord>({
+            user_id: user.id,
+            mosaic_id: mosaicRecord.id
+
+        })
+    }
+
+    function deleteMosaicMemberRecord(user: UserRecord) {
+        if (mosaicRecord === undefined) {
+            console.log("ERROR, mosaicRecord undefined")
+            return
+        }
+        pb.collection("mosaic_members").getFirstListItem<MosaicMembersRecord>(`mosaic_id = "${mosaicRecord!.id}" && user_id = "${user.id}"`)
+            .then((record: MosaicMembersRecord) => {
+                if (record === undefined) {
+                    console.log("ERROR, no record for this mosaic and this user")
+                    return
+                }
+                pb.collection("mosaic_members").delete(record.id)
+            })
 
     }
 
@@ -155,15 +163,27 @@ export default function EditMosaicScreen() {
         }
 
         //add new members
-        members.map((user) => { !oldMembers.includes(user) ? createMosaicMemberRecord(user) : {} })
+        for (let member of members) {
+            if (!oldMembers.includes(member)) {
+                createMosaicMemberRecord(member)
+            }
+        }
 
         //delete members
-        oldMembers.map((user) => { !members.includes(user) ? deleteMosaicMemberRecord(user) : {} })
+        for (let member of oldMembers) {
+            if (!members.includes(member)) {
+                deleteMosaicMemberRecord(member)
+            }
+        }
         goBack()
     }
 
     async function leaveMosaic() {
-        deleteMosaicMemberRecord(currentUser!)
+        if (currentUser === null) {
+            console.log("ERROR, currentUser undefined")
+            return
+        }
+        deleteMosaicMemberRecord(currentUser)
         goBack()
     }
 

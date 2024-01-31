@@ -29,7 +29,9 @@ export default function SurveyPopup() {
         setDaysSinceLastSurvey(Math.floor((Date.now() - Date.parse(date)) / (1000 * 60 * 60 * 24)))
     }
 
-    useEffect(() => { updateDaysSinceLastSurvey(currentUser.lastSurvey != "" ? currentUser.lastSurvey : currentUser.created) }, [])
+    useEffect(() => {
+        updateDaysSinceLastSurvey(currentUser.lastSurvey != "" ? currentUser.lastSurvey : currentUser.created)
+    }, [])
 
     async function getCategory(challengeId:string) {
         await pb.collection("challenges").getOne<ChallengesRecord>(challengeId)

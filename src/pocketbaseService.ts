@@ -1,5 +1,6 @@
 import PocketBase, { Record, RecordFullListQueryParams, RecordSubscription, UnsubscribeFunc } from 'pocketbase'
 import { DependencyList, useEffect, useState } from 'react'
+import { WeeklyChallengesRecord } from 'types'
 
 const PB_URL: string = "http://tuzvhja-habits.srv.mwn.de/"
 const pb: PocketBase = new PocketBase(PB_URL)
@@ -8,13 +9,32 @@ pb.autoCancellation(false)
 
 export { pb }
 
+export function lastSundayMidnight(): string {
+    let d = new Date()
+    d.setHours(0, 0, 0, 0)
+    d.setDate(d.getDate() - d.getDay())
+    return d.toISOString().replace("T", " ")
+}
+
+export function createWeeklyChallengeRecord(challengeId: string, userId: string): Promise<WeeklyChallengesRecord | void> {
+    return pb.collection("weekly_challenges").create<WeeklyChallengesRecord>({
+        user_id: userId,
+        challenge_id: challengeId,
+        amount_accomplished: 0,
+        amount_photos: 0,
+        amount_planned: 1,
+        last_completed: "1970-01-01 00:00:00",
+        start_date: lastSundayMidnight(),
+    }).catch(error => console.error("Failed to create weekly challenge record", error))
+}
+
 type RecordActions<RecordType extends Record> = {
     onCreate?: (record: RecordType) => void
     onDelete?: (record: RecordType) => void
     onUpdate?: (record: RecordType) => void
 }
 
-export function useRealTimeSubscription<RecordType extends Record>(collection: string, { onCreate, onDelete, onUpdate }: RecordActions<RecordType>, dependencies: DependencyList) {
+export function useRealTimeSubscription<RecordType extends Record>(collection: string, { onCreate, onDelete, onUpdate }: RecordActions<RecordType>) {
 
     let cleanup: () => void | undefined
 
@@ -44,7 +64,7 @@ export function useRealTimeSubscription<RecordType extends Record>(collection: s
                 cleanup()
             }
         }
-    }, dependencies)
+    }, [])
 }
 
 export function useRealTimeCollection<RecordType extends Record>(collection: string, dependencies: DependencyList, params?: RecordFullListQueryParams): RecordType[] {
@@ -81,7 +101,7 @@ export function useRealTimeCollection<RecordType extends Record>(collection: str
         onUpdate: updateRecord,
     }
 
-    useRealTimeSubscription<RecordType>(collection, actions, dependencies)
+    useRealTimeSubscription<RecordType>(collection, actions)
 
     return records
 }

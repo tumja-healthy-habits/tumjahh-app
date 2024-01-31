@@ -12,6 +12,7 @@ import MosaicNavigator from 'screens/mosaic/MosaicNavigator';
 import ProfileNavigator from "screens/profile/ProfileNavigator";
 import MosaicDataProvider from "src/store/MosaicDataProvider";
 import WeeklyChallengesProvider from 'src/store/WeeklyChallengesProvider';
+import WeekFeedbackModal from './challenges/WeekFeedbackModal';
 import SurveyPopup from './survey/SurveyPopup';
 
 const VAR_REMINDER_NOTIFICATION_ID: string = "BeHealthyReminderNotificationId"
@@ -73,9 +74,6 @@ export default function LoggedInApp() {
                         <Tab.Screen name="Feed" component={FriendsScreen} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
                         }} />
-                        {/* <Tab.Screen name="Home" component={HomeScreen} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
-                        }} /> */}
                         <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
                             tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
                         }} />
@@ -84,6 +82,8 @@ export default function LoggedInApp() {
                         }} />
                     </Tab.Navigator>
                     <SurveyPopup />
+                    <WeekFeedbackModal />
+                    {/* {(() => { console.log("rendering"); return null })()} */}
                 </PaperProvider>
             </WeeklyChallengesProvider>
         </MosaicDataProvider>

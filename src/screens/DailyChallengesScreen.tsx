@@ -4,17 +4,15 @@ import WeeklyChallengeButton from "components/challenges/WeeklyChallengeButton";
 import WeeklyChallengeModal from "components/challenges/WeeklyChallengeModal";
 import Colors from "constants/colors";
 import { useState } from "react";
-import { FlatList, ListRenderItemInfo, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { FlatList, ListRenderItemInfo, SafeAreaView, Text, View } from "react-native";
 import { Button, FAB } from "react-native-paper";
-import { useRealTimeCollection } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
+import { useWeeklyChallenges } from "src/store/WeeklyChallengesProvider";
 import { globalStyles } from "src/styles";
 import { WeeklyChallengesRecord } from "types";
 
 export default function DailyChallengesScreen() {
-    const weeklyChallenges: WeeklyChallengesRecord[] = useRealTimeCollection<WeeklyChallengesRecord>("weekly_challenges", [], {
-        expand: "challenge_id",
-    })
+    const weeklyChallenges: WeeklyChallengesRecord[] = useWeeklyChallenges()
     const { currentUser } = useAuthenticatedUser()
 
     const [showChallengesModal, setShowChallengesModal] = useState<boolean>(false)
@@ -33,6 +31,8 @@ export default function DailyChallengesScreen() {
     function renderChallenge({ item }: ListRenderItemInfo<WeeklyChallengesRecord>) {
         return <WeeklyChallengeButton weeklyChallenge={item} openCamera={() => setCameraModalChallenge(item)} />
     }
+
+    console.log(weeklyChallenges)
 
     return (
         <SafeAreaView style={[globalStyles.container, { justifyContent: "flex-start", backgroundColor: Colors.pastelViolet }]}>
@@ -62,15 +62,3 @@ export default function DailyChallengesScreen() {
         </SafeAreaView>
     )
 }
-
-const styles = StyleSheet.create({
-    addButton: {
-        backgroundColor: Colors.white,
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        borderRadius: 10,
-        elevation: 5,
-        margin: 10,
-    },
-})

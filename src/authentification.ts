@@ -1,11 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import { MosaicMembersRecord, MosaicRecord, UserRecord } from "types";
-import { pb } from "./pocketbaseService";
+import { pb, selectChallenge } from "./pocketbaseService";
 
 // the keys used in the local storage
 export const VAR_USERNAME: string = "BeHealthyUsername"
 export const VAR_PASSWORD: string = "BeHealthyPassword"
+
+export const DEFAULT_CHALLENGES: string[] = [
+    "zatllby504vdmlh",
+    "miqzs42e9wvitm8",
+    "woskvdyapzqsp44",
+]
 
 // returns whether the login attempt was successful
 export async function login(username: string, password: string): Promise<UserRecord> {
@@ -31,7 +37,7 @@ export async function signup(username: string, name: string, email: string, pw: 
     formData.append("gender", gender)
     formData.append("birthdate", birthdate.toISOString())
     formData.append("isStudent", isStudent.toString())
-    
+
     const formDataMosaic = new FormData()
     formDataMosaic.append("name", `${username}'s Mosaic`)
     if (profilePicture !== undefined) formDataMosaic.append('thumbnail', {
@@ -39,17 +45,20 @@ export async function signup(username: string, name: string, email: string, pw: 
         name: profilePicture.uri,
         type: "image/jpg"
     } as any)
-    
+
     return pb.collection("users").create<UserRecord>(formData)
         .then((user: UserRecord) => {
             login(username, pw).then(() => {
                 pb.collection("mosaics").create<MosaicRecord>(formDataMosaic)
-                .then((mosaic: MosaicRecord) =>
-                    pb.collection("mosaic_members").create<MosaicMembersRecord>({
-                        mosaic_id: mosaic.id,
-                        user_id: user.id,
-                    }).catch((error: any) => console.log("Error during mosaic member creation: ", error.response))
-                ).catch((error: any) => console.log("Error during mosaic creation: ", error.response))
+                    .then((mosaic: MosaicRecord) => {
+                        pb.collection("mosaic_members").create<MosaicMembersRecord>({
+                            mosaic_id: mosaic.id,
+                            user_id: user.id,
+                        }).catch((error: any) => console.log("Error during mosaic member creation: ", error.response))
+
+                        Promise.all(DEFAULT_CHALLENGES.map((challenge_id: string) => selectChallenge(challenge_id, user.id)))
+                            .catch((error: any) => console.log("Error during challenge selection: ", error.response))
+                    }).catch((error: any) => console.log("Error during mosaic creation: ", error.response))
             })
             return user
         })

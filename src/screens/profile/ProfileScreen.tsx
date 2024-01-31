@@ -1,22 +1,20 @@
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import LoginForm from "components/authentication/LoginForm";
-import ActionButton from "components/misc/ActionButton";
+import IconButton from "components/misc/IconButton";
 import ProfilePicture from "components/profile/ProfilePicture";
 import Colors from "constants/colors";
-import { ImagePickerAsset, ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
+import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 import { useState } from "react";
-import { Alert, Button, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-paper"
+import { Alert, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { TextInput } from "react-native-paper";
 import { VAR_USERNAME, logout } from "src/authentification";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { globalStyles, imageStyles } from "src/styles";
-import { FixedDimensionImage } from "types";
+import { globalStyles } from "src/styles";
 import { UserRecord } from "types";
 import { ProfileParamList } from "./ProfileNavigator";
-import { Ionicons } from "@expo/vector-icons";
-import IconButton from "components/misc/IconButton";
 
 
 export default function ProfileScreenAlt() {
@@ -53,9 +51,9 @@ export default function ProfileScreenAlt() {
 
     function handleTapLogout() {
         Alert.alert('Logout', 'Are you sure you want to log out?', [
-            {text: 'Cancel', onPress: () => {}, style: 'cancel',},
-            {text: 'Logout', style:"destructive", onPress: logout},
-          ]);
+            { text: 'Cancel', onPress: () => { }, style: 'cancel', },
+            { text: 'Logout', style: "destructive", onPress: logout },
+        ]);
     }
 
     async function updateUser() {
@@ -95,22 +93,22 @@ export default function ProfileScreenAlt() {
                     <ProfilePicture uri={photoUri} style={[styles.profilePicture, { borderColor: "transparent" }]} />
 
                     <View style={styles.overlay}>
-                        <IconButton icon="create-outline" size={80} color="white" onPress={handleTapProfilePicture} style={{borderRadius:10, backgroundColor:"#666", paddingHorizontal:2,}}/>
+                        <IconButton icon="create-outline" size={80} color="white" onPress={handleTapProfilePicture} style={{ borderRadius: 10, backgroundColor: "#666", paddingHorizontal: 2, }} />
                     </View>
-                    
+
                 </View>
                 : <ProfilePicture uri={photoUri} style={[styles.profilePicture, { borderColor: "transparent" }]} />
             }
-            
-            {editMode ?  
-                <TextInput 
+
+            {editMode ?
+                <TextInput
                     value={name}
-                    onChangeText={setName} 
-                    style={styles.textInput} 
+                    onChangeText={setName}
+                    style={styles.textInput}
                     label="Display name"
                     autoCapitalize="none"
                     autoCorrect={false}
-                    right={<TextInput.Icon icon={() => <Ionicons name="create-outline" size={24} color="black" />}/>}
+                    right={<TextInput.Icon icon={() => <Ionicons name="create-outline" size={24} color="black" />} />}
                 />
                 : <Text style={styles.name}>{name}</Text>
             }
@@ -120,7 +118,7 @@ export default function ProfileScreenAlt() {
             {/* <ActionButton title="Log out" onPress={logout} /> */}
             {/* <ActionButton title="Add friends" onPress={() => navigate("SearchFriend", { friendId: undefined })} /> */}
 
-            {editMode ? 
+            {editMode ?
                 <View style={styles.buttonView}>
                     <Pressable style={styles.button} onPress={handleDiscardChanges}>
                         <Ionicons name="close-outline" size={40} />
@@ -133,21 +131,21 @@ export default function ProfileScreenAlt() {
                 </View>
                 : <View style={styles.buttonView}>
                     <Pressable style={styles.button} onPress={() => navigate("SearchFriend", { friendId: undefined })}>
-                        <Ionicons name="people" size={40}/>
+                        <Ionicons name="people" size={40} />
                         <Text style={styles.buttonText}>Friends</Text>
                     </Pressable>
                     <Pressable style={styles.button} onPress={() => setEditMode(true)}>
                         <Ionicons name="create-outline" size={40} />
-                        <Text style={styles.buttonText}>Edit</Text>
+                        <Text style={styles.buttonText}>Edit Profile</Text>
                     </Pressable>
                     <Pressable style={styles.button} onPress={handleTapLogout}>
                         <Ionicons name="log-out-outline" size={40} />
-                        <Text style={styles.buttonText}>Log out</Text>
+                        <Text style={styles.buttonText}>Log Out</Text>
                     </Pressable>
                 </View>
             }
 
-            
+
         </SafeAreaView>
     )
 }
@@ -157,39 +155,39 @@ const styles = StyleSheet.create({
     username: {
         color: Colors.accent,
         fontSize: 25,
-        marginBottom:20
+        marginBottom: 20
     },
     textInput: {
         backgroundColor: Colors.backgroundProfile,
         borderBottomColor: "transparent",
-        borderBottomWidth:0,
-        width:"70%"
+        borderBottomWidth: 0,
+        width: "70%"
     },
     profilePicture: {
-        width:200,
-        height:200,
-        marginBottom:10
+        width: 200,
+        height: 200,
+        marginBottom: 10
     },
     name: {
-        fontSize:20,
-        marginBottom:5
+        fontSize: 20,
+        marginBottom: 5
     },
-    button:{
-        width:80,
-        height:80,
-        alignItems:"center",
-        marginHorizontal:5
+    button: {
+        width: 80,
+        height: 80,
+        alignItems: "center",
+        marginHorizontal: 5
     },
     buttonText: {
-        textAlign:"center"
+        textAlign: "center"
     },
     buttonView: {
-        flexDirection:"row",
-        marginTop:50
+        flexDirection: "row",
+        marginTop: 50
     },
     overlay: {
-		...StyleSheet.absoluteFillObject,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 })
