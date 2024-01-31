@@ -1,15 +1,20 @@
 import Colors from "constants/colors"
-import React from "react"
-import { ActivityIndicator, FlatList, ListRenderItemInfo, Modal, SafeAreaView, StyleSheet, Text, View } from "react-native"
-import { Divider, FAB } from "react-native-paper"
+import React, { useMemo } from "react"
+import { ActivityIndicator, ListRenderItemInfo, Modal, SafeAreaView, SectionList, StyleSheet, Text, View } from "react-native"
+import { Divider, FAB, Icon } from "react-native-paper"
 import { createWeeklyChallengeRecord, pb, useCollection } from "src/pocketbaseService"
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider"
 import { useWeeklyChallenges } from "src/store/WeeklyChallengesProvider"
 import { globalStyles } from "src/styles"
-import { ChallengesRecord, WeeklyChallengesRecord } from "types"
+import { ChallengeCategory, ChallengesRecord, WeeklyChallengesRecord, categoryIcons } from "src/types"
 import ChallengeCard from "./ChallengeCard"
 
 export const VAR_CHALLENGES: string = "BeHealthyChallenges"
+
+type Section = {
+    title: ChallengeCategory,
+    data: readonly ChallengesRecord[],
+}
 
 type ChallengeSelectionModalProps = {
     visible: boolean,
@@ -24,31 +29,12 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
     const challenges: ChallengesRecord[] = useCollection<ChallengesRecord>("challenges", [])
     const weeklyChallenges: WeeklyChallengesRecord[] = useWeeklyChallenges()
 
-    function renderChallenge({ item }: ListRenderItemInfo<ChallengesRecord>) {
-        function checked(wChallenges: WeeklyChallengesRecord[]): boolean {
-            return wChallenges.some((weeklyChallenge: WeeklyChallengesRecord) => weeklyChallenge.challenge_id === item.id)
-        }
-
-        return <ChallengeCard
-            challenge={item}
-            isChecked={checked(weeklyChallenges)}
-            onPress={(isChecked: boolean) => {
-                if (isChecked) {
-                    if (checked(weeklyChallenges)) {
-                        setChallengesToRemove((oldChallenges: ChallengesRecord[]) => oldChallenges.filter((challenge: ChallengesRecord) => challenge.id !== item.id))
-                    } else {
-                        setChallengesToAdd((oldChallenges: ChallengesRecord[]) => [...oldChallenges, item])
-                    }
-                } else {
-                    if (!checked(weeklyChallenges)) {
-                        setChallengesToAdd((oldChallenges: ChallengesRecord[]) => oldChallenges.filter((challenge: ChallengesRecord) => challenge.id !== item.id))
-                    } else {
-                        setChallengesToRemove((oldChallenges: ChallengesRecord[]) => [...oldChallenges, item])
-                    }
-                }
-            }}
-        />
-    }
+    const sections: Section[] = useMemo(() => {
+        return [ChallengeCategory.SleepMindfulness, ChallengeCategory.Nutrition, ChallengeCategory.BeActive].map((category: ChallengeCategory) => ({
+            title: category,
+            data: challenges.filter((challenge: ChallengesRecord) => challenge.category === category),
+        }))
+    }, [challenges])
 
     function addMissingChallenges(): Promise<any> {
         if (currentUser === null) return Promise.resolve()
@@ -86,6 +72,53 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
         <Divider style={{ marginTop: 15 }} />
     </View>
 
+    function renderChallenge({ item }: ListRenderItemInfo<ChallengesRecord>) {
+        function checked(wChallenges: WeeklyChallengesRecord[]): boolean {
+            return wChallenges.some((weeklyChallenge: WeeklyChallengesRecord) => weeklyChallenge.challenge_id === item.id)
+        }
+
+        return <ChallengeCard
+            challenge={item}
+            isChecked={checked(weeklyChallenges)}
+            onPress={(isChecked: boolean) => {
+                if (isChecked) {
+                    if (checked(weeklyChallenges)) {
+                        setChallengesToRemove((oldChallenges: ChallengesRecord[]) => oldChallenges.filter((challenge: ChallengesRecord) => challenge.id !== item.id))
+                    } else {
+                        setChallengesToAdd((oldChallenges: ChallengesRecord[]) => [...oldChallenges, item])
+                    }
+                } else {
+                    if (!checked(weeklyChallenges)) {
+                        setChallengesToAdd((oldChallenges: ChallengesRecord[]) => oldChallenges.filter((challenge: ChallengesRecord) => challenge.id !== item.id))
+                    } else {
+                        setChallengesToRemove((oldChallenges: ChallengesRecord[]) => [...oldChallenges, item])
+                    }
+                }
+            }}
+        />
+    }
+
+    function renderSectionHeader({ section }: { section: Section }) {
+
+        return (
+            <View style={{ backgroundColor: Colors.pastelOrange }}>
+                <View style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 10,
+                    marginTop: 10,
+                }}>
+                    <Icon source={categoryIcons[section.title]} size={30} color={
+                        Colors.black
+                    } />
+                    <Text style={globalStyles.textfieldTitle}>{section.title}</Text>
+                </View>
+                <Divider style={{ marginTop: 10 }} />
+            </View>
+        )
+    }
+
     return (
         <Modal
             visible={visible}
@@ -94,7 +127,8 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
             style={styles.modalContainer}
         >
             <SafeAreaView style={styles.modalContainer} >
-                <FlatList
+                <SectionList
+                    sections={sections}
                     data={challenges}
                     keyExtractor={(item) => item.id}
                     renderItem={renderChallenge}
@@ -102,6 +136,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
                     ListEmptyComponent={ListEmpty}
                     ListHeaderComponent={ListHeader}
                     stickyHeaderIndices={[0]}
+                    renderSectionHeader={renderSectionHeader}
                 />
                 <FAB
                     onPress={handleConfirm}

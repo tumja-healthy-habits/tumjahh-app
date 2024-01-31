@@ -32,7 +32,6 @@ export default function WeeklyChallengesProvider({ children }: any) {
         const allRecords: WeeklyChallengesRecord[] = await pb.collection("weekly_challenges").getFullList<WeeklyChallengesRecord>({
             sort: "-start_date",
         })
-        console.log("last weekly challenge", allRecords[0])
         if (allRecords.length === 0) return
         const startDate: string = allRecords[0].start_date
         const records: WeeklyChallengesRecord[] = await pb.collection("weekly_challenges").getFullList<WeeklyChallengesRecord>({
@@ -48,10 +47,7 @@ export default function WeeklyChallengesProvider({ children }: any) {
         pb.collection("weekly_challenges").getFullList<WeeklyChallengesRecord>({
             filter: `start_date >= "${lastSundayMidnight()}"`,
             expand: "challenge_id",
-        }).then(records => {
-            console.log(records)
-            setWeeklyChallenges(records)
-        })
+        }).then(setWeeklyChallenges)
     }
 
     useEffect(() => {
