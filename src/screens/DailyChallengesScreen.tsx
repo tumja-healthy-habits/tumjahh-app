@@ -36,7 +36,7 @@ export default function DailyChallengesScreen() {
 
     return (
         <SafeAreaView style={[globalStyles.container, { justifyContent: "flex-start", backgroundColor: Colors.pastelViolet }]}>
-            <Text style={globalStyles.textfieldTitle}>Hi, {currentUser.name}.</Text>
+            <Text style={globalStyles.textfieldTitle}>Hi, {currentUser.name}</Text>
             {weeklyChallenges.length === 0 ? <Button onPress={() => setShowChallengesModal(true)} color={Colors.accent}>Select some challenges here :)</Button>
                 :
                 <FlatList

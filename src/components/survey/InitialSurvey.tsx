@@ -102,7 +102,7 @@ export default function InitialSurvey() {
     return (
         <NestableScrollContainer contentContainerStyle={{ flexGrow: 1 }}>
             <View style={[globalStyles.container, styles.outerContainer]}>
-                <View style={{ width: "90%" }}>
+                <View style={{ width: "90%", marginVertical:"10%" }}>
                     <Text style={styles.title}>About yourself</Text>
 
                     <Text style={styles.sectionTitle}>Transportation</Text>
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     title: {
         color: '#FFF4EC',
         fontSize: 30,
-        margin: 15,
+        marginVertical: 15,
     },
     sectionTitle: {
         color: '#FFF4EC',

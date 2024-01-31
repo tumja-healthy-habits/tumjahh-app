@@ -3,16 +3,18 @@ import { useEffect, useState } from "react";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { ChallengesRecord, UserRecord } from "types";
+import { ChallengesRecord, UserRecord, WeeklyChallengesRecord } from "types";
 import LoginButton from "../authentication/LoginButton";
 import BlurModal from "../misc/BlurModal";
 import { SurveyParamList } from "./SurveyNavigator";
+import { useWeeklyChallenges } from "src/store/WeeklyChallengesProvider";
 
 const surveyInterval: number = 14
 
 export default function SurveyPopup() {
     const { currentUser } = useAuthenticatedUser()
     const { navigate } = useNavigation<NavigationProp<SurveyParamList, "SurveyPopup">>()
+    const weeklyChallenges: WeeklyChallengesRecord[] = useWeeklyChallenges()
 
     if (currentUser === null) {
         return <View />;
@@ -20,6 +22,8 @@ export default function SurveyPopup() {
 
     const [daysSinceLastSurvey, setDaysSinceLastSurvey] = useState<number>(0)
     const [dismissed, setDismissed] = useState<number>(0)
+    const [categories, setCategories] = useState<string[]>([])
+
 
     async function updateDaysSinceLastSurvey(date: string) {
         setDaysSinceLastSurvey(Math.floor((Date.now() - Date.parse(date)) / (1000 * 60 * 60 * 24)))
@@ -27,14 +31,23 @@ export default function SurveyPopup() {
 
     useEffect(() => { updateDaysSinceLastSurvey(currentUser.lastSurvey != "" ? currentUser.lastSurvey : currentUser.created) }, [])
 
+    async function getCategory(challengeId:string) {
+        await pb.collection("challenges").getOne<ChallengesRecord>(challengeId)
+            .then((record:ChallengesRecord) => { 
+                if (!categories.includes(record.category)) {
+                    categories.push(record.category)
+                }
+            })
+    }
+
+
     async function fillSurvey() {
-        const challenges: { id: string, name: string }[] = (await pb.collection("user_challenges").getFullList<ChallengesRecord>({
-            filter: `user_id = "${currentUser!.id}"`,
-            expand: `challenge_id`
-        }))[0].expand.challenge_id.map((e: ChallengesRecord) => { return { id: e.id, name: e.name } })
-        navigate("Survey", { challenges: challenges })
+        navigate("Survey", { categories: categories })
         setDismissed(2)
     }
+
+    weeklyChallenges.map((wc: WeeklyChallengesRecord) => {getCategory(wc.challenge_id)})
+
 
     return (<BlurModal visible={(dismissed < 1 && currentUser.lastSurvey == "") || (dismissed < 2 && daysSinceLastSurvey >= surveyInterval)}
         onClose={() => setDismissed(dismissed == 0 && currentUser.lastSurvey == "" ? 1 : 2)}>
