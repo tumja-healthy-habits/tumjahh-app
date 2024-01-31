@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import { MosaicMembersRecord, MosaicRecord, UserRecord } from "types";
-import { pb, selectChallenge } from "./pocketbaseService";
+import { pb, createWeeklyChallengeRecord } from "./pocketbaseService";
 
 // the keys used in the local storage
 export const VAR_USERNAME: string = "BeHealthyUsername"
@@ -49,6 +49,9 @@ export async function signup(username: string, name: string, email: string, pw: 
     return pb.collection("users").create<UserRecord>(formData)
         .then((user: UserRecord) => {
             login(username, pw).then(() => {
+                Promise.all(DEFAULT_CHALLENGES.map((challenge_id: string) => createWeeklyChallengeRecord(challenge_id, user.id)))
+                            .catch((error: any) => console.log("Error during challenge selection: ", error.response))
+
                 pb.collection("mosaics").create<MosaicRecord>(formDataMosaic)
                     .then((mosaic: MosaicRecord) => {
                         pb.collection("mosaic_members").create<MosaicMembersRecord>({
@@ -56,8 +59,6 @@ export async function signup(username: string, name: string, email: string, pw: 
                             user_id: user.id,
                         }).catch((error: any) => console.log("Error during mosaic member creation: ", error.response))
 
-                        Promise.all(DEFAULT_CHALLENGES.map((challenge_id: string) => selectChallenge(challenge_id, user.id)))
-                            .catch((error: any) => console.log("Error during challenge selection: ", error.response))
                     }).catch((error: any) => console.log("Error during mosaic creation: ", error.response))
             })
             return user
