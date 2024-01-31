@@ -17,7 +17,6 @@ export default function WeeklyChallengeModal({ visible, onClose }: WeeklyChallen
 
     const [showChallengesModal, setShowChallengesModal] = useState<boolean>(false)
 
-
     const weeklyChallenges: WeeklyChallengesRecord[] = useWeeklyChallenges()
 
     function renderChallengeGoal({ item }: ListRenderItemInfo<WeeklyChallengesRecord>) {
