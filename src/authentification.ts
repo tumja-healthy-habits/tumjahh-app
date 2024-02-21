@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
-import { MosaicMembersRecord, MosaicRecord, UserRecord } from "types";
+import { FriendRequestsRecord, FriendsWithRecord, MosaicMembersRecord, MosaicRecord, PhotosRecord, UserRecord } from "types";
 import { pb, createWeeklyChallengeRecord } from "./pocketbaseService";
+
 
 // the keys used in the local storage
 export const VAR_USERNAME: string = "BeHealthyUsername"
@@ -102,4 +103,14 @@ export async function logout(): Promise<void> {
     await AsyncStorage.removeItem(VAR_PASSWORD)
     return pb.authStore.clear()
     // When the user is logged out when they close the app, they need login when reopening it
+}
+
+export async function deleteAccount(user:UserRecord|null): Promise<void> {
+    if (user === null) {
+        Alert.alert("You need to be logged in to delete your account")
+        return
+    }
+
+    pb.collection("users").delete(user.id)
+    logout()
 }
