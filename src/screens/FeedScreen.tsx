@@ -24,17 +24,19 @@ export default function FriendsScreen() {
 
     useEffect(() =>
     {
-        setPhotoExists(false)
+        //setPhotoExists(false)
         friends.map(checkPhotoExists);
-    }, [])
+
+    }, [photoExists])
 
     async function checkPhotoExists(user:UserRecord) {
-        console.log("inside checkExists")
+        //console.log("inside checkExists")
         let oneDayAgo = getOneDayAgo()
         let photos = await pb.collection("photos").getFullList({filter: `user_id="${user.id}" && created >= "${oneDayAgo}"`})
+        //console.log("Photos length: " + photos.length)
         if (photos.length > 0) {
             setPhotoExists(true)
-            console.log("Photo exists for " + user.username)
+            //console.log("Photo exists for " + user.username)
         }
     }
 
@@ -42,10 +44,12 @@ export default function FriendsScreen() {
     function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
         return <FriendCard user={item} />
     }
-
+    console.log(photoExists)
+    
     return (
         <SafeAreaView style={[globalStyles.container, { alignItems: 'stretch' }]}>
             {friends.length === 0 && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>You haven't added any friends yet</Text>}
+            
             {(!photoExists && friends.length > 0) && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>Your friends haven't posted {"\n"} anything in the last 24 hours</Text>}
             <FlatList
                 data={friends}
