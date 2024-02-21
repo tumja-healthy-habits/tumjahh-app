@@ -52,7 +52,7 @@ export default function DailyChallengesScreen() {
                     alignSelf: "center",
                     backgroundColor: Colors.white,
                     position: "absolute",
-                    bottom: 45,
+                    bottom: 20,
                 }}
                 label="Edit your challenges"
             />
