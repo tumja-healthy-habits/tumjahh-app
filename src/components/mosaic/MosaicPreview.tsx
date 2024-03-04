@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Chip } from "react-native-paper";
 import { MosaicParamList } from "screens/mosaic/MosaicNavigator";
-import { pb } from "src/pocketbaseService";
+import { pb, useRealTimeSubscription } from "src/pocketbaseService";
 import { ContainsRecord, MosaicRecord } from "types";
-import IconButton from "components/misc/IconButton";
 
 
 type MosaicPreviewProps = {
@@ -15,8 +14,8 @@ type MosaicPreviewProps = {
 
 export default function MosaicPreview({ record }: MosaicPreviewProps) {
     const { navigate } = useNavigation<NavigationProp<MosaicParamList, "List">>()
-    const [numPhotos, setNumPhotos] = useState<number>()
-    
+    const [numPhotos, setNumPhotos] = useState<number>(0)
+
     useEffect(() => {
         pb.collection("contains").getFullList<ContainsRecord>({
             filter: `mosaic_id = "${record.id}"`,
@@ -25,10 +24,19 @@ export default function MosaicPreview({ record }: MosaicPreviewProps) {
         }).catch((error) => console.error("An error occured while fetching the number of photos in the mosaic", error))
     }, [record.id])
 
-    function handlePress(): void {
-        navigate("SingleMosaic", { mosaicId: record.id })
-    }
+    useRealTimeSubscription<ContainsRecord>("contains", {
+        onCreate: (contains: ContainsRecord) => {
+            if (contains.mosaic_id === record.id) setNumPhotos((numPhotos: number) => numPhotos + 1)
+        },
+        onDelete: (contains: ContainsRecord) => {
+            if (contains.mosaic_id === record.id) setNumPhotos((numPhotos: number) => numPhotos - 1)
+        },
+    })
 
+
+    function handlePress(): void {
+        navigate("SingleMosaic", { mosaicRecord: record })
+    }
 
     return (
         <View>
@@ -68,7 +76,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: Colors.primaryDark,
         flex: 1,
-        marginLeft:10
+        marginLeft: 10
     },
     image: {
         width: "100%",
@@ -91,10 +99,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.pastelGreen,
     },
     overlay: {
-		...StyleSheet.absoluteFillObject,
+        ...StyleSheet.absoluteFillObject,
         //position:"absolute",
-		//top:10,
-        marginTop:15,
-        marginLeft:"86%",     
-	},
+        //top:10,
+        marginTop: 15,
+        marginLeft: "86%",
+    },
 })

@@ -1,14 +1,12 @@
-import FriendCard from 'components/feed/FriendCard'
+import FriendCard, { getOneDayAgo } from 'components/feed/FriendCard'
+import { useEffect, useState } from 'react'
 import { FlatList, ListRenderItemInfo, SafeAreaView, Text } from 'react-native'
-import { useRealTimeCollection } from 'src/pocketbaseService'
+import { pb, useRealTimeCollection } from 'src/pocketbaseService'
 import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider'
 import { globalStyles } from "src/styles"
-import { FriendsWithRecord, PhotosRecord, UserRecord } from 'types'
-import { pb } from 'src/pocketbaseService'
-import { useState, useEffect } from 'react'
-import { getOneDayAgo } from 'components/feed/FriendCard'
+import { FriendsWithRecord, UserRecord } from 'types'
 
-export default function FriendsScreen() {
+export default function FeedScreen() {
     const { currentUser } = useAuthenticatedUser()
     const [photoExists, setPhotoExists] = useState<boolean>(false)
 
@@ -22,19 +20,18 @@ export default function FriendsScreen() {
 
     friends.map(checkPhotoExists)
 
-    useEffect(() =>
-    {
+    useEffect(() => {
         setPhotoExists(false)
         friends.map(checkPhotoExists);
     }, [])
 
-    async function checkPhotoExists(user:UserRecord) {
-        console.log("inside checkExists")
+    async function checkPhotoExists(user: UserRecord) {
+        // console.log("inside checkExists")
         let oneDayAgo = getOneDayAgo()
-        let photos = await pb.collection("photos").getFullList({filter: `user_id="${user.id}" && created >= "${oneDayAgo}"`})
+        let photos = await pb.collection("photos").getFullList({ filter: `user_id="${user.id}" && created >= "${oneDayAgo}"` })
         if (photos.length > 0) {
             setPhotoExists(true)
-            console.log("Photo exists for " + user.username)
+            // console.log("Photo exists for " + user.username)
         }
     }
 
@@ -45,8 +42,8 @@ export default function FriendsScreen() {
 
     return (
         <SafeAreaView style={[globalStyles.container, { alignItems: 'stretch' }]}>
-            {friends.length === 0 && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>You haven't added any friends yet</Text>}
-            {(!photoExists && friends.length > 0) && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>Your friends haven't posted {"\n"} anything in the last 24 hours</Text>}
+            {friends.length === 0 && <Text style={[globalStyles.textfieldText, { marginTop: 20 }]}>You haven't added any friends yet</Text>}
+            {(!photoExists && friends.length > 0) && <Text style={[globalStyles.textfieldText, { marginTop: 20 }]}>Your friends haven't posted {"\n"} anything in the last 24 hours</Text>}
             <FlatList
                 data={friends}
                 keyExtractor={(user: UserRecord) => user.id}

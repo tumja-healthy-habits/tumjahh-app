@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Image, ListRenderItemInfo, Modal, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { FlatList } from "react-native-gesture-handler"
 import { Button, Divider } from "react-native-paper"
 import { pb } from "src/pocketbaseService"
+import { useMosaics } from "src/store/MosaicsProvider"
 import { MosaicRecord } from "types"
 
 type PickMosaicsProps = {
@@ -13,15 +14,8 @@ type PickMosaicsProps = {
 }
 
 export default function PickMosaicsModal({ visible, photoId, onClose }: PickMosaicsProps) {
-    const [mosaics, setMosaics] = useState<MosaicRecord[]>([])
-    const [selectedMosaics, setSelectedMosaics] = useState<MosaicRecord[]>([])
-
-    useEffect(() => {
-        pb.collection("mosaics").getFullList<MosaicRecord>().then((mosaics: MosaicRecord[]) => {
-            setMosaics(mosaics)
-            setSelectedMosaics(mosaics)
-        })
-    }, [])
+    const mosaics: MosaicRecord[] = useMosaics()
+    const [selectedMosaics, setSelectedMosaics] = useState<MosaicRecord[]>(mosaics)
 
     function renderMosaicOption({ item: mosaic }: ListRenderItemInfo<MosaicRecord>) {
         function selectMosaic(): void {

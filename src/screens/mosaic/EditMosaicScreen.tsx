@@ -10,19 +10,19 @@ import { Alert, FlatList, ListRenderItemInfo, SafeAreaView, StyleSheet, Text, To
 import { Divider, TextInput, } from "react-native-paper";
 import { pb, useRealTimeCollection } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { FixedDimensionImage, FriendsWithRecord, MosaicMembersRecord, MosaicRecord, UserRecord } from "types";
+import { FixedDimensionImage, FriendsWithRecord, MosaicMembersRecord, UserRecord } from "types";
 import { MosaicParamList } from "./MosaicNavigator";
 
 export default function EditMosaicScreen() {
 
     const { currentUser } = useAuthenticatedUser()
-    if (currentUser === null) return
+    if (currentUser === null) return <View />
 
     const { goBack } = useNavigation<NavigationProp<MosaicParamList, "CreateMosaic">>()
+    const { mosaicRecord } = useRoute<RouteProp<MosaicParamList, "EditMosaic">>().params
 
-    const [mosaicRecord, setMosaicRecord] = useState<MosaicRecord>()
-    const [thumbnail, setThumbnail] = useState<FixedDimensionImage>()
-    const [mosaicName, setMosaicName] = useState<string>()
+    const [thumbnail, setThumbnail] = useState<FixedDimensionImage>({ "uri": pb.getFileUrl(mosaicRecord, mosaicRecord.thumbnail), "height": 100, "width": 100 })
+    const [mosaicName, setMosaicName] = useState<string>(mosaicRecord.name)
     const [oldMembers, setOldMembers] = useState<UserRecord[]>([])
     const [members, setMembers] = useState<UserRecord[]>([])
     const [searchText, setSearchText] = useState<string>("")
@@ -30,18 +30,10 @@ export default function EditMosaicScreen() {
     const [updateSearch, setUpdateSearch] = useState<boolean>(false)
 
     const friends: UserRecord[] = useRealTimeCollection<FriendsWithRecord>("friends_with", [], { expand: "user1, user2" }).map(getFriend)
-    const { params } = useRoute<RouteProp<MosaicParamList, "EditMosaic">>()
 
     useEffect(() => {
 
-        pb.collection("mosaics").getOne<MosaicRecord>(params.mosaicId).then(
-            (mosaic: MosaicRecord) => {
-                setMosaicRecord(mosaic);
-                setThumbnail({ "uri": pb.getFileUrl(mosaic, mosaic.thumbnail), "height": 100, "width": 100 })
-                setMosaicName(mosaic.name)
-            })
-
-        pb.collection("mosaic_members").getFullList<MosaicMembersRecord>({ filter: `mosaic_id = "${params.mosaicId}"`, expand: "user_id" })
+        pb.collection("mosaic_members").getFullList<MosaicMembersRecord>({ filter: `mosaic_id = "${mosaicRecord.id}"`, expand: "user_id" })
             .then((records: MosaicMembersRecord[]) => { setMembers(records.map(getMember)); setOldMembers(records.map(getMember)) })
 
     }, [])
