@@ -10,6 +10,7 @@ import DailyChallengesScreen from 'screens/DailyChallengesScreen';
 import FeedScreen from 'screens/FeedScreen';
 import MosaicNavigator from 'screens/mosaic/MosaicNavigator';
 import ProfileNavigator from "screens/profile/ProfileNavigator";
+import FriendsProvider from 'src/store/FriendsProvider';
 import MosaicsProvider from 'src/store/MosaicsProvider';
 import WeeklyChallengesProvider from 'src/store/WeeklyChallengesProvider';
 import WeekFeedbackModal from './challenges/WeekFeedbackModal';
@@ -64,28 +65,30 @@ export default function LoggedInApp() {
         })
     }, [])
     return (
-        <MosaicsProvider>
-            <WeeklyChallengesProvider>
-                <PaperProvider>
-                    <Tab.Navigator initialRouteName='Challenges' screenOptions={navigatorOptions}>
-                        <Tab.Screen name="Challenges" component={DailyChallengesScreen} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
-                        }} />
-                        <Tab.Screen name="Feed" component={FeedScreen} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
-                        }} />
-                        <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
-                        }} />
-                        <Tab.Screen name="Profile" component={ProfileNavigator} options={{
-                            tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
-                        }} />
-                    </Tab.Navigator>
-                    <SurveyPopup />
-                    <WeekFeedbackModal />
-                    {/* {(() => { console.log("rendering"); return null })()} */}
-                </PaperProvider>
-            </WeeklyChallengesProvider>
-        </MosaicsProvider>
+        <FriendsProvider>
+            <MosaicsProvider>
+                <WeeklyChallengesProvider>
+                    <PaperProvider>
+                        <Tab.Navigator initialRouteName='Challenges' screenOptions={navigatorOptions}>
+                            <Tab.Screen name="Challenges" component={DailyChallengesScreen} options={{
+                                tabBarIcon: ({ color, size }) => <Ionicons name="checkbox-outline" color={color} size={size} />,
+                            }} />
+                            <Tab.Screen name="Feed" component={FeedScreen} options={{
+                                tabBarIcon: ({ color, size }) => <Ionicons name="list" color={color} size={size} />,
+                            }} />
+                            <Tab.Screen name="Mosaic" component={MosaicNavigator} options={{
+                                tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" color={color} size={size} />,
+                            }} />
+                            <Tab.Screen name="Profile" component={ProfileNavigator} options={{
+                                tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
+                            }} />
+                        </Tab.Navigator>
+                        <SurveyPopup />
+                        <WeekFeedbackModal />
+                        {/* {(() => { console.log("rendering"); return null })()} */}
+                    </PaperProvider>
+                </WeeklyChallengesProvider>
+            </MosaicsProvider>
+        </FriendsProvider>
     )
 }
