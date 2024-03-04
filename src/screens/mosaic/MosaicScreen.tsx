@@ -11,11 +11,15 @@ import { useState } from "react";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator, Divider } from "react-native-paper";
 import { pb } from "src/pocketbaseService";
+import { useMosaics } from "src/store/MosaicsProvider";
 import { MosaicRecord } from "types";
 import { MosaicParamList } from "./MosaicNavigator";
 
 export default function NewMosaicScreen() {
-    const { mosaicRecord } = useRoute<RouteProp<MosaicParamList, "SingleMosaic">>().params
+    const { mosaicId } = useRoute<RouteProp<MosaicParamList, "SingleMosaic">>().params
+    const mosaics: MosaicRecord[] = useMosaics()
+    const mosaicRecord: MosaicRecord | undefined = mosaics.find((mosaic: MosaicRecord) => mosaic.id === mosaicId)
+    console.log(mosaicRecord, mosaicId)
     const { navigate, goBack } = useNavigation<NavigationProp<MosaicParamList, "SingleMosaic">>()
     const [showModal, setShowModal] = useState<boolean>(false)
     const [name, setName] = useState<string>(mosaicRecord ? mosaicRecord.name : "")
@@ -44,7 +48,7 @@ export default function NewMosaicScreen() {
         <View style={styles.headerContainer}>
             <IconButton icon="chevron-back-outline" onPress={goBack} color="#666" size={30} style={styles.backButton} />
             <Text style={styles.title}>{mosaicRecord && mosaicRecord.name}</Text>
-            <IconButton icon="create-outline" color="#666" size={30} onPress={() => navigate("EditMosaic", { mosaicRecord: mosaicRecord })} style={styles.editButton} />
+            <IconButton icon="create-outline" color="#666" size={30} onPress={() => navigate("EditMosaic", { mosaicId: mosaicId })} style={styles.editButton} />
         </View>
         <Divider />
         {mosaicRecord ? (

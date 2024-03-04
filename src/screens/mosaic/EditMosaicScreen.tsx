@@ -10,7 +10,8 @@ import { Alert, FlatList, ListRenderItemInfo, SafeAreaView, StyleSheet, Text, To
 import { Divider, TextInput, } from "react-native-paper";
 import { pb, useRealTimeCollection } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { FixedDimensionImage, FriendsWithRecord, MosaicMembersRecord, UserRecord } from "types";
+import { useMosaics } from "src/store/MosaicsProvider";
+import { FixedDimensionImage, FriendsWithRecord, MosaicMembersRecord, MosaicRecord, UserRecord } from "types";
 import { MosaicParamList } from "./MosaicNavigator";
 
 export default function EditMosaicScreen() {
@@ -19,7 +20,9 @@ export default function EditMosaicScreen() {
     if (currentUser === null) return <View />
 
     const { goBack } = useNavigation<NavigationProp<MosaicParamList, "CreateMosaic">>()
-    const { mosaicRecord } = useRoute<RouteProp<MosaicParamList, "EditMosaic">>().params
+    const { mosaicId } = useRoute<RouteProp<MosaicParamList, "EditMosaic">>().params
+    const mosaicRecord: MosaicRecord | undefined = useMosaics().find((mosaic: MosaicRecord) => mosaic.id === mosaicId)
+    if (mosaicRecord === undefined) return <View />
 
     const [thumbnail, setThumbnail] = useState<FixedDimensionImage>({ "uri": pb.getFileUrl(mosaicRecord, mosaicRecord.thumbnail), "height": 100, "width": 100 })
     const [mosaicName, setMosaicName] = useState<string>(mosaicRecord.name)

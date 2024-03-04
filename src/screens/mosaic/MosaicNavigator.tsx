@@ -2,7 +2,6 @@ import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navig
 import { createStackNavigator } from "@react-navigation/stack"
 import { AppParamList } from "components/LoggedInApp"
 import PickMosaicsModal from "components/mosaic/PickMosaicsModal"
-import { MosaicRecord } from "types"
 import CreateMosaicScreen from "./CreateMosaicScreen"
 import EditMosaicScreen from "./EditMosaicScreen"
 import MosaicListScreen from "./MosaicListScreen"
@@ -11,11 +10,11 @@ import NewMosaicScreen from "./MosaicScreen"
 export type MosaicParamList = {
     "List": undefined,
     "SingleMosaic": {
-        mosaicRecord: MosaicRecord,
+        mosaicId: string,
     },
     "CreateMosaic": undefined,
     "EditMosaic": {
-        mosaicRecord: MosaicRecord,
+        mosaicId: string,
     }
 }
 

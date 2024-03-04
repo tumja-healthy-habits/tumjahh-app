@@ -74,13 +74,13 @@ export default function FriendCard({ user }: FriendCardProps) {
         setCurrentPhotoIndex(Math.floor(targetContentOffset.x / WIDTH))
     }
 
-    function renderPhoto({ item }: ListRenderItemInfo<PhotosRecord>) {
+    function renderPhoto({ item, index }: ListRenderItemInfo<PhotosRecord>) {
         const imgURL: string = pb.getFileUrl(item, item.photo)
         //Image.getSize(imgURL, (width, height) => {setImgSize({width:width, height:height})});
         return (
             <Image
                 source={{ uri: imgURL }}
-                style={styles.image}
+                style={[styles.image, { borderBottomLeftRadius: index === 0 ? 25 : 0, borderBottomRightRadius: index === photos.length - 1 ? 25 : 0 }]}
                 resizeMode="cover"
             />
         );
@@ -102,6 +102,7 @@ export default function FriendCard({ user }: FriendCardProps) {
                     pagingEnabled
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
+                    directionalLockEnabled
                     onScrollEndDrag={handleScrollEnd}
                 />
                 {currentPhotoIndex < photos.length - 1 && <IconButton icon="chevron-right" size={ARROW_SIZE} onPress={handleNextPhoto} style={[styles.arrow, { right: 0 }]} />}

@@ -35,7 +35,7 @@ export default function MosaicPreview({ record }: MosaicPreviewProps) {
 
 
     function handlePress(): void {
-        navigate("SingleMosaic", { mosaicRecord: record })
+        navigate("SingleMosaic", { mosaicId: record.id })
     }
 
     return (
