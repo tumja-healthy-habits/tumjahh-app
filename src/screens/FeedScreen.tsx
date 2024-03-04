@@ -13,6 +13,11 @@ export default function FeedScreen() {
     const friends: UserRecord[] = useRealTimeCollection<FriendsWithRecord>("friends_with", [], { expand: "user1, user2" })
         .map(getFriend)
 
+    if (currentUser !== null) {
+        // display the current user's posts in the feed
+        friends.push(currentUser)
+    }
+
     function getFriend(record: FriendsWithRecord): UserRecord {
         if (currentUser === null) throw new Error("Current user is null")
         return record.user1 === currentUser.id ? record.expand.user2 : record.expand.user1

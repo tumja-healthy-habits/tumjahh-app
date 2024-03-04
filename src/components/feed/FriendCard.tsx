@@ -1,6 +1,6 @@
 import UserBar from "components/feed/UserBar";
 import { useEffect, useRef, useState } from 'react';
-import { Dimensions, FlatList, Image, ListRenderItemInfo, StyleSheet, View } from "react-native";
+import { Dimensions, FlatList, Image, ListRenderItemInfo, NativeScrollEvent, NativeScrollPoint, NativeSyntheticEvent, StyleSheet, View } from "react-native";
 import { IconButton } from "react-native-paper";
 import { pb } from "src/pocketbaseService";
 import { PhotosRecord, UserRecord } from "types";
@@ -68,6 +68,12 @@ export default function FriendCard({ user }: FriendCardProps) {
         }
     }
 
+    function handleScrollEnd(event: NativeSyntheticEvent<NativeScrollEvent>) {
+        const targetContentOffset: NativeScrollPoint | undefined = event.nativeEvent.targetContentOffset
+        if (targetContentOffset === undefined) return
+        setCurrentPhotoIndex(Math.floor(targetContentOffset.x / WIDTH))
+    }
+
     function renderPhoto({ item }: ListRenderItemInfo<PhotosRecord>) {
         const imgURL: string = pb.getFileUrl(item, item.photo)
         //Image.getSize(imgURL, (width, height) => {setImgSize({width:width, height:height})});
@@ -96,6 +102,7 @@ export default function FriendCard({ user }: FriendCardProps) {
                     pagingEnabled
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
+                    onScrollEndDrag={handleScrollEnd}
                 />
                 {currentPhotoIndex < photos.length - 1 && <IconButton icon="chevron-right" size={ARROW_SIZE} onPress={handleNextPhoto} style={[styles.arrow, { right: 0 }]} />}
                 {currentPhotoIndex > 0 && <IconButton icon="chevron-left" size={ARROW_SIZE} onPress={handlePreviousPhoto} style={[styles.arrow, { left: 0 }]} />}
