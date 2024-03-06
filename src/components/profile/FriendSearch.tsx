@@ -2,13 +2,12 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "constants/colors";
 import { Contact, Fields as ContactFields, PermissionStatus, PhoneNumber, getContactsAsync, requestPermissionsAsync } from "expo-contacts";
 import React, { useEffect, useState, } from "react";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { FlatList, ListRenderItemInfo, Text, View } from "react-native";
-import { Divider, TextInput, Tooltip } from "react-native-paper";
-import { pb, useRealTimeCollection } from "src/pocketbaseService";
+import { Divider, TextInput } from "react-native-paper";
+import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { globalStyles } from "src/styles";
-import { UserRecord, FriendsWithRecord, FriendRequestsRecord } from "types";
+import { UserRecord } from "types";
 import FriendSearchResult from "./FriendSearchResult";
 
 type FriendSearchProps = {
@@ -35,7 +34,7 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
             return
         }
         setShowResults(true)
-        
+
         const foundByUsername: UserRecord[] = (await pb.collection("users").getFullList<UserRecord>({
             filter: `username ~ "${searchText}" && id != "${currentUser.id}"`,
             expand: "friend_requests(from).to, friend_requests(to).from, friends_with(user2).user1, friends_with(user1)"
@@ -109,7 +108,7 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
         return <FriendSearchResult user={item} updateSearchResult={updateSearchResult} />
     }
 
-    return <View style={{ backgroundColor: Colors.backgroundProfile, paddingBottom:50 }
+    return <View style={{ backgroundColor: Colors.backgroundProfile }
     }>
         <TextInput value={searchText}
             placeholder="Search for your friend's username"
@@ -119,7 +118,6 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
             left={<TextInput.Icon icon={() => <Ionicons name="search-outline" size={24} color="black" />} />}
             // right={<TextInput.Icon icon={() => <Tooltip title="Show QR code"><Ionicons name="qr-code-outline" size={24} color="black" onPress={showQRCode} /></Tooltip>} />}
             style={{ backgroundColor: "transparent", marginHorizontal: 10 }}
-
         />
         {showResults ? (<FlatList
             data={searchResults}
@@ -127,7 +125,6 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
             renderItem={renderFriend}
             ItemSeparatorComponent={() => <Divider bold horizontalInset />}
             extraData={updateFlag}
-            style={{marginBottom:40}}
         />) : searchText.length > 0 ?
             (<Text style={globalStyles.textfieldText}>No results</Text>
             ) : null}

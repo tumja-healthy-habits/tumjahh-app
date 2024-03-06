@@ -1,4 +1,4 @@
-import { FlatList, ListRenderItemInfo, Text } from "react-native";
+import { FlatList, ListRenderItemInfo, Text, View } from "react-native";
 import { Divider } from "react-native-paper";
 import { useRealTimeCollection } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
@@ -16,12 +16,13 @@ export default function FriendRequestList() {
         return <FriendRequest friendRequest={item} />
     }
 
-    return <>
+    return friendRequests.length > 0 ? <View>
         <Text style={{ textAlign: "center", fontSize: 18, fontWeight: "bold", margin: 20 }}>Open friend requests:</Text>
         <Divider />
         <FlatList data={friendRequests}
             keyExtractor={(request: FriendRequestsRecord) => request.id}
             renderItem={renderRequest}
             ItemSeparatorComponent={() => <Divider />}
-        /></>
+        />
+    </View> : null
 }

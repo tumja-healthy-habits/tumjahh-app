@@ -1,24 +1,23 @@
-import { SafeAreaView, StyleSheet, Text, View, FlatList, ListRenderItemInfo, TouchableOpacity, Modal, ScrollView, Alert } from "react-native";
-import React, { useState, useEffect } from 'react';
-import Colors from "constants/colors";
-import PictureInput from "components/misc/PictureInput";
-import { FixedDimensionImage, FriendsWithRecord, MosaicMembersRecord, MosaicRecord, UserRecord } from "types";
-import ProfilePicture from "components/profile/ProfilePicture";
-import LoginButton from "components/authentication/LoginButton";
-import { Divider, TextInput, Tooltip, Button} from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
-import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
-import { pb } from "src/pocketbaseService";
-import IconButton from "components/misc/IconButton";
-import { useRealTimeCollection } from 'src/pocketbaseService'
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import LoginButton from "components/authentication/LoginButton";
+import IconButton from "components/misc/IconButton";
+import PictureInput from "components/misc/PictureInput";
+import ProfilePicture from "components/profile/ProfilePicture";
+import Colors from "constants/colors";
+import React, { useEffect, useState } from 'react';
+import { Alert, FlatList, ListRenderItemInfo, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Divider, TextInput } from "react-native-paper";
 import { MosaicParamList } from "screens/mosaic/MosaicNavigator";
+import { pb, useRealTimeCollection } from "src/pocketbaseService";
+import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
+import { FixedDimensionImage, FriendsWithRecord, MosaicMembersRecord, MosaicRecord, UserRecord } from "types";
 
 
 export default function CreateMosaicScreen() {
 
     const { currentUser } = useAuthenticatedUser()
-    if (currentUser === null) return
+    if (currentUser === null) return <View />
 
     const { goBack } = useNavigation<NavigationProp<MosaicParamList, "CreateMosaic">>()
 
@@ -49,35 +48,35 @@ export default function CreateMosaicScreen() {
         if (currentUser === null) {
             return
         }
-        setSearchResults(friends.filter((friend:UserRecord) => {return (friend.username.toLowerCase().startsWith(searchText.toLowerCase()) || friend.name.toLowerCase().startsWith(searchText.toLowerCase()))}))
+        setSearchResults(friends.filter((friend: UserRecord) => { return (friend.username.toLowerCase().startsWith(searchText.toLowerCase()) || friend.name.toLowerCase().startsWith(searchText.toLowerCase())) }))
     }
 
     function renderMember({ item }: ListRenderItemInfo<UserRecord>) {
         return (
-        <View style={styles.memberContainer}>
-            <ProfilePicture userRecord={item} style={styles.memberImage}/>
-            {/* Current user can't be deleted as member of mosaic he creates */}
-            {item != currentUser && <Ionicons name="ellipse" size={25} color="white" style={styles.overlay}/>}
-            {item != currentUser && <IconButton icon="close-circle" size={25} color="black" onPress={() => removeMember(item)} style={styles.overlay} />}
-            <Text>{item.name}</Text>
-        </View>
+            <View style={styles.memberContainer}>
+                <ProfilePicture userRecord={item} style={styles.memberImage} />
+                {/* Current user can't be deleted as member of mosaic he creates */}
+                {item != currentUser && <Ionicons name="ellipse" size={25} color="white" style={styles.overlay} />}
+                {item != currentUser && <IconButton icon="close-circle" size={25} color="black" onPress={() => removeMember(item)} style={styles.overlay} />}
+                <Text>{item.name}</Text>
+            </View>
         )
     }
 
-    function isMember(user:UserRecord) {
+    function isMember(user: UserRecord) {
         return members.includes(user)
     }
 
     function renderFriendSearch({ item }: ListRenderItemInfo<UserRecord>) {
         return (
-        <TouchableOpacity style={styles.searchContainer} onPress={() => addMember(item)}>
-            <ProfilePicture userRecord={item} style={styles.searchImage} />
-            <View style={styles.innerContainer}>
-                <Text style={styles.searchName}>{item.name}</Text>
-                <Text style={styles.searchUsername}>{item.username}</Text>
-            </View>
-            {/* <IconButton icon={!isMember(item) ? "ellipse-outline" : "checkmark-circle"} color={Colors.black} size={40} onPress={!isMember(item) ? () => addMember(item) : () => removeMember(item)}/> */}
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.searchContainer} onPress={() => addMember(item)}>
+                <ProfilePicture userRecord={item} style={styles.searchImage} />
+                <View style={styles.innerContainer}>
+                    <Text style={styles.searchName}>{item.name}</Text>
+                    <Text style={styles.searchUsername}>{item.username}</Text>
+                </View>
+                {/* <IconButton icon={!isMember(item) ? "ellipse-outline" : "checkmark-circle"} color={Colors.black} size={40} onPress={!isMember(item) ? () => addMember(item) : () => removeMember(item)}/> */}
+            </TouchableOpacity>
         )
     }
 
@@ -96,7 +95,7 @@ export default function CreateMosaicScreen() {
         setUpdateSearch(!updateSearch)
     }
 
-    async function createMosaicMemberRecord(user: UserRecord, mosaic:MosaicRecord) {
+    async function createMosaicMemberRecord(user: UserRecord, mosaic: MosaicRecord) {
         const formData: FormData = new FormData()
         formData.append("user_id", user.id)
         formData.append("mosaic_id", mosaic.id)
@@ -118,7 +117,7 @@ export default function CreateMosaicScreen() {
             } as any) : {}
             console.log(formData)
             var mosaicRecord = await pb.collection("mosaics").create<MosaicRecord>(formData)
-            members.map((user: UserRecord) => {createMosaicMemberRecord(user, mosaicRecord)})
+            members.map((user: UserRecord) => { createMosaicMemberRecord(user, mosaicRecord) })
         }
         catch (error: any) {
             console.log(error.response)
@@ -133,67 +132,67 @@ export default function CreateMosaicScreen() {
 
     return (
         <SafeAreaView style={styles.outerContainer}>
-            <IconButton icon="chevron-back-outline" onPress={goBack} color="#666" size={30} style={{alignSelf:"flex-start"}}/>
+            <IconButton icon="chevron-back-outline" onPress={goBack} color="#666" size={30} style={{ alignSelf: "flex-start" }} />
             <Text style={styles.formTitle}>Create Mosaic</Text>
             <View style={styles.innerContainer}>
 
                 <View style={styles.horizontalContainer}>
-                    <PictureInput 
+                    <PictureInput
                         label=""
-                        onTakePhoto={setThumbnail} 
+                        onTakePhoto={setThumbnail}
                         picture={thumbnail}
                         defaultPicture={require("assets/images/default-mosaic.png")}
-                        imageStyle={{width:60, height:60, borderWidth:2,}}
+                        imageStyle={{ width: 60, height: 60, borderWidth: 2, }}
                         iconSize={30}
                         iconColor={"white"}
-                        style={{marginRight:15,}}
-                        iconStyle={{backgroundColor:"#666", borderRadius:5, paddingHorizontal:2}}
+                        style={{ marginRight: 15, }}
+                        iconStyle={{ backgroundColor: "#666", borderRadius: 5, paddingHorizontal: 2 }}
                     />
-                    <TextInput 
-                        placeholder="Mosaic Name" 
+                    <TextInput
+                        placeholder="Mosaic Name"
                         style={styles.textInput}
                         value={mosaicName}
                         onChangeText={setMosaicName}
                         dense={true}
-                        />
+                    />
                 </View>
                 <View>
-                <Text style={{fontSize:20}}>Members:</Text>
+                    <Text style={{ fontSize: 20 }}>Members:</Text>
 
-                <FlatList
-                    data={members}
-                    keyExtractor={(user: UserRecord) => user.id}
-                    renderItem={renderMember} 
-                    scrollEnabled={true}
-                    horizontal={true}
-                    style={{marginBottom:10, height:100,}}
-                    showsHorizontalScrollIndicator={false}
-                    extraData={updateSearch}
-                />
+                    <FlatList
+                        data={members}
+                        keyExtractor={(user: UserRecord) => user.id}
+                        renderItem={renderMember}
+                        scrollEnabled={true}
+                        horizontal={true}
+                        style={{ marginBottom: 10, height: 100, }}
+                        showsHorizontalScrollIndicator={false}
+                        extraData={updateSearch}
+                    />
                 </View>
                 <View style={styles.searchView}>
-                <TextInput value={searchText}
-                    placeholder="Search friends"
-                    onChangeText={setSearchText}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    left={<TextInput.Icon icon={() => <Ionicons name="search-outline" size={24} color="black" />} />}
-                    style={{ backgroundColor: "transparent", marginBottom:5,}}
-                    dense={true}
-                />
-                
-                <FlatList
-                    data={searchResults}
-                    keyExtractor={(user: UserRecord) => user.id}
-                    renderItem={renderFriendSearch}
-                    ItemSeparatorComponent={() => <Divider bold horizontalInset />}
-                    style={{marginBottom:20, flexGrow:0}}
-                    extraData={updateSearch}
-                />
-                </View>    
-                <LoginButton label={"Create Mosaic"} onPress={handleCreateMosaic} color="white" /> 
+                    <TextInput value={searchText}
+                        placeholder="Search friends"
+                        onChangeText={setSearchText}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        left={<TextInput.Icon icon={() => <Ionicons name="search-outline" size={24} color="black" />} />}
+                        style={{ backgroundColor: "transparent", marginBottom: 5, }}
+                        dense={true}
+                    />
+
+                    <FlatList
+                        data={searchResults}
+                        keyExtractor={(user: UserRecord) => user.id}
+                        renderItem={renderFriendSearch}
+                        ItemSeparatorComponent={() => <Divider bold horizontalInset />}
+                        style={{ marginBottom: 20, flexGrow: 0 }}
+                        extraData={updateSearch}
+                    />
+                </View>
+                <LoginButton label={"Create Mosaic"} onPress={handleCreateMosaic} color="white" />
                 {/* style={{position:"absolute", bottom:20}}/> */}
-                
+
             </View>
         </SafeAreaView>
     )
@@ -202,40 +201,40 @@ export default function CreateMosaicScreen() {
 const styles = StyleSheet.create({
     outerContainer: {
         backgroundColor: Colors.backgroundProfile,
-        flex:1,
-        alignItems:"center", 
-        paddingLeft:50
+        flex: 1,
+        alignItems: "center",
+        paddingLeft: 50
     },
     innerContainer: {
-        width:"90%",
-        flex:1,
+        width: "90%",
+        flex: 1,
     },
-    horizontalContainer:{
-        flexDirection:'row',
-        alignItems:"center",
-        height:"10%",
-        marginTop:20, 
-        marginBottom:40
+    horizontalContainer: {
+        flexDirection: 'row',
+        alignItems: "center",
+        height: "10%",
+        marginTop: 20,
+        marginBottom: 40
     },
     formTitle: {
         color: Colors.accent,
         fontSize: 30,
-        marginTop:10,
+        marginTop: 10,
         //marginBottom: 10,
-        marginLeft:20,
-        alignSelf:'flex-start'
+        marginLeft: 20,
+        alignSelf: 'flex-start'
     },
-    textInput:{
-        fontSize:20,
-        borderBottomColor:'#666',
+    textInput: {
+        fontSize: 20,
+        borderBottomColor: '#666',
         //borderBottomWidth:1,
-        width:"78%",
-        alignSelf:"flex-end",
-        backgroundColor:"transparent"
+        width: "78%",
+        alignSelf: "flex-end",
+        backgroundColor: "transparent"
     },
     searchView: {
-        height:"45%"
-        
+        height: "45%"
+
     },
     searchContainer: {
         flexDirection: "row",
@@ -243,7 +242,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         //padding: 10,
         //margin: 10,
-        marginHorizontal:15
+        marginHorizontal: 15
     },
     searchInnerContainer: {
         flex: 1,
@@ -266,19 +265,19 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     memberImage: {
-        width:60, 
-        height:60,
-        borderRadius:8,
-        borderWidth:1
+        width: 60,
+        height: 60,
+        borderRadius: 8,
+        borderWidth: 1
     },
     memberContainer: {
-        alignItems:"center"
+        alignItems: "center"
     },
     overlay: {
-		...StyleSheet.absoluteFillObject,
-        marginLeft:55
+        ...StyleSheet.absoluteFillObject,
+        marginLeft: 55
         //position:"absolute",
-		//top:10,
-          
-	},
+        //top:10,
+
+    },
 })
