@@ -136,10 +136,11 @@ export default function ProfileScreenAlt() {
                         <Ionicons name="lock-closed" size={40} />
                         <Text style={styles.buttonText}>Save changes</Text>
                     </Pressable>
-                    <Pressable style={styles.button} onPress={handleTapDelete}>
+                {/*    <Pressable style={styles.button} onPress={handleTapDelete}>
                         <Ionicons name="trash-outline" size={40} />
                         <Text style={styles.buttonText}>Delete Account</Text>
                     </Pressable>
+                */}
                 </View>
                 : <View style={styles.buttonView}>
                     <Pressable style={styles.button} onPress={() => navigate("SearchFriend", { friendId: undefined })}>
