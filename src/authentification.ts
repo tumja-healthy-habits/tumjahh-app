@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert } from "react-native";
+import { Alert, Linking } from "react-native";
 import { FriendRequestsRecord, FriendsWithRecord, MosaicMembersRecord, MosaicRecord, PhotosRecord, UserRecord } from "types";
 import { pb, createWeeklyChallengeRecord } from "./pocketbaseService";
-
+import qs from 'qs'
 
 // the keys used in the local storage
 export const VAR_USERNAME: string = "BeHealthyUsername"
@@ -110,7 +110,88 @@ export async function deleteAccount(user:UserRecord|null): Promise<void> {
         Alert.alert("You need to be logged in to delete your account")
         return
     }
+    //const mail = "habits@ja.tum.de"
+    const mail = "marquardt.ac@gmail.com"
+    const subject = "Account Deletion Be Healthy"
+    const body = `User ${user.username} requests Account Deletion. UserID: ${user.id}`
 
-    pb.collection("users").delete(user.id)
+    let url = `mailto:<${mail}>?subject=<'${subject}'>&body=<'${body}'>`
+    console.log(url)
+
+    const canOpen = await Linking.canOpenURL(url);
+    if (!canOpen) {
+        throw new Error('Provided URL can not be handled');
+    }
+    else {
+        await Linking.openURL(url);
+    }
+
     logout()
+
+    // console.log("inside deleteaccount")
+
+    // async function deleteRecord(collection_name:string, record_id:string) {
+    //     await pb.collection(collection_name).delete(record_id)
+    // }
+
+    // async function deleteFromCollection(collection_name:string, filter_param:string) {
+    //     pb.collection(collection_name)
+    //         .getFullList({filter:filter_param})
+    //         .then(records => records.map(record => deleteRecord(collection_name, record.id)))
+    // }
+
+    // async function updateNullRecord(collection_name: string, field_name:string, record_id:string) {
+    //     await pb.collection(collection_name).update(record_id, {field_name: user!.id})
+    // }
+
+    // async function updateCollection(collection_name:string, field_name:string) {
+    //     pb.collection(collection_name)
+    //         .getFullList({filter: `${field_name} = null`})
+    //         .then(records => records.map(record => updateNullRecord(collection_name, field_name, record.id)))
+    // }
+
+    // let data = new FormData()
+    // data.append("id", user.id)
+    // data.append("username", user.id)
+    // data.append("email", `${user.id}@deleted.de`)
+    // data.append("password", "Test123456")
+    // data.append("passwordConfirm", "Test123456")
+    // // data.append("name", "")
+    // // data.append("avatar", "")
+    // // data.append("phonenumber", "")
+    // data.append("gender", user.gender)
+    // data.append("birthdate", user.birthdate)
+    // data.append("isStudent", user.isStudent)
+    // // data.append("lastSurvey", "")
+    // console.log("after formdata")
+    
+    // await pb.collection("users").delete(user.id)
+
+    // console.log("after deletion")
+
+    // await pb.collection("users").create(data)
+    // console.log("after creation")
+    
+    // await updateCollection("initial_survey", "user")
+    // await updateCollection("survey_answers", "user")
+    // await updateCollection("weekly_challenges", "user_id")
+    // console.log("after update")
+
+    // await pb.collection("users").requestEmailChange("deleted@deleted.de")
+
+    // console.log("after email change")
+    // await deleteFromCollection("photos", `user_id = '${user.id}'`) //also deletes contains records
+    // await deleteFromCollection("mosaic_members", `user_id = '${user.id}'`)
+    // await deleteFromCollection("friends_with", `user1 = '${user.id}' || user2 = '${user.id}'`)
+    // await deleteFromCollection("friend_requests", `from = '${user.id}' || to = '${user.id}'`)
+    
+    // console.log("after deletion")
+
+    // await pb.collection("users").update(user.id, data)
+
+    // console.log("after update")
+    
+    // await AsyncStorage.removeItem(VAR_USERNAME)
+    // await AsyncStorage.removeItem(VAR_PASSWORD)
+    // return pb.authStore.clear()
 }

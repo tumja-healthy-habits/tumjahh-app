@@ -50,11 +50,12 @@ export default function ProfileScreenAlt() {
     }
 
     function handleTapDelete() {
-        Alert.alert("Delete Account", "Are you sure you want to delete your account? All your personal data will be removed and you will need to create a new account if you want to use this app again.", [
+        Alert.alert("Delete Account", "Are you sure you want to delete your account? All your personal data will be deleted within the next 48h. You will receive a confirmation e-mail upon deletion.", [
                 {text: "Cancel", onPress:() => {}, style:"cancel"},
                 {text: "Delete", style:"destructive", onPress: () => deleteAccount(currentUser)}
             ])
     }
+
 
     function handleTapLogout() {
         Alert.alert('Logout', 'Are you sure you want to log out?', [
