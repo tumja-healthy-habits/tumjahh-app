@@ -3,7 +3,6 @@ import { Alert, Linking } from "react-native";
 import { FriendRequestsRecord, FriendsWithRecord, MosaicMembersRecord, MosaicRecord, PhotosRecord, UserRecord } from "types";
 import { pb, createWeeklyChallengeRecord } from "./pocketbaseService";
 import qs from 'qs'
-import email from 'react-native-email'
 
 // the keys used in the local storage
 export const VAR_USERNAME: string = "BeHealthyUsername"
