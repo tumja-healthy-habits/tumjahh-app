@@ -1,58 +1,43 @@
-import FriendCard from 'components/feed/FriendCard'
+import FriendCard, { getOneDayAgo } from 'components/feed/FriendCard'
+import { useEffect, useState } from 'react'
 import { FlatList, ListRenderItemInfo, SafeAreaView, Text } from 'react-native'
-import { useRealTimeCollection } from 'src/pocketbaseService'
-import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider'
-import { globalStyles } from "src/styles"
-import { FriendsWithRecord, PhotosRecord, UserRecord } from 'types'
 import { pb } from 'src/pocketbaseService'
-import { useState, useEffect } from 'react'
-import { getOneDayAgo } from 'components/feed/FriendCard'
+import { useAuthenticatedUser } from 'src/store/AuthenticatedUserProvider'
+import { useFriends } from 'src/store/FriendsProvider'
+import { globalStyles } from "src/styles"
+import { PhotosRecord, UserRecord } from 'types'
 
-export default function FriendsScreen() {
+export default function FeedScreen() {
     const { currentUser } = useAuthenticatedUser()
     const [photoExists, setPhotoExists] = useState<boolean>(false)
 
-    const friends: UserRecord[] = useRealTimeCollection<FriendsWithRecord>("friends_with", [], { expand: "user1, user2" })
-        .map(getFriend)
+    const friends: UserRecord[] = useFriends()
 
-    function getFriend(record: FriendsWithRecord): UserRecord {
-        if (currentUser === null) throw new Error("Current user is null")
-        return record.user1 === currentUser.id ? record.expand.user2 : record.expand.user1
-    }
+    useEffect(() => {
 
-    friends.map(checkPhotoExists)
-
-    useEffect(() =>
-    {
-        //setPhotoExists(false)
-        friends.map(checkPhotoExists);
-
+        pb.collection("photos").getFullList<PhotosRecord>({
+            filter: `created >= "${getOneDayAgo()}"`,
+        }).then((photos: PhotosRecord[]) => setPhotoExists(photos.length > 0))
     }, [photoExists])
 
-    async function checkPhotoExists(user:UserRecord) {
-        //console.log("inside checkExists")
-        let oneDayAgo = getOneDayAgo()
-        let photos = await pb.collection("photos").getFullList({filter: `user_id="${user.id}" && created >= "${oneDayAgo}"`})
-        //console.log("Photos length: " + photos.length)
-        if (photos.length > 0) {
-            setPhotoExists(true)
-            //console.log("Photo exists for " + user.username)
-        }
+    if (currentUser === null) {
+        return (
+            <SafeAreaView style={[globalStyles.container, { alignItems: 'center', justifyContent: 'center' }]}>
+                <Text style={[globalStyles.textfieldText, { marginTop: 20 }]}>You must be logged in to view your feed</Text>
+            </SafeAreaView>
+        )
     }
-
 
     function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
         return <FriendCard user={item} />
     }
-    console.log(photoExists)
     
     return (
         <SafeAreaView style={[globalStyles.container, { alignItems: 'stretch' }]}>
-            {friends.length === 0 && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>You haven't added any friends yet</Text>}
-            
-            {(!photoExists && friends.length > 0) && <Text style={[globalStyles.textfieldText, {marginTop:20}]}>Your friends haven't posted {"\n"} anything in the last 24 hours</Text>}
+            {friends.length === 0 && <Text style={[globalStyles.textfieldText, { marginTop: 20 }]}>You haven't added any friends yet</Text>}
+            {(!photoExists && friends.length > 0) && <Text style={[globalStyles.textfieldText, { marginTop: 20 }]}>Your friends haven't posted {"\n"} anything in the last 24 hours</Text>}
             <FlatList
-                data={friends}
+                data={[...friends, currentUser]}
                 keyExtractor={(user: UserRecord) => user.id}
                 renderItem={renderFriend}
             />

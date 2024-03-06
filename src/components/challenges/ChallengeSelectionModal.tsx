@@ -135,6 +135,7 @@ export default function ChallengeSelectionModal({ visible, onClose }: ChallengeS
                     ItemSeparatorComponent={ItemSeparator}
                     ListEmptyComponent={ListEmpty}
                     ListHeaderComponent={ListHeader}
+                    ListFooterComponent={() => <View style={{ height: 100 }} />}
                     stickyHeaderIndices={[0]}
                     renderSectionHeader={renderSectionHeader}
                 />

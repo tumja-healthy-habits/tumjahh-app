@@ -1,31 +1,28 @@
-import { RouteProp, useRoute, useNavigation, NavigationProp } from "@react-navigation/native";
+import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import InputField from "components/authentication/InputField";
 import BlurModal from "components/misc/BlurModal";
+import IconButton from "components/misc/IconButton";
 import MosaicMemberList from "components/mosaic/MosaicMemberList";
 import NewMosaicGridCopy from "components/mosaic/NewMosaicGrid";
 import ProfilePicture from "components/profile/ProfilePicture";
+import Colors from "constants/colors";
 import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
-import { useEffect, useState } from "react";
-import { Button, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator, Divider } from "react-native-paper";
 import { pb } from "src/pocketbaseService";
+import { useMosaics } from "src/store/MosaicsProvider";
 import { MosaicRecord } from "types";
 import { MosaicParamList } from "./MosaicNavigator";
-import IconButton from "components/misc/IconButton";
-import Colors from "constants/colors";
 
 export default function NewMosaicScreen() {
-    const { params } = useRoute<RouteProp<MosaicParamList, "SingleMosaic">>()
+    const { mosaicId } = useRoute<RouteProp<MosaicParamList, "SingleMosaic">>().params
+    const mosaics: MosaicRecord[] = useMosaics()
+    const mosaicRecord: MosaicRecord | undefined = mosaics.find((mosaic: MosaicRecord) => mosaic.id === mosaicId)
+    console.log(mosaicRecord, mosaicId)
     const { navigate, goBack } = useNavigation<NavigationProp<MosaicParamList, "SingleMosaic">>()
-    const [mosaicRecord, setMosaicRecord] = useState<MosaicRecord>()
     const [showModal, setShowModal] = useState<boolean>(false)
     const [name, setName] = useState<string>(mosaicRecord ? mosaicRecord.name : "")
-
-    console.log("mosaic record", mosaicRecord)
-
-    useEffect(() => {
-        pb.collection("mosaics").getOne<MosaicRecord>(params.mosaicId).then(setMosaicRecord).catch(console.error)
-    }, [])
 
     async function handleTapProfilePicture(): Promise<void> {
         launchImageLibraryAsync({
@@ -43,24 +40,21 @@ export default function NewMosaicScreen() {
                 name: result.assets[0].uri,
                 type: "image/jpg"
             } as any)
-            pb.collection("mosaics").update<MosaicRecord>(mosaicRecord.id, updateData).then(setMosaicRecord).catch(console.error)
+            pb.collection("mosaics").update<MosaicRecord>(mosaicRecord.id, updateData)
         })
     }
 
     return <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
-            <IconButton icon="chevron-back-outline" onPress={goBack} color="#666" size={30} style={styles.backButton}/>
+            <IconButton icon="chevron-back-outline" onPress={goBack} color="#666" size={30} style={styles.backButton} />
             <Text style={styles.title}>{mosaicRecord && mosaicRecord.name}</Text>
-            <IconButton icon="create-outline" color="#666" size={30} onPress={() => navigate("EditMosaic", {mosaicId: params.mosaicId})} style={styles.editButton} />
+            <IconButton icon="create-outline" color="#666" size={30} onPress={() => navigate("EditMosaic", { mosaicId: mosaicId })} style={styles.editButton} />
         </View>
         <Divider />
         {mosaicRecord ? (
             <>
                 <MosaicMemberList mosaicRecord={mosaicRecord} />
-                <View style={{
-                    //  borderColor: "red", borderWidth: 2,
-                    flex: 1
-                }}>
+                <View style={{ flex: 1 }}>
                     <NewMosaicGridCopy mosaicRecord={mosaicRecord} />
                 </View>
             </>
@@ -68,7 +62,7 @@ export default function NewMosaicScreen() {
         <BlurModal visible={showModal} onClose={() => {
             setShowModal(false)
             if (mosaicRecord === undefined || name === mosaicRecord.name) return
-            pb.collection("mosaics").update<MosaicRecord>(mosaicRecord?.id, { name }).then(setMosaicRecord).catch(console.error)
+            pb.collection("mosaics").update<MosaicRecord>(mosaicRecord?.id, { name })
         }}>
             <View style={styles.modalContainer}>
                 <Pressable onPress={handleTapProfilePicture}>
@@ -96,9 +90,9 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     backButton: {
-        position:"absolute",
-        left:0,
-        margin:10
+        position: "absolute",
+        left: 0,
+        margin: 10
     },
     editButton: {
         position: "absolute",

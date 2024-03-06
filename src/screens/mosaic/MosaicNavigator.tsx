@@ -2,9 +2,9 @@ import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navig
 import { createStackNavigator } from "@react-navigation/stack"
 import { AppParamList } from "components/LoggedInApp"
 import PickMosaicsModal from "components/mosaic/PickMosaicsModal"
-import MosaicListScreen from "./MosaicListScreen"
 import CreateMosaicScreen from "./CreateMosaicScreen"
 import EditMosaicScreen from "./EditMosaicScreen"
+import MosaicListScreen from "./MosaicListScreen"
 import NewMosaicScreen from "./MosaicScreen"
 
 export type MosaicParamList = {
@@ -13,8 +13,8 @@ export type MosaicParamList = {
         mosaicId: string,
     },
     "CreateMosaic": undefined,
-    "EditMosaic":{
-        mosaicId:string,
+    "EditMosaic": {
+        mosaicId: string,
     }
 }
 
