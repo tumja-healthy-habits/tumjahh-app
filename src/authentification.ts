@@ -134,12 +134,12 @@ export async function deleteAccount(user:UserRecord|null): Promise<void> {
     //     await Linking.openURL(url);
     // }
 
-    email(mail, {
-        // Optional additional arguments
-        subject: subject,
-        body: body,
-        checkCanOpen: false
-    })
+    // email(mail, {
+    //     // Optional additional arguments
+    //     subject: subject,
+    //     body: body,
+    //     checkCanOpen: false
+    // })
 
     logout()
 }
