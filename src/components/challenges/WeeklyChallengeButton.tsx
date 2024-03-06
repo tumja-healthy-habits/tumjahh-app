@@ -66,7 +66,7 @@ export default function WeeklyChallengeButton({ weeklyChallenge, openCamera }: w
             </View>
             <View style={{ justifyContent: "space-between", alignItems: "center" }}>
                 <BouncyCheckbox
-                    size={40}
+                    size={30}
                     iconImageStyle={{
                         width: 20,
                         height: 20,
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
     },
     buttonText: {
-        fontSize: 28,
+        fontSize: 22,
         textAlign: "center",
         color: Colors.anotherPeachColor,
     },
@@ -109,16 +109,16 @@ const styles = StyleSheet.create({
         height: 5,
         borderRadius: 5,
         marginRight: 15,
-        width: Dimensions.get("window").width * 0.65,
+        width: Dimensions.get("window").width * 0.6,
     },
     checkbox: {
         left: 8,
     },
     description: {
-        fontSize: 18,
+        fontSize: 16,
         flexWrap: "wrap",
         marginTop: 15,
         marginBottom: 25,
-        width: Dimensions.get("window").width * 0.65,
+        width: Dimensions.get("window").width * 0.6,
     },
 })

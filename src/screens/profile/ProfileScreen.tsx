@@ -9,7 +9,7 @@ import { ImagePickerResult, MediaTypeOptions, launchImageLibraryAsync } from "ex
 import { useState } from "react";
 import { Alert, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-paper";
-import { VAR_USERNAME, logout } from "src/authentification";
+import { VAR_USERNAME, logout, deleteAccount } from "src/authentification";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
 import { globalStyles } from "src/styles";
@@ -48,6 +48,14 @@ export default function ProfileScreenAlt() {
         setPhotoUri(currentUser!.avatar ? pb.getFileUrl(currentUser!, currentUser!.avatar) : undefined)
         setEditMode(false)
     }
+
+    function handleTapDelete() {
+        Alert.alert("Delete Account", "Are you sure you want to delete your account? All your personal data will be deleted within the next 48h. You will receive a confirmation e-mail upon deletion.", [
+                {text: "Cancel", onPress:() => {}, style:"cancel"},
+                {text: "Delete", style:"destructive", onPress: () => deleteAccount(currentUser)}
+            ])
+    }
+
 
     function handleTapLogout() {
         Alert.alert('Logout', 'Are you sure you want to log out?', [
@@ -128,6 +136,11 @@ export default function ProfileScreenAlt() {
                         <Ionicons name="lock-closed" size={40} />
                         <Text style={styles.buttonText}>Save changes</Text>
                     </Pressable>
+                {/*    <Pressable style={styles.button} onPress={handleTapDelete}>
+                        <Ionicons name="trash-outline" size={40} />
+                        <Text style={styles.buttonText}>Delete Account</Text>
+                    </Pressable>
+                */}
                 </View>
                 : <View style={styles.buttonView}>
                     <Pressable style={styles.button} onPress={() => navigate("SearchFriend", { friendId: undefined })}>

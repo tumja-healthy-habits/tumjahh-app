@@ -2,16 +2,12 @@ import { StackNavigationOptions, createStackNavigator } from "@react-navigation/
 import LoggedInApp from "components/LoggedInApp";
 import InitialSurvey from "./InitialSurvey";
 import Survey from "./Survey";
-import SurveyResults from "./SurveyResults";
 
 export type SurveyParamList = {
     "SurveyPopup": undefined;
     "InitialSurvey": undefined;
     "Survey": {
         categories: string[],
-    }
-    "SurveyResults": {
-        challenges: { id: string, name: string }[],
     }
 }
 
@@ -23,7 +19,6 @@ export default function SurveyNavigator() {
             <Stack.Screen name="SurveyPopup" component={LoggedInApp} />
             <Stack.Screen name="InitialSurvey" component={InitialSurvey} />
             <Stack.Screen name="Survey" component={Survey} />
-            <Stack.Screen name="SurveyResults" component={SurveyResults} />
         </Stack.Navigator>
     )
 }

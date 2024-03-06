@@ -14,10 +14,11 @@ export default function FeedScreen() {
     const friends: UserRecord[] = useFriends()
 
     useEffect(() => {
+
         pb.collection("photos").getFullList<PhotosRecord>({
             filter: `created >= "${getOneDayAgo()}"`,
         }).then((photos: PhotosRecord[]) => setPhotoExists(photos.length > 0))
-    }, [])
+    }, [photoExists])
 
     if (currentUser === null) {
         return (
@@ -30,7 +31,7 @@ export default function FeedScreen() {
     function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
         return <FriendCard user={item} />
     }
-
+    
     return (
         <SafeAreaView style={[globalStyles.container, { alignItems: 'stretch' }]}>
             {friends.length === 0 && <Text style={[globalStyles.textfieldText, { marginTop: 20 }]}>You haven't added any friends yet</Text>}

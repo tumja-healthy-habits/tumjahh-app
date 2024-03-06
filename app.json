@@ -1,28 +1,33 @@
 {
   "expo": {
-    "name": "healthy-habits-app",
+    "name": "BeHealthy",
     "slug": "healthy-habits-app",
     "scheme": "behealthy",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/behealthy-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/images/behealthy-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#"
+      "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.al3xand1a.healthyhabitsapp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/behealthy-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.al3xand1a.healthyhabitsapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,6 +39,11 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "55a7ca66-3173-4409-bff9-e47e1511fe9e"
+      }
+    }
   }
 }

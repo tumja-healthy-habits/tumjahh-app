@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert } from "react-native";
-import { MosaicMembersRecord, MosaicRecord, UserRecord } from "types";
+import { Alert, Linking } from "react-native";
+import { FriendRequestsRecord, FriendsWithRecord, MosaicMembersRecord, MosaicRecord, PhotosRecord, UserRecord } from "types";
 import { pb, createWeeklyChallengeRecord } from "./pocketbaseService";
+import qs from 'qs'
 
 // the keys used in the local storage
 export const VAR_USERNAME: string = "BeHealthyUsername"
@@ -102,4 +103,43 @@ export async function logout(): Promise<void> {
     await AsyncStorage.removeItem(VAR_PASSWORD)
     return pb.authStore.clear()
     // When the user is logged out when they close the app, they need login when reopening it
+}
+
+export async function deleteAccount(user:UserRecord|null): Promise<void> {
+    if (user === null) {
+        Alert.alert("You need to be logged in to delete your account")
+        return
+    }
+    //const mail = "habits@ja.tum.de"
+    const mail = "marquardt.ac@gmail.com"
+    const subject = "Account Deletion Be Healthy"
+    const body = `User ${user.username} requests Account Deletion. UserID: ${user.id}`
+
+    // let url = `mailto:<${mail}>?subject=<'${subject}'>&body=<'${body}'>`
+    // let url = `mailto:${mail}`
+    // let query = qs.stringify({
+    //     subject: subject,
+    //     body: body
+    // })
+    // url += `?${query}`;
+    // console.log(url)
+
+    
+
+    // const canOpen = await Linking.canOpenURL(url);
+    // if (!canOpen) {
+    //     throw new Error('Provided URL can not be handled');
+    // }
+    // else {
+    //     await Linking.openURL(url);
+    // }
+
+    email(mail, {
+        // Optional additional arguments
+        subject: subject,
+        body: body,
+        checkCanOpen: false
+    })
+
+    logout()
 }
