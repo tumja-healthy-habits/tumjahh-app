@@ -43,6 +43,7 @@ export default function DailyChallengesScreen() {
                     data={weeklyChallenges}
                     keyExtractor={(challenge, index) => challenge.id + index}
                     renderItem={renderChallenge}
+                    ListFooterComponent={() => <View style={{ height: 100 }} />}
                 />
             }
             <FAB

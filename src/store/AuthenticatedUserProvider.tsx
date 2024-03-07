@@ -36,6 +36,7 @@ export function AuthenticatedUserProvider({ children }: any) {
     useEffect(() => {
         // whenever the currently authenticated user changes, update the currentUser state variable
         pb.authStore.onChange(handleAuthenticationChange)
+
         Promise.all([AsyncStorage.getItem(VAR_USERNAME), AsyncStorage.getItem(VAR_PASSWORD)])
             .then(([username, password]) => {
                 if (username && password) {

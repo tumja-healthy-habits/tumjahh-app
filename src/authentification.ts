@@ -1,8 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert, Linking } from "react-native";
-import { FriendRequestsRecord, FriendsWithRecord, MosaicMembersRecord, MosaicRecord, PhotosRecord, UserRecord } from "types";
-import { pb, createWeeklyChallengeRecord } from "./pocketbaseService";
-import qs from 'qs'
+import { Alert } from "react-native";
+import { MosaicMembersRecord, MosaicRecord, UserRecord } from "types";
+import { createWeeklyChallengeRecord, pb } from "./pocketbaseService";
 
 // the keys used in the local storage
 export const VAR_USERNAME: string = "BeHealthyUsername"
@@ -17,7 +16,12 @@ export const DEFAULT_CHALLENGES: string[] = [
 // returns whether the login attempt was successful
 export async function login(username: string, password: string): Promise<UserRecord> {
     return pb.collection("users").authWithPassword<UserRecord>(username, password)
-        .then(({ record }) => record)
+        .then(({ record }) => {
+            // store the login data to local storage if the login attempt was successful
+            AsyncStorage.setItem(VAR_USERNAME, username)
+            AsyncStorage.setItem(VAR_PASSWORD, password)
+            return record
+        })
 }
 
 
@@ -40,7 +44,7 @@ export async function signup(username: string, name: string, email: string, pw: 
     formData.append("isStudent", isStudent.toString())
 
     const formDataMosaic = new FormData()
-    formDataMosaic.append("name", `${username}'s Mosaic`)
+    formDataMosaic.append("name", `${name || username}'s Mosaic`)
     if (profilePicture !== undefined) formDataMosaic.append('thumbnail', {
         uri: profilePicture.uri,
         name: profilePicture.uri,
@@ -51,7 +55,7 @@ export async function signup(username: string, name: string, email: string, pw: 
         .then((user: UserRecord) => {
             login(username, pw).then(() => {
                 Promise.all(DEFAULT_CHALLENGES.map((challenge_id: string) => createWeeklyChallengeRecord(challenge_id, user.id)))
-                            .catch((error: any) => console.log("Error during challenge selection: ", error.response))
+                    .catch((error: any) => console.log("Error during challenge selection: ", error.response))
 
                 pb.collection("mosaics").create<MosaicRecord>(formDataMosaic)
                     .then((mosaic: MosaicRecord) => {
@@ -105,7 +109,7 @@ export async function logout(): Promise<void> {
     // When the user is logged out when they close the app, they need login when reopening it
 }
 
-export async function deleteAccount(user:UserRecord|null): Promise<void> {
+export async function deleteAccount(user: UserRecord | null): Promise<void> {
     if (user === null) {
         Alert.alert("You need to be logged in to delete your account")
         return
@@ -124,7 +128,7 @@ export async function deleteAccount(user:UserRecord|null): Promise<void> {
     // url += `?${query}`;
     // console.log(url)
 
-    
+
 
     // const canOpen = await Linking.canOpenURL(url);
     // if (!canOpen) {
