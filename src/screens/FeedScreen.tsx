@@ -31,6 +31,7 @@ export default function FeedScreen() {
     function renderFriend({ item }: ListRenderItemInfo<UserRecord>) {
         return <FriendCard user={item} />
     }
+
     
     return (
         <SafeAreaView style={[globalStyles.container, { alignItems: 'stretch' }]}>
