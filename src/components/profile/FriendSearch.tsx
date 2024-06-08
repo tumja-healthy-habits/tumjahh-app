@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "constants/colors";
-import { Contact, Fields as ContactFields, PermissionStatus, PhoneNumber, getContactsAsync, requestPermissionsAsync } from "expo-contacts";
+import { Contact, Fields as ContactFields, PermissionStatus, PhoneNumber, getContactsAsync, getPermissionsAsync, requestPermissionsAsync } from "expo-contacts";
 import React, { useEffect, useState, } from "react";
-import { FlatList, ListRenderItemInfo, Text, View } from "react-native";
+import { Alert, FlatList, ListRenderItemInfo, Text, View } from "react-native";
 import { Divider, TextInput } from "react-native-paper";
 import { pb } from "src/pocketbaseService";
 import { useAuthenticatedUser } from "src/store/AuthenticatedUserProvider";
@@ -41,7 +41,7 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
         }))
 
         // contacts permission
-        const { status } = await requestPermissionsAsync()
+        const { status } = await getPermissionsAsync()
         if (status === PermissionStatus.GRANTED) {
             // getting contacts
             const { data } = await getContactsAsync({
@@ -108,6 +108,17 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
         return <FriendSearchResult user={item} updateSearchResult={updateSearchResult} />
     }
 
+    async function contactsAlert() {
+        const response = await getPermissionsAsync()
+        if (response.canAskAgain) {
+            Alert.alert("Contacts permission",
+                "Make it easier to find your friends on BeHealthy by allowing the BeHealthy App to access your contacts. All contact information will only be processed locally on your device.",
+                [{ text: "Ask again later" },
+                { text: "Ok", onPress: () => requestPermissionsAsync() }],
+                {cancelable: true})
+        }
+    }
+
     return <View style={{ backgroundColor: Colors.backgroundProfile }
     }>
         <TextInput value={searchText}
@@ -118,6 +129,7 @@ export default function FriendSearch({ showQRCode, searchText, setSearchText }: 
             left={<TextInput.Icon icon={() => <Ionicons name="search-outline" size={24} color="black" />} />}
             // right={<TextInput.Icon icon={() => <Tooltip title="Show QR code"><Ionicons name="qr-code-outline" size={24} color="black" onPress={showQRCode} /></Tooltip>} />}
             style={{ backgroundColor: "transparent", marginHorizontal: 10 }}
+            onFocus={contactsAlert}
         />
         {showResults ? (<FlatList
             data={searchResults}
