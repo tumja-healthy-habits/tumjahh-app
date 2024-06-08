@@ -83,7 +83,7 @@ export default function LoggedInApp() {
                                 tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
                             }} />
                         </Tab.Navigator>
-                        <SurveyPopup />
+                        {/* <SurveyPopup /> */}
                         <WeekFeedbackModal />
                         {/* {(() => { console.log("rendering"); return null })()} */}
                     </PaperProvider>

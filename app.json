@@ -24,6 +24,7 @@
         "foregroundImage": "./assets/images/behealthy-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "versionCode": 2,
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ],
